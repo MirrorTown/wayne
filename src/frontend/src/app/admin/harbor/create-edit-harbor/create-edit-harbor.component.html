@@ -1,0 +1,65 @@
+<clr-modal [(clrModalOpen)]="modalOpened" [clrModalSize]="'lg'" #modal>
+  <h3 class="modal-title">{{title}}
+    <wayne-modal-operate [modal]="modal" *ngIf="modalOpened"></wayne-modal-operate>
+  </h3>
+  <div class="modal-body">
+    <form #ngForm="ngForm" clrForm clrLayout="horizontal">
+      <section class="form-block">
+        <clr-input-container>
+          <label class="required">{{'TITLE.NAME' | translate}}</label>
+          <input type="text" clrInput id="name" [(ngModel)]="harbor.name" name="name" size="24" required [readonly]="actionType==1"
+                 maxlength="24" (keyup)='handleValidation()'>
+          <clr-control-helper>
+              <span style="color: red;" *ngIf="!isNameValid">
+                {{'ERROR.HARBOR_NAME' | translate}}
+              </span>
+          </clr-control-helper>
+          <clr-control-error>{{'ERROR.HARBOR_NAME' | translate}}</clr-control-error>
+        </clr-input-container>
+        <clr-input-container>
+          <label class="required">Harbor地址: </label>
+          <input type="text" clrInput id="url" [(ngModel)]="harbor.url" name="url" required
+                 maxlength="128">
+        </clr-input-container>
+        <clr-input-container>
+          <label class="required">用户名: </label>
+          <input type="text" clrInput id="user" [(ngModel)]="harbor.user" name="user" required
+                 maxlength="128">
+        </clr-input-container>
+        <clr-input-container>
+          <label class="required">密码: </label>
+          <input type="text" clrInput id="passwd" [(ngModel)]="harbor.passwd" name="passwd" required
+                 maxlength="128">
+        </clr-input-container>
+        <clr-input-container>
+          <label class="required">Harbor仓库名称: </label>
+          <input type="text" clrInput id="project" [(ngModel)]="harbor.project" name="project" required
+                 maxlength="128">
+        </clr-input-container>
+        <clr-input-container>
+          <label class="required">关联的K8s命名空间: </label>
+          <input type="text" clrInput id="ns" [(ngModel)]="harbor.namespace" name="ns" required
+                 maxlength="128">
+        </clr-input-container>
+        <clr-select-container>
+          <label>镜像状态</label>
+          <select clrSelect id="concurrencyPolicy" name="status" [(ngModel)]="harbor.status">
+            <option [ngValue]="0" selected>在线</option>
+            <option [ngValue]="1">维护中</option>
+          </select>
+        </clr-select-container>
+        <clr-textarea-container>
+          <label>{{'TITLE.DESCRIPTION' | translate}}</label>
+          <textarea id="description" clrTextarea [(ngModel)]="harbor.description" name="description" rows="3">
+                    </textarea>
+        </clr-textarea-container>
+      </section>
+    </form>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline" (click)="onCancel()">{{'BUTTON.CANCEL' | translate}}</button>
+      <button type="button" class="btn btn-primary" [disabled]="!isValid"
+              (click)="onSubmit()">{{'BUTTON.SUBMIT' | translate}}</button>
+    </div>
+  </div>
+
+</clr-modal>
