@@ -52,8 +52,9 @@
            [class.clickable]="status.state!=2"
            [class.label-success]="status.state==0"
            [class.label-warning]="status.state==1">
-          {{status.cluster}}
-          <span *ngIf="status.desired">({{status.current}}/{{status.desired}})</span>
+          容器列表
+<!--          {{status.cluster}}-->
+<!--          <span *ngIf="status.desired">({{status.current}}/{{status.desired}})</span>-->
         </a>
         <a href="javascript:void(0)"
            *ngIf="status.warnings"
@@ -70,6 +71,10 @@
     </clr-dg-cell>
     <clr-dg-cell>{{deploymentTpl.user}}</clr-dg-cell>
     <clr-dg-cell class="col-operate">
+      <button class="wayne-button text"
+              (click)="grayPublishTpl(deploymentTpl)"
+              *ngIf="authService.currentAppPermission.kubeDeployment.create || authService.currentUser.admin">
+        {{'BUTTON.RELEASE_GRAY' | translate}}</button>
       <button class="wayne-button text"
               (click)="publishTpl(deploymentTpl)"
               *ngIf="authService.currentAppPermission.kubeDeployment.create || authService.currentUser.admin">

@@ -1,21 +1,21 @@
-import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
-import { forkJoin } from 'rxjs';
+import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
+import {forkJoin} from 'rxjs';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
-import { NgForm } from '@angular/forms';
-import { MessageHandlerService } from '../../../shared/message-handler/message-handler.service';
-import { Deployment } from '../../../shared/model/v1/deployment';
-import { ClusterMeta } from '../../../shared/model/v1/cluster';
-import { DeploymentStatus, DeploymentTpl } from '../../../shared/model/v1/deploymenttpl';
-import { KubeDeployment } from '../../../shared/model/v1/kubernetes/deployment';
-import { CacheService } from '../../../shared/auth/cache.service';
-import { defaultResources, ResourcesActionType } from '../../../shared/shared.const';
-import { PublishStatusService } from '../../../shared/client/v1/publishstatus.service';
-import { DeploymentClient } from '../../../shared/client/v1/kubernetes/deployment';
-import { ActivatedRoute } from '@angular/router';
-import {  PageState } from '../../../shared/page/page-state';
-import { DeploymentService } from '../../../shared/client/v1/deployment.service';
-import { AuthService } from '../../../shared/auth/auth.service';
+import {NgForm} from '@angular/forms';
+import {MessageHandlerService} from '../../../shared/message-handler/message-handler.service';
+import {Deployment} from '../../../shared/model/v1/deployment';
+import {ClusterMeta} from '../../../shared/model/v1/cluster';
+import {DeploymentStatus, DeploymentTpl} from '../../../shared/model/v1/deploymenttpl';
+import {KubeDeployment} from '../../../shared/model/v1/kubernetes/deployment';
+import {CacheService} from '../../../shared/auth/cache.service';
+import {defaultResources, ResourcesActionType} from '../../../shared/shared.const';
+import {PublishStatusService} from '../../../shared/client/v1/publishstatus.service';
+import {DeploymentClient} from '../../../shared/client/v1/kubernetes/deployment';
+import {ActivatedRoute} from '@angular/router';
+import {PageState} from '../../../shared/page/page-state';
+import {DeploymentService} from '../../../shared/client/v1/deployment.service';
+import {AuthService} from '../../../shared/auth/auth.service';
 
 @Component({
   selector: 'publish-tpl',
@@ -36,6 +36,10 @@ export class PublishDeploymentTplComponent implements OnInit {
   isSubmitOnGoing = false;
   title: string;
   forceOffline = false;
+  forceOfflineGray = 'offlineGray';
+  forceOfflineProd = 'offlineProd';
+  offlineGray = false;
+  offlineProd = false;
   actionType: ResourcesActionType;
 
   imagelist = [];
@@ -65,6 +69,16 @@ export class PublishDeploymentTplComponent implements OnInit {
       return parseInt(clusterMeta.value, 10) <= this.replicaLimit;
     }
     return false;
+  }
+
+  getValue(offline: string) {
+    this.offlineProd = false;
+    this.offlineProd = false;
+    if (offline === this.forceOfflineGray) {
+      this.offlineGray = true;
+    } else if (offline === this.forceOfflineProd) {
+      this.offlineProd = true;
+    }
   }
 
   get replicaLimit(): number {
@@ -99,7 +113,14 @@ export class PublishDeploymentTplComponent implements OnInit {
         });
       } else {
         Object.getOwnPropertyNames(replicas).map(key => {
-          if ((actionType === ResourcesActionType.PUBLISH || this.getStatusByCluster(deploymentTpl.status, key) != null)
+          // tslint:disable-next-line:max-line-length
+          if (actionType === ResourcesActionType.GRAYPUBLISH && this.cacheService.namespace.metaDataObj && this.cacheService.namespace.metaDataObj.clusterMeta[key]) {
+            // 后端配置的集群才会显示出来
+            const clusterMeta = new ClusterMeta(false);
+            clusterMeta.value = replicas[key];
+            this.clusterMetas[key] = clusterMeta;
+            this.clusters.push(key);
+          } else if ((actionType === ResourcesActionType.PUBLISH || this.getStatusByCluster(deploymentTpl.status, key) != null)
             && this.cacheService.namespace.metaDataObj && this.cacheService.namespace.metaDataObj.clusterMeta[key]) {
             // 后端配置的集群才会显示出来
             const clusterMeta = new ClusterMeta(false);
@@ -189,6 +210,9 @@ export class PublishDeploymentTplComponent implements OnInit {
       case ResourcesActionType.RESTART:
         this.deploy();
         break;
+       case ResourcesActionType.GRAYPUBLISH:
+         this.deploy();
+         break;
       case ResourcesActionType.OFFLINE:
         this.offline();
         break;
@@ -199,23 +223,46 @@ export class PublishDeploymentTplComponent implements OnInit {
   }
 
   offline() {
-    Object.getOwnPropertyNames(this.clusterMetas).map(cluster => {
-      if (this.clusterMetas[cluster].checked) {
-        const state = this.getStatusByCluster(this.deploymentTpl.status, cluster);
-        this.deploymentClient.deleteByName(this.appId, cluster, this.cacheService.kubeNamespace, this.deployment.name).subscribe(
-          response => {
-            this.deletePublishStatus(state.id);
-          },
-          error => {
-            if (this.forceOffline) {
-              this.deletePublishStatus(state.id);
-            } else {
-              this.messageHandlerService.handleError(error);
+    if (this.offlineGray) {
+      console.log('下线灰度环境');
+      Object.getOwnPropertyNames(this.clusterMetas).map(cluster => {
+        if (this.clusterMetas[cluster].checked) {
+          const state = this.getStatusByCluster(this.deploymentTpl.status, cluster);
+          // tslint:disable-next-line:max-line-length
+          this.deploymentClient.deleteByName(this.appId, cluster, this.cacheService.kubeNamespace, this.deployment.name + '-grayscale').subscribe(
+            response => {
+              this.messageHandlerService.showSuccess('下线灰度成功！');
+            },
+            error => {
+              if (this.forceOffline) {
+                this.deletePublishStatus(state.id);
+              } else {
+                this.messageHandlerService.handleError(error);
+              }
             }
-          }
-        );
-      }
-    });
+          );
+        }
+      });
+    } else if (this.offlineGray) {
+      console.log('下线正式环境');
+      Object.getOwnPropertyNames(this.clusterMetas).map(cluster => {
+        if (this.clusterMetas[cluster].checked) {
+          const state = this.getStatusByCluster(this.deploymentTpl.status, cluster);
+          this.deploymentClient.deleteByName(this.appId, cluster, this.cacheService.kubeNamespace, this.deployment.name).subscribe(
+            response => {
+              this.deletePublishStatus(state.id);
+            },
+            error => {
+              if (this.forceOffline) {
+                this.deletePublishStatus(state.id);
+              } else {
+                this.messageHandlerService.handleError(error);
+              }
+            }
+          );
+        }
+      });
+    }
   }
 
   deletePublishStatus(id: number) {
@@ -250,14 +297,25 @@ export class PublishDeploymentTplComponent implements OnInit {
         kubeDeployment.spec.replicas = this.clusterMetas[cluster].value;
         // 当前仅支持第一个为业务容器镜像替换
         if (this.actionType === ResourcesActionType.PUBLISH) {
-          kubeDeployment.spec.template.spec.containers[0].image = this.containerImage + ":" + this.tag;
+          kubeDeployment.spec.template.spec.containers[0].image = this.containerImage + ':' + this.tag;
         }
-        observables.push(this.deploymentClient.deploy(
-          this.appId,
-          cluster,
-          this.deployment.id,
-          this.deploymentTpl.id,
-          kubeDeployment));
+        // 灰度发布策略
+        if (this.actionType === ResourcesActionType.GRAYPUBLISH) {
+          kubeDeployment.spec.replicas = 1;
+          observables.push(this.deploymentClient.graydeploy(
+            this.appId,
+            cluster,
+            this.deployment.id,
+            this.deploymentTpl.id,
+            kubeDeployment));
+        } else {
+          observables.push(this.deploymentClient.deploy(
+            this.appId,
+            cluster,
+            this.deployment.id,
+            this.deploymentTpl.id,
+            kubeDeployment));
+      }
       }
     });
     forkJoin(observables).subscribe(
@@ -289,6 +347,7 @@ export class PublishDeploymentTplComponent implements OnInit {
     return this.currentForm &&
       this.currentForm.valid &&
       !this.isSubmitOnGoing &&
+      (this.offlineGray || this.offlineProd || (this.containerImage && this.tag)) &&
       this.isClusterReplicaValid();
   }
 

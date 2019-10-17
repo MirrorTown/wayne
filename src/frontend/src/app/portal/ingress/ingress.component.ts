@@ -25,7 +25,7 @@ import { KubernetesClient } from '../../shared/client/v1/kubernetes/kubernetes';
 
 const showState = {
   '创建时间': {hidden: false},
-  '上线机房': {hidden: false},
+  '发布结果': {hidden: false},
   '发布说明': {hidden: false},
   '创建者': {hidden: false},
   '操作': {hidden: false}
@@ -83,7 +83,7 @@ export class IngressComponent extends Resource implements OnInit, OnDestroy, Aft
     super.registSubscription( 'ingress 删除成功！');
     super.registShowState({
       '创建时间': {hidden: false},
-      '上线机房': {hidden: false},
+      '发布结果': {hidden: false},
       '发布说明': {hidden: false},
       '创建者': {hidden: false},
       '操作': {hidden: false}

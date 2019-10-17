@@ -2,6 +2,7 @@ package pod
 
 import (
 	"fmt"
+	"github.com/Qihoo360/wayne/src/backend/util/logs"
 	"sort"
 	"time"
 
@@ -105,7 +106,18 @@ func GetPodListPageByType(kubeClient client.ResourceHandler, namespace, resource
 func GetPodListByType(kubeClient client.ResourceHandler, namespace, resourceName string, resourceType api.ResourceName) ([]*v1.Pod, error) {
 	switch resourceType {
 	case api.ResourceNameDeployment:
-		return getRelatedPodByTypeAndIntermediateType(kubeClient, namespace, resourceName, resourceType, api.ResourceNameReplicaSet)
+		var podList = make([]*v1.Pod,0)
+		pods, err := getRelatedPodByTypeAndIntermediateType(kubeClient, namespace, resourceName, resourceType, api.ResourceNameReplicaSet);
+		if err != nil {
+			logs.Error("获取Pod信息失败, ", err)
+		}
+		podList = append(podList, pods...)
+		grayscalePods, err := getRelatedPodByTypeAndIntermediateType(kubeClient, namespace, resourceName +"-grayscale", resourceType, api.ResourceNameReplicaSet)
+		if err != nil {
+			logs.Error("获取灰度pod失败, ", err)
+		}
+		podList = append(podList, grayscalePods...)
+		return podList, nil
 	case api.ResourceNameCronJob:
 		return getRelatedPodByTypeAndIntermediateType(kubeClient, namespace, resourceName, resourceType, api.ResourceNameJob)
 	case api.ResourceNameDaemonSet, api.ResourceNameStatefulSet, api.ResourceNameJob:

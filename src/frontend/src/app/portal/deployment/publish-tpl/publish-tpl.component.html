@@ -24,15 +24,15 @@
           </div>
         </div>
 
-        <div class="clr-form-control clr-row" *ngIf="actionType==0">
+        <div class="clr-form-control clr-row" *ngIf="actionType==0 || actionType==5">
           <label class="clr-control-label required">
             {{'TITLE.IMAGE' | translate}}
           </label>
           <div class="clr-control-container">
               <div class="clr-input-wrapper">
 
-                <ng-container *ngIf="actionType==0 ">
-                  <input  type="text" (input)="getRepoTag(this)" size="90" name="container" list="images" required pattern="{{getImagePrefixReg()}}"
+                <ng-container *ngIf="actionType==0 || actionType==5">
+                  <input class="required" type="text" (input)="getRepoTag(this)" size="90" name="container" list="images" pattern="{{getImagePrefixReg()}}"
                           [(ngModel)]="containerImage" [placeholder]="'TEMPLATE.IMAGE_ADDRESS' | translate">
                   <datalist id="images">
                     <option *ngFor="let image of imagelist" [value]="image.Name">{{image.Name}}</option>
@@ -42,21 +42,37 @@
           </div>
         </div>
 
-        <div class="clr-form-control clr-row" *ngIf="actionType==0">
+        <div class="clr-form-control clr-row" *ngIf="actionType==0 || actionType==5">
           <label class="clr-control-label required">
             {{'TITLE.TAG' | translate}}
           </label>
           <div class="clr-control-container">
             <div class="clr-input-wrapper">
 
-              <ng-container *ngIf="actionType==0 ">
-                <input  type="text"  size="90" name="containertag" list="tags" required
+              <ng-container *ngIf="actionType==0 || actionType==5">
+                <input class="required" type="text"  size="90" name="containertag" list="tags"
                         [(ngModel)]="tag" [placeholder]="'TEMPLATE.IMAGE_TAG' | translate">
                 <datalist id="tags">
                   <option *ngFor="let tag of taglist" [value]="tag.Name">{{tag.Name}}</option>
                 </datalist>
               </ng-container>
             </div>
+          </div>
+        </div>
+
+        <div class="clr-form-control clr-row"  *ngIf="actionType==3">
+          <label class="clr-control-label form-offline-right required">
+            {{'ACTION.SELECTPOD' | translate}}
+            <a role="tooltip" aria-haspopup="true" class="tooltip tooltip-lg">
+              <clr-icon shape="info-circle" size="24"></clr-icon>
+              <span class="tooltip-content">{{'MESSAGE.FORCEDELETE' | translate}} </span>
+            </a>
+          </label>
+          <div class="container">
+              <form>
+              <input class="clr-toggle"  type="radio" id="force-offline-gray" value="offlineGray" name="offline-env" required="required" (click)="getValue(this.forceOfflineGray)">灰度
+              <input class="clr-toggle form-offline-left"  type="radio" id="force-offline-prod" value="offlinePrdo" name="offline-env" (click)="getValue(this.forceOfflineProd)">正式
+              </form>
           </div>
         </div>
 

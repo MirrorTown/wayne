@@ -80,6 +80,7 @@ func (c *KubeDeploymentController) List() {
 // @Success 200 return ok success
 // @router /:deploymentId([0-9]+)/tpls/:tplId([0-9]+)/clusters/:cluster [post]
 func (c *KubeDeploymentController) Create() {
+	grayPublish := c.GetString("grayPublish")
 	deploymentId := c.GetIntParamFromURL(":deploymentId")
 	tplId := c.GetIntParamFromURL(":tplId")
 
@@ -147,6 +148,16 @@ func (c *KubeDeploymentController) Create() {
 		return
 	}
 
+	// 灰度发布新增grayscale字段
+	if grayPublish == "True" {
+		scaleName := kubeDeployment.ObjectMeta.Name + "-grayscale"
+		kubeDeployment.ObjectMeta.Name = scaleName
+		kubeDeployment.ObjectMeta.Labels["app"] = scaleName
+		kubeDeployment.Spec.Selector.MatchLabels["app"] = scaleName
+		kubeDeployment.Spec.Template.ObjectMeta.Labels["app"] = scaleName
+
+	}
+
 	// 发布资源到k8s平台
 	_, err = deployment.CreateOrUpdateDeployment(cli.Client, &kubeDeployment)
 	if err != nil {
@@ -165,11 +176,14 @@ func (c *KubeDeploymentController) Create() {
 		return
 	}
 
-	err = models.DeploymentModel.Update(*kubeDeployment.Spec.Replicas, deploymentModel, cluster)
-	if err != nil {
-		logs.Error("update deployment metadata error.%v", err)
-		c.HandleError(err)
-		return
+	// 灰度发布不改变副本数量
+	if grayPublish != "True"{
+		err = models.DeploymentModel.Update(*kubeDeployment.Spec.Replicas, deploymentModel, cluster)
+		if err != nil {
+			logs.Error("update deployment metadata error.%v", err)
+			c.HandleError(err)
+			return
+		}
 	}
 
 	deploymentTplString, err := models.DeploymentTplModel.GetById(tplId)

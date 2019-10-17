@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { PageState } from '../../../page/page-state';
 import { BaseClient } from './base-client';
 import { KubeDeployment, ObjectMeta } from '../../../model/v1/kubernetes/deployment';
@@ -25,6 +25,14 @@ export class DeploymentClient {
   deploy(appId: number, cluster: string, resourceId: number, tplId: number, template: any): Observable<any> {
     return this.http
       .post(`/api/v1/kubernetes/apps/${appId}/deployments/${resourceId}/tpls/${tplId}/clusters/${cluster}`, template)
+      .catch(error => throwError(error));
+  }
+
+  graydeploy(appId: number, cluster: string, resourceId: number, tplId: number, template: any): Observable<any> {
+    let params = new HttpParams();
+    params = params.set('grayPublish', 'True');
+    return this.http
+      .post(`/api/v1/kubernetes/apps/${appId}/deployments/${resourceId}/tpls/${tplId}/clusters/${cluster}`, template, {params: params})
       .catch(error => throwError(error));
   }
 

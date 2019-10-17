@@ -141,6 +141,17 @@ export class ListDeploymentComponent implements OnInit, OnDestroy {
     this.tplDetailService.openModal(version, '版本');
   }
 
+  grayPublishTpl(tpl: DeploymentTpl) {
+    this.deploymentService.getById(tpl.deploymentId, this.appId).subscribe(
+      status => {
+        const deployment = status.data;
+        this.publishDeploymentTpl.newPublishTpl(deployment, tpl, ResourcesActionType.GRAYPUBLISH);
+      },
+      error => {
+        this.messageHandlerService.handleError('灰度容器不存在');
+      });
+  }
+
   publishTpl(tpl: DeploymentTpl) {
     this.deploymentService.getById(tpl.deploymentId, this.appId).subscribe(
       status => {

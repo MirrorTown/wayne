@@ -92,7 +92,7 @@
         <div class="clr-form-control clr-row">
           <label class="container-self required">{{'TEMPLATE.IMAGE_TAG' | translate}}</label>
 
-          <input  type="text"  size="90" name="container.tag_{{i}}" list="tags" require
+          <input  type="text"  size="90" name="container.tag_{{i}}" list="tags" required
                   [(ngModel)]="container.tag" [placeholder]="'TEMPLATE.IMAGE_TAG' | translate">
           <datalist id="tags">
             <option *ngFor="let tag of taglist" [value]="tag.Name">{{tag.Name}}</option>

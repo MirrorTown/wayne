@@ -42,7 +42,7 @@ import { KubernetesClient } from '../../../src/app/shared/client/v1/kubernetes/k
 const showState = {
   'create_time': {hidden: false},
   '端口号': {hidden: false},
-  '上线机房': {hidden: false},
+  '发布结果': {hidden: false},
   '发布说明': {hidden: false},
   '创建者': {hidden: false},
   '操作': {hidden: false}
