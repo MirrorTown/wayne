@@ -87,10 +87,12 @@ export class ReviewService {
       .catch(error => throwError(error));
   }
 
-  getByName(name: string): Observable<any> {
+  getPermissionByParam(appId: number, project: string): Observable<any> {
+    let params = new HttpParams();
+    params = params.set('appId', String(appId));
     return this.http
-      .get(`/api/v1/reviews/${name}`)
-
-      .catch(error => throwError(error));
+      .get(`/api/v1/reviews/${project}`)
+      .catch(err => throwError(err));
   }
+
 }

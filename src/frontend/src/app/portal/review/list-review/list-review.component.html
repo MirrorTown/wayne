@@ -36,10 +36,10 @@
     <clr-dg-cell class="col-reject" *ngIf="review.status === 2">审核不通过</clr-dg-cell>
     <clr-dg-cell class="col-operate">
       <button class="wayne-button text"
-
+              *ngIf="authService.currentNamespacePermission.review.create"
               (click)="tokenDetail(review)">{{'ACTION.PASS' | translate}}</button>
       <button class="wayne-button text"
-
+              *ngIf="authService.currentNamespacePermission.review.create"
               (click)="deleteReview(review)">{{'ACTION.REJECT' | translate}}</button>
     </clr-dg-cell>
   </clr-dg-row>

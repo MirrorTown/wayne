@@ -76,6 +76,7 @@ type Permission struct {
 }
 
 type TypePermission struct {
+	PermissionTypeReview				ActionPermission `json:"review" mapstructure:"REVIEW"`
 	PermissionTypeApp                   ActionPermission `json:"app" mapstructure:"APP"`
 	PermissionTypeAppUser               ActionPermission `json:"appUser" mapstructure:"APPUSER"`
 	PermissionTypeNamespace             ActionPermission `json:"namespace" mapstructure:"NAMESPACE"`

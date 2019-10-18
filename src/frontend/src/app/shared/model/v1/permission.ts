@@ -13,6 +13,7 @@ export class ActionPermission {
 }
 
 export class TypePermission {
+  review = new ActionPermission();
   app = new ActionPermission();
   appUser = new ActionPermission();
   namespace = new ActionPermission();
