@@ -6,6 +6,7 @@ package routers
 import (
 	"github.com/Qihoo360/wayne/src/backend/controllers/auth"
 	"github.com/Qihoo360/wayne/src/backend/controllers/harbor"
+	"github.com/Qihoo360/wayne/src/backend/controllers/review"
 	"net/http"
 	"path"
 
@@ -441,6 +442,14 @@ func init() {
 		),
 	)
 
+	nsWithReview := beego.NewNamespace("/api/v1",
+		beego.NSNamespace("/reviews",
+			beego.NSInclude(
+				&review.ReviewController{},
+			),
+		),
+	)
+
 	beego.AddNamespace(nsWithKubernetes)
 
 	beego.AddNamespace(nsWithKubernetesApp)
@@ -456,4 +465,6 @@ func init() {
 	beego.AddNamespace(nsWithKubernetesProxy)
 
 	beego.AddNamespace(nsWithHarbor)
+
+	beego.AddNamespace(nsWithReview)
 }

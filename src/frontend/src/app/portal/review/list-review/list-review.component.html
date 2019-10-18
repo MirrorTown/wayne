@@ -1,0 +1,56 @@
+<clr-datagrid (clrDgRefresh)="refresh($event)" class="wayne-clr-datagrid">
+  <clr-dg-column class="col-id">
+    <ng-container>ID</ng-container>
+  </clr-dg-column>
+  <clr-dg-column [clrDgField]="'name'">
+    <ng-container *clrDgHideableColumn="showState['name']">{{'TITLE.NAME' | translate}}</ng-container>
+  </clr-dg-column>
+  <clr-dg-column class="col-user">
+    <ng-container *clrDgHideableColumn="showState['announcer']">{{'TITLE.PUBLISHER' | translate}}</ng-container>
+  </clr-dg-column>
+  <clr-dg-column class="col-time">
+    <ng-container *clrDgHideableColumn="showState['publish_time']">{{'TITLE.PUBLISH_TIME' | translate}}</ng-container>
+  </clr-dg-column>
+  <clr-dg-column>
+    <ng-container *clrDgHideableColumn="showState['auditors']">{{'TITLE.AUDITORS' | translate}}</ng-container>
+  </clr-dg-column>
+  <clr-dg-column class="col-time">
+    <ng-container *clrDgHideableColumn="showState['auditors_time']">{{'TITLE.AUDITORS_TIME' | translate}}</ng-container>
+  </clr-dg-column>
+  <clr-dg-column>
+    <ng-container *clrDgHideableColumn="showState['status']">{{'TITLE.STATUS' | translate}}</ng-container>
+  </clr-dg-column>
+  <clr-dg-column class="col-operate">
+    <ng-container *clrDgHideableColumn="showState['action']">{{'TITLE.ACTION' | translate}}</ng-container>
+  </clr-dg-column>
+
+  <clr-dg-row *ngFor="let review of reviews; let i = index" [clrDgItem]="review">
+    <clr-dg-cell class="col-id">{{i + 1}}</clr-dg-cell>
+    <clr-dg-cell class="copy">{{review.name}}</clr-dg-cell>
+    <clr-dg-cell class="copy">{{review.announcer}}</clr-dg-cell>
+    <clr-dg-cell class="col-time">{{review.publishTime | date:'yyyy-MM-dd HH:mm:ss'}}</clr-dg-cell>
+    <clr-dg-cell>{{review.auditors}}</clr-dg-cell>
+    <clr-dg-cell>{{review.updateTime | date:'yyyy-MM-dd HH:mm:ss'}}</clr-dg-cell>
+    <clr-dg-cell class="col-normal" *ngIf="review.status === 0">待审核</clr-dg-cell>
+    <clr-dg-cell class="col-normal" *ngIf="review.status === 1">审核通过</clr-dg-cell>
+    <clr-dg-cell class="col-reject" *ngIf="review.status === 2">审核不通过</clr-dg-cell>
+    <clr-dg-cell class="col-operate">
+      <button class="wayne-button text"
+
+              (click)="tokenDetail(review)">{{'ACTION.PASS' | translate}}</button>
+      <button class="wayne-button text"
+
+              (click)="deleteReview(review)">{{'ACTION.REJECT' | translate}}</button>
+    </clr-dg-cell>
+  </clr-dg-row>
+
+  <clr-dg-footer>
+    <wayne-paginate
+      [(currentPage)]="currentPage"
+      [total]="page.totalCount"
+      [pageSizes]="[10, 20, 50]"
+      (sizeChange)="pageSizeChange($event)"
+    >
+    </wayne-paginate>
+  </clr-dg-footer>
+</clr-datagrid>

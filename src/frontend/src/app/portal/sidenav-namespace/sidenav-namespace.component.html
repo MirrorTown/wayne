@@ -42,6 +42,15 @@
     <clr-icon clrVerticalNavIcon shape="user"></clr-icon>
     {{'MENU.MEMBER' | translate}}
   </a>
+  <a
+    clrVerticalNavLink
+    [title]="'MENU.REVIEW' | translate"
+    *ngIf="authService.currentNamespacePermission.namespaceUser.read || authService.currentUser.admin"
+    routerLink="/portal/namespace/{{cacheService.currentNamespace?.id}}/review"
+    routerLinkActive="active">
+    <clr-icon clrVerticalNavIcon shape="organization"></clr-icon>
+    {{'MENU.REVIEW' | translate}}
+  </a>
   <a href="javascript:;" style="flex: 1;"></a>
   <wayne-footer></wayne-footer>
 </clr-vertical-nav>

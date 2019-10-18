@@ -17,6 +17,7 @@ var (
 	NamespaceUserModel            *namespaceUserModel
 	ClusterModel                  *clusterModel
 	HarborModel					  *harborModel
+	ReviewModel					  *reviewModel
 	DeploymentModel               *deploymentModel
 	DeploymentTplModel            *deploymentTplModel
 	PermissionModel               *permissionModel
@@ -55,6 +56,7 @@ func init() {
 	orm.RegisterModel(
 		new(Harbor),
 		new(Deploy),
+		new(Review),
 		new(User),
 		new(App),
 		new(AppStarred),

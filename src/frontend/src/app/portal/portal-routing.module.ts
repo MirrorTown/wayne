@@ -38,6 +38,7 @@ import { CreateEditIngressTplComponent } from './ingress/create-edit-ingresstpl/
 import { PORTALROUTES } from '../../../lib/portal/library-routing-portal';
 import { AutoscaleComponent } from './autoscale/autoscale.component';
 import { CreateEditAutoscaletplComponent } from './autoscale/create-edit-autoscaletpl/create-edit-autoscaletpl.component';
+import { ReviewComponent } from'./review/review.component';
 
 const routes: Routes = [
   {
@@ -49,6 +50,7 @@ const routes: Routes = [
       {path: 'app', component: AppComponent},
       {path: 'apikey', component: NamespaceApiKeyComponent},
       {path: 'users', component: NamespaceUserComponent},
+      {path: 'review', component: ReviewComponent},
       {path: 'webhook', component: NamespaceWebHookComponent},
       {path: 'overview', component: NamespaceReportComponent},
       {

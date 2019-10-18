@@ -32,11 +32,13 @@ import { TplDetailModule } from '../shared/tpl-detail/tpl-detail.module';
 import { MarkdownModule } from 'ngx-markdown';
 import { LibraryPortalModule } from '../../../lib/portal/library-portal.module';
 import { AutoscaleModule } from './autoscale/autoscale.module';
+import { ReviewModule } from './review/review.module';
 
 @NgModule({
   imports: [
     AppUserModule,
     NamespaceUserModule,
+    ReviewModule,
     PortalRoutingModule,
     SharedModule,
     IndexModule,

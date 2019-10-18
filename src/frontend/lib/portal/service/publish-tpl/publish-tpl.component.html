@@ -3,7 +3,7 @@
   <div class="modal-body">
     <form #publishForm="ngForm" clrForm clrLayout="horizontal">
       <div class="clr-form-control clr-row">
-        <label class="clr-control-label required">机房</label>
+        <label class="clr-control-label required">集群</label>
         <div class="clr-control-container clr-col-md-10 clr-col-12">
           <div class="clr-checkbox-wrapper" *ngFor="let cluster of clusters;let i=index" style="display: inline-block;">
             <input class="clr-checkbox" [(ngModel)]="cluster['checked']" type="checkbox" id="{{i}}-check" name="{{i}}-check">
