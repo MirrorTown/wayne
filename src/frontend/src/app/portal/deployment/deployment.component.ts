@@ -415,7 +415,6 @@ export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit 
         const status = response[1].data;
         this.publishStatus = status;
         const tpls = response[0].data;
-        console.log(tpls)
         this.pageState.page.totalPage = tpls.totalPage;
         this.pageState.page.totalCount = tpls.totalCount;
         this.changedDeploymentTpls = this.buildTplList(tpls.list, status);

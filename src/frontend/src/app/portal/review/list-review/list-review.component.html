@@ -21,7 +21,7 @@
     <ng-container *clrDgHideableColumn="showState['status']">{{'TITLE.STATUS' | translate}}</ng-container>
   </clr-dg-column>
   <clr-dg-column class="col-operate">
-    <ng-container *clrDgHideableColumn="showState['action']">{{'TITLE.ACTION' | translate}}</ng-container>
+    <ng-container *ngIf="authService.currentNamespacePermission.review.create || authService.currentUser.admin">{{'TITLE.ACTION' | translate}}</ng-container>
   </clr-dg-column>
 
   <clr-dg-row *ngFor="let review of reviews; let i = index" [clrDgItem]="review">
@@ -30,17 +30,17 @@
     <clr-dg-cell class="copy">{{review.announcer}}</clr-dg-cell>
     <clr-dg-cell class="col-time">{{review.publishTime | date:'yyyy-MM-dd HH:mm:ss'}}</clr-dg-cell>
     <clr-dg-cell>{{review.auditors}}</clr-dg-cell>
-    <clr-dg-cell>{{review.updateTime | date:'yyyy-MM-dd HH:mm:ss'}}</clr-dg-cell>
+    <clr-dg-cell>{{review.announceTime}}</clr-dg-cell>
     <clr-dg-cell class="col-normal" *ngIf="review.status === 0">待审核</clr-dg-cell>
     <clr-dg-cell class="col-normal" *ngIf="review.status === 1">审核通过</clr-dg-cell>
     <clr-dg-cell class="col-reject" *ngIf="review.status === 2">审核不通过</clr-dg-cell>
     <clr-dg-cell class="col-operate">
       <button class="wayne-button text"
-              *ngIf="authService.currentNamespacePermission.review.create"
-              (click)="tokenDetail(review)">{{'ACTION.PASS' | translate}}</button>
+              *ngIf="(authService.currentNamespacePermission.review.create || authService.currentUser.admin) && review.status === 0"
+              (click)="passReview(review)">{{'ACTION.PASS' | translate}}</button>
       <button class="wayne-button text"
-              *ngIf="authService.currentNamespacePermission.review.create"
-              (click)="deleteReview(review)">{{'ACTION.REJECT' | translate}}</button>
+              *ngIf="(authService.currentNamespacePermission.review.create || authService.currentUser.admin) && review.status === 0"
+              (click)="rejectReview(review)">{{'ACTION.REJECT' | translate}}</button>
     </clr-dg-cell>
   </clr-dg-row>
 

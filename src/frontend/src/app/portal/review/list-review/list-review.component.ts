@@ -19,8 +19,8 @@ export class ListReviewComponent implements OnInit {
   currentPage = 1;
 
   @Output() paginate = new EventEmitter<ClrDatagridStateInterface>();
-  @Output() delete = new EventEmitter<Review>();
-  @Output() edit = new EventEmitter<Review>();
+  @Output() pass = new EventEmitter<Review>();
+  @Output() reject = new EventEmitter<Review>();
 
   constructor(
     public authService: AuthService,
@@ -29,33 +29,27 @@ export class ListReviewComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log('enter list-review');
   }
 
   pageSizeChange(pageSize: number) {
     this.state.page.to = pageSize - 1;
     this.state.page.size = pageSize;
     this.currentPage = 1;
+    console.log(this.state);
     this.paginate.emit(this.state);
   }
 
   refresh(state?: ClrDatagridStateInterface) {
-    console.log(state);
     this.state = state;
     this.paginate.emit(state);
-    console.log(this.reviews);
   }
 
-  deleteReview(review: Review) {
-    this.delete.emit(review);
+  passReview(review: Review) {
+    this.pass.emit(review);
   }
 
-  editReview(review: Review) {
-    this.edit.emit(review);
+  rejectReview(review: Review) {
+    this.reject.emit(review);
   }
-
-  tokenDetail(review: Review) {
-  }
-
 
 }

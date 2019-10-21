@@ -77,7 +77,6 @@ export class ReviewComponent implements OnInit, OnDestroy {
       });
     }
     this.pageState.params['resourceId'] = this.cacheService.namespaceId;
-    console.log(this.cacheService.namespaceId);
     this.pageState.sort.by = 'id';
     this.pageState.sort.reverse = true;
     this.reviewService.list(this.pageState)
@@ -87,7 +86,6 @@ export class ReviewComponent implements OnInit, OnDestroy {
           this.pageState.page.totalPage = data.totalPage;
           this.pageState.page.totalCount = data.totalCount;
           this.changedReviews = data.list;
-          console.log(this.changedReviews);
         },
         error => this.messageHandlerService.handleError(error)
       );
@@ -102,9 +100,25 @@ export class ReviewComponent implements OnInit, OnDestroy {
   openModal(): void {
   }
 
-  deleteReview(review: Review) {
+  passReview(review: Review) {
+    review.status = 1;
+    this.reviewService.update(this.cacheService.namespaceId, review).subscribe(
+      response => {
+        this.messageHandlerService.showSuccess('操作成功!');
+        this.retrieve();
+      },
+      error => this.messageHandlerService.handleError(error)
+    );
   }
 
-  editReview(review: Review) {
+  rejectReview(review: Review) {
+    review.status = 2;
+    this.reviewService.update(this.cacheService.namespaceId, review).subscribe(
+      response => {
+        this.messageHandlerService.showSuccess('操作成功!');
+        this.retrieve();
+      },
+      error => this.messageHandlerService.handleError(error)
+    );
   }
 }

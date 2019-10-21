@@ -10,7 +10,7 @@ func init() {
 	beego.GlobalControllerRouter["github.com/Qihoo360/wayne/src/backend/controllers/review:ReviewController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/wayne/src/backend/controllers/review:ReviewController"],
 		beego.ControllerComments{
 			Method:           "Create",
-			Router:           `/`,
+			Router:           `/apps/:appId/deployments/:deploymentId([0-9]+)/tpls/:tplId([0-9]+)/clusters/:cluster`,
 			AllowHTTPMethods: []string{"post"},
 			MethodParams:     param.Make(),
 			Params:           nil})
@@ -26,7 +26,7 @@ func init() {
 	beego.GlobalControllerRouter["github.com/Qihoo360/wayne/src/backend/controllers/review:ReviewController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/wayne/src/backend/controllers/review:ReviewController"],
 		beego.ControllerComments{
 			Method:           "Update",
-			Router:           `/:name`,
+			Router:           `/:namespaceid([0-9]+)/:name/status/:status`,
 			AllowHTTPMethods: []string{"put"},
 			MethodParams:     param.Make(),
 			Params:           nil})

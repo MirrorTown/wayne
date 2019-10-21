@@ -66,9 +66,9 @@ export class ReviewService {
       .catch(error => throwError(error));
   }
 
-  update(review: Review): Observable<any> {
+  update(nid: number, review: Review): Observable<any> {
     return this.http
-      .put(`/api/v1/reviews/${review.name}`, review, this.options)
+      .put(`/api/v1/reviews/${nid}/${review.name}/status/${review.status}`, review, this.options)
 
       .catch(error => throwError(error));
   }

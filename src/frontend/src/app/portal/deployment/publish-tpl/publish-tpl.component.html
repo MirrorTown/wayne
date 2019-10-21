@@ -2,6 +2,7 @@
   <h3 class="modal-title">{{title}}</h3>
   <div class="modal-body">
     <form #publishForm="ngForm" clrForm clrLayout="horizontal">
+      <span class="publish-warn" *ngIf="actionType==0">按照规范：请确保已经发布灰度后再进行正式发布操作</span>
       <section class="form-block">
         <div class="clr-form-control clr-row">
           <label class="clr-control-label required">

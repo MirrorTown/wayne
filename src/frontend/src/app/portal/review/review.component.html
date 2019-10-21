@@ -15,12 +15,12 @@
                 <wayne-checkbox value="auditors">{{'TITLE.AUDITORS' | translate}}</wayne-checkbox>
                 <wayne-checkbox value="auditors_time">{{'TITLE.AUDITORS_TIME' | translate}}</wayne-checkbox>
                 <wayne-checkbox value="status">{{'TITLE.STATUS' | translate}}</wayne-checkbox>
-                <wayne-checkbox value="action">{{'TITLE.ACTION' | translate}}</wayne-checkbox>
+<!--                <wayne-checkbox value="action">{{'TITLE.ACTION' | translate}}</wayne-checkbox>-->
               </wayne-checkbox-group>
             </wayne-filter-box>
           </div>
         </div>
-        <list-review [reviews]="changedReviews" (delete)="deleteReview($event)" (edit)="editReview($event)"
+        <list-review [reviews]="changedReviews" (pass)="passReview($event)" (reject)="rejectReview($event)"
                      (paginate)="retrieve($event)"
                      [page]="pageState.page" [showState]="showState"></list-review>
       </div>

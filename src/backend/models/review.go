@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"time"
 )
 
@@ -19,14 +20,21 @@ type reviewModel struct{}
 type Review struct {
 	Id   int64  `orm:"auto" json:"id,omitempty"`
 	Name string `orm:"index;size(128)" json:"name,omitempty"`
-	AppId    string     `orm:"index;column(app_id)" json:"appId,omitempty"`
+	AppId    int64     `orm:"index;column(app_id)" json:"appId,omitempty"`
+	TplId    int64     `orm:"index;column(tpl_id)" json:"tplId,omitempty"`
+	DeploymentId int64  `orm:"index;column(deployment_id)" json:"deploymentId,omitempty"`
 	Announcer      string     `orm:"size(128)" json:"announcer,omitempty"`
-	PublishTime  string     `orm:"auto_now;type(datetime);column(publish_time)" json:"publishTime,omitempty"`
+	PublishTime  *time.Time     `orm:"auto_now;type(datetime);column(publish_time)" json:"publishTime,omitempty"`
+	AnnounceTime  string     `orm:"type(datetime);column(announce_time)" json:"announceTime,omitempty"`
 	Auditors string     `orm:"null;size(128)" json:"auditors,omitempty"`
 	CreateTime  *time.Time `orm:"auto_now_add;type(datetime)" json:"createTime,omitempty"`
 	UpdateTime  *time.Time `orm:"auto_now;type(datetime)" json:"updateTime,omitempty"`
 	// the review status
 	Status ReviewStatus `orm:"default(0)" json:"status"`
+	KubeDeployment string `orm:"null;size(128);column(kube_deployment)" json:"kubeDeployment,omitempty"`
+	Cluster string `orm:"null;size(128)" json:"cluster,omitempty"`
+	GrayPublish string `orm:"null;size(128);column(gray_publish)" json:"grayPublish,omitempty"`
+
 }
 
 func (*Review) TableName() string {
@@ -62,6 +70,10 @@ func (*reviewModel) GetAll() ([]Review, error) {
 // Add insert a new Review into database and returns
 // last inserted Id on success.
 func (*reviewModel) Add(m *Review) (id int64, err error) {
+	v := &Review{Name: m.Name, Status: ReviewStatusTobe}
+	if err = Ormer().Read(v, "Name", "Status"); err == nil {
+		return 0, errors.New("已有相同应用待审批状态!")
+	}
 	m.CreateTime = nil
 	id, err = Ormer().Insert(m)
 	return
@@ -70,9 +82,9 @@ func (*reviewModel) Add(m *Review) (id int64, err error) {
 // GetByName retrieves Review by Name. Returns error if
 // Id doesn't exist
 func (*reviewModel) GetByName(name string) (v *Review, err error) {
-	v = &Review{Name: name}
+	v = &Review{Name: name, Status: ReviewStatusTobe}
 
-	if err = Ormer().Read(v, "Name"); err == nil {
+	if err = Ormer().Read(v, "Name", "Status"); err == nil {
 		return v, nil
 	}
 	return nil, err
@@ -92,11 +104,11 @@ func (*reviewModel) GetById(id int64) (v *Review, err error) {
 // UpdateReview updates Review by Name and returns error if
 // the record to be updated doesn't exist
 func (*reviewModel) UpdateByName(m *Review) (err error) {
-	v := Review{Name: m.Name}
+	v := Review{Name: m.Name, Status: ReviewStatusTobe}
 	// ascertain id exists in the database
-	if err = Ormer().Read(&v, "Name"); err == nil {
+	if err = Ormer().Read(&v, "Name", "Status"); err == nil {
 		m.UpdateTime = nil
-		_, err = Ormer().Update(m)
+		_, err = Ormer().Update(m,"Auditors", "Status", "AnnounceTime")
 		return err
 	}
 	return

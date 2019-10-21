@@ -5,10 +5,9 @@ import (
 	"fmt"
 	"github.com/Qihoo360/wayne/src/backend/apimachinery"
 	"github.com/Qihoo360/wayne/src/backend/client/api"
-	"net/http"
-
 	"k8s.io/api/apps/v1beta1"
 	"k8s.io/apimachinery/pkg/labels"
+	"net/http"
 
 	"github.com/Qihoo360/wayne/src/backend/client"
 	"github.com/Qihoo360/wayne/src/backend/controllers/base"
@@ -80,7 +79,8 @@ func (c *KubeDeploymentController) List() {
 // @Success 200 return ok success
 // @router /:deploymentId([0-9]+)/tpls/:tplId([0-9]+)/clusters/:cluster [post]
 func (c *KubeDeploymentController) Create() {
-	grayPublish := c.GetString("grayPublish")
+
+	//grayPublish := c.GetString("grayPublish")
 	deploymentId := c.GetIntParamFromURL(":deploymentId")
 	tplId := c.GetIntParamFromURL(":tplId")
 
@@ -148,15 +148,15 @@ func (c *KubeDeploymentController) Create() {
 		return
 	}
 
-	// 灰度发布新增grayscale字段
-	if grayPublish == "True" {
-		scaleName := kubeDeployment.ObjectMeta.Name + "-grayscale"
-		kubeDeployment.ObjectMeta.Name = scaleName
-		kubeDeployment.ObjectMeta.Labels["app"] = scaleName
-		kubeDeployment.Spec.Selector.MatchLabels["app"] = scaleName
-		kubeDeployment.Spec.Template.ObjectMeta.Labels["app"] = scaleName
-
-	}
+	//// 灰度发布新增grayscale字段
+	//if grayPublish == "True" {
+	//	scaleName := kubeDeployment.ObjectMeta.Name + "-grayscale"
+	//	kubeDeployment.ObjectMeta.Name = scaleName
+	//	kubeDeployment.ObjectMeta.Labels["app"] = scaleName
+	//	kubeDeployment.Spec.Selector.MatchLabels["app"] = scaleName
+	//	kubeDeployment.Spec.Template.ObjectMeta.Labels["app"] = scaleName
+	//
+	//}
 
 	// 发布资源到k8s平台
 	_, err = deployment.CreateOrUpdateDeployment(cli.Client, &kubeDeployment)
@@ -176,15 +176,15 @@ func (c *KubeDeploymentController) Create() {
 		return
 	}
 
-	// 灰度发布不改变副本数量
-	if grayPublish != "True"{
-		err = models.DeploymentModel.Update(*kubeDeployment.Spec.Replicas, deploymentModel, cluster)
-		if err != nil {
-			logs.Error("update deployment metadata error.%v", err)
-			c.HandleError(err)
-			return
-		}
-	}
+	//// 灰度发布不改变副本数量
+	//if grayPublish != "True"{
+	//	err = models.DeploymentModel.Update(*kubeDeployment.Spec.Replicas, deploymentModel, cluster)
+	//	if err != nil {
+	//		logs.Error("update deployment metadata error.%v", err)
+	//		c.HandleError(err)
+	//		return
+	//	}
+	//}
 
 	deploymentTplString, err := models.DeploymentTplModel.GetById(tplId)
 	deploymentTpl, err := copyTemplateData([]byte(deploymentTplString.Template), kubeDeployment.Spec.Template.Spec.Containers[0].Image)
@@ -280,9 +280,13 @@ func (c *KubeDeploymentController) Get() {
 	manager := c.Manager(cluster)
 	result, err := deployment.GetDeploymentDetail(manager.Client, manager.CacheFactory, name, namespace)
 	if err != nil {
-		logs.Info("get kubernetes deployment detail error.", cluster, namespace, name, err)
-		c.HandleError(err)
-		return
+		//补充灰度发布后获取详情功能
+		result, err = deployment.GetDeploymentDetail(manager.Client, manager.CacheFactory, name + "-grayscale", namespace)
+		if err != nil {
+			logs.Info("get kubernetes deployment detail error.", cluster, namespace, name, err)
+			c.HandleError(err)
+			return
+		}
 	}
 	c.Success(result)
 }

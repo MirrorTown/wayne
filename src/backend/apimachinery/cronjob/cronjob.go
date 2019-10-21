@@ -5,8 +5,10 @@ import (
 	"github.com/Qihoo360/wayne/src/backend/apimachinery"
 	"github.com/Qihoo360/wayne/src/backend/apimachinery/deploy"
 	"github.com/Qihoo360/wayne/src/backend/models"
+	"github.com/Qihoo360/wayne/src/backend/resources/deployment"
 	"github.com/Qihoo360/wayne/src/backend/resources/pod"
 	"github.com/Qihoo360/wayne/src/backend/util/logs"
+	"strings"
 	"time"
 )
 
@@ -27,7 +29,7 @@ func (c *CronJob) StartDeployStatuJob() (err error) {
 			deploylist := cli.DeployServer().GetDeploys()
 			for _, sub := range deploylist {
 				//TODO 检测pod发布状态，同步到数据库并发送订订信息
-				podlist,err := pod.GetPodListByType(cli.Manager(sub.Cluster),sub.Namespace, sub.ResourceName, sub.ResourceType)
+				podlist,err := pod.GetPodListByType(cli.Manager(sub.Cluster).KubeClient,sub.Namespace, sub.ResourceName, sub.ResourceType)
 				if err != nil {
 					logs.Error("获取pod列表失败, ", err)
 				}
@@ -48,6 +50,13 @@ func (c *CronJob) StartDeployStatuJob() (err error) {
 					//发布成功并可通知状态
 					if sendFlag && sub.Notify == models.ToBeNotify {
 						senfMsg(models.DeploySuc, models.Notified, sub, cli)
+						//发布完成后自动删除灰度容器
+						if !strings.Contains(sub.ResourceName, "grayscale") {
+							err := deployment.DeleteDeployment(cli.Manager(sub.Cluster).Client, sub.ResourceName + "-grayscale", sub.Namespace)
+							if err != nil {
+								logs.Info("Cann't Delete deployment (%s) by cluster (%s). Because %v", sub.Name, sub.Cluster, err)
+							}
+						}
 					}
 				}
 

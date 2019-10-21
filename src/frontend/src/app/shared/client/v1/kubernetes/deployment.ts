@@ -28,11 +28,19 @@ export class DeploymentClient {
       .catch(error => throwError(error));
   }
 
-  graydeploy(appId: number, cluster: string, resourceId: number, tplId: number, template: any): Observable<any> {
+  /*graydeploy(appId: number, cluster: string, resourceId: number, tplId: number, template: any): Observable<any> {
     let params = new HttpParams();
     params = params.set('grayPublish', 'True');
     return this.http
       .post(`/api/v1/kubernetes/apps/${appId}/deployments/${resourceId}/tpls/${tplId}/clusters/${cluster}`, template, {params: params})
+      .catch(error => throwError(error));
+  }*/
+
+  graydeploy(appId: number, cluster: string, resourceId: number, tplId: number, template: any): Observable<any> {
+    let params = new HttpParams();
+    params = params.set('grayPublish', 'True');
+    return this.http
+      .post(`/api/v1/reviews/apps/${appId}/deployments/${resourceId}/tpls/${tplId}/clusters/${cluster}`, template, {params: params})
       .catch(error => throwError(error));
   }
 

@@ -70,11 +70,11 @@ func (cs *ClientSet) NotifyToDingding(msg string, mobile string) (err error) {
 	return nil
 }
 
-func (*ClientSet) Manager(cluster string) client.ResourceHandler  {
+func (*ClientSet) Manager(cluster string) *client.ClusterManager  {
 	kubeManager, err := client.Manager(cluster)
 	if err != nil {
 		panic(err)
 	}
-	return kubeManager.KubeClient
+	return kubeManager
 }
 

@@ -4,6 +4,7 @@ export class Review {
   appId:  string;
   announcer: string;
   publishTime: Date;
+  announceTime: string;
   auditors: string;
   createTime: Date;
   updateTime: Date;

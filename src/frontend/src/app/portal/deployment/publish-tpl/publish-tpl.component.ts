@@ -75,8 +75,10 @@ export class PublishDeploymentTplComponent implements OnInit {
     this.offlineProd = false;
     this.offlineProd = false;
     if (offline === this.forceOfflineGray) {
+      this.offlineProd = false;
       this.offlineGray = true;
     } else if (offline === this.forceOfflineProd) {
+      this.offlineGray = false;
       this.offlineProd = true;
     }
   }
@@ -243,7 +245,7 @@ export class PublishDeploymentTplComponent implements OnInit {
           );
         }
       });
-    } else if (this.offlineGray) {
+    } else {
       console.log('下线正式环境');
       Object.getOwnPropertyNames(this.clusterMetas).map(cluster => {
         if (this.clusterMetas[cluster].checked) {
@@ -287,6 +289,7 @@ export class PublishDeploymentTplComponent implements OnInit {
       }
     })
     const observables = Array();
+    const observablesGray = Array();
     Object.getOwnPropertyNames(this.clusterMetas).forEach(cluster => {
       if (this.clusterMetas[cluster].checked) {
         const kubeDeployment: KubeDeployment = JSON.parse(this.deploymentTpl.template);
@@ -302,7 +305,7 @@ export class PublishDeploymentTplComponent implements OnInit {
         // 灰度发布策略
         if (this.actionType === ResourcesActionType.GRAYPUBLISH) {
           kubeDeployment.spec.replicas = 1;
-          observables.push(this.deploymentClient.graydeploy(
+          observablesGray.push(this.deploymentClient.graydeploy(
             this.appId,
             cluster,
             this.deployment.id,
@@ -329,6 +332,16 @@ export class PublishDeploymentTplComponent implements OnInit {
       }
     );
 
+    forkJoin(observablesGray).subscribe(
+      response => {
+        this.published.emit(true);
+        this.messageHandlerService.showSuccess('已进入发布列表，请找负责人审核！');
+      },
+      error => {
+        this.published.emit(true);
+        this.messageHandlerService.handleError(error);
+      }
+    );
   }
 
 
