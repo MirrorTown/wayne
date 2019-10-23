@@ -1,8 +1,13 @@
 package publish
 
 import (
+	"github.com/Qihoo360/wayne/src/backend/resources/deployment"
+	"k8s.io/apimachinery/pkg/util/json"
+
+	//"k8s.io/apimachinery/pkg/util/json"
 	"time"
 
+	"github.com/Qihoo360/wayne/src/backend/client"
 	"github.com/Qihoo360/wayne/src/backend/controllers/base"
 	"github.com/Qihoo360/wayne/src/backend/models"
 	"github.com/Qihoo360/wayne/src/backend/util/logs"
@@ -12,8 +17,24 @@ type PublishController struct {
 	base.APIController
 }
 
+var register = make(map[string]DeployToK8s)
+
+type DeployToK8s interface {
+	Deploytok8s(review *models.Review) ()
+}
+
+func Register(name string, registry DeployToK8s)  {
+	if _, dub := register[name]; dub {
+		logs.Info("It's already exist!")
+		return
+	}
+
+	register[name] = registry
+}
+
 func (c *PublishController) URLMapping() {
 	c.Mapping("List", c.List)
+	c.Mapping("RollBack", c.RollBack)
 }
 
 func (c *PublishController) Prepare() {
@@ -86,4 +107,64 @@ func (c *PublishController) List() {
 
 	c.Success(param.NewPage(total, publishHistories))
 	return
+}
+
+// @Title RollBack
+// @Description rollback Publish to special version
+// @Param	body		body 	models.Review	true		"The app content"
+// @Success 200 return id success
+// @Failure 403 body is empty
+// @router /tpl/:tplId([0-9]+)/namespace/:nsId([0-9]+)/clusters/:cluster [post]
+func (c *PublishController) RollBack()  {
+
+	nsid := c.GetIntParamFromURL(":nsId")
+	cluster := c.Ctx.Input.Param(":cluster")
+	tplid := c.GetIntParamFromURL(":tplId")
+	image := c.GetString("image")
+
+	kubeDeploymentTpl, err := models.DeploymentTplModel.GetById(tplid)
+	if err != nil {
+		logs.Error("获取deploymentTpl表数据失败!", err)
+		return
+	}
+
+	var mapResult map[string]interface{}
+	err = json.Unmarshal([]byte(kubeDeploymentTpl.Template), &mapResult)
+	if err != nil {
+		logs.Error("JsonToMapDemo err: ", err)
+	}
+	mapResult["spec"].(map[string]interface{})["template"].(map[string]interface{})["spec"].
+	(map[string]interface{})["containers"].([]interface{})[0].(map[string]interface{})["image"] = image;
+
+	jsonTempl, _ := json.Marshal(mapResult)
+	kubeDeploymentTpl.Template = string(jsonTempl)
+	err= models.DeploymentTplModel.UpdateById(kubeDeploymentTpl)
+	if err != nil {
+		logs.Error("更新deploymenttpl模板失败, ",err)
+	}
+
+	namespace, err := models.NamespaceModel.GetById(nsid)
+	if err != nil {
+		logs.Error("获取namespace表数据失败!",err)
+		return
+	}
+
+	cli, err := client.Client(cluster)
+	if err != nil {
+		logs.Error("获取k8s客户端失败!",err)
+		return
+	}
+	newDeployment, err := deployment.GetDeployment(cli, kubeDeploymentTpl.Name, namespace.KubeNamespace)
+	if err != nil {
+		logs.Error("获取k8s接口数据失败!", err)
+		return
+	}
+	newDeployment.Spec.Template.Spec.Containers[0].Image = image
+	_, err = deployment.UpdateDeployment(cli, newDeployment)
+	if err != nil {
+		logs.Error("回滚失败!", err)
+		c.HandleError(err)
+		return
+	}
+
 }

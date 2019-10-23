@@ -29,12 +29,20 @@
           {{'TITLE.STATUS' | translate}}
         </ng-container>
       </clr-dg-column>
+      <clr-dg-column>
+        <ng-container *clrDgHideableColumn="{hidden: false}">
+          {{'TITLE.ROLLBACK' | translate}}
+        </ng-container>
+      </clr-dg-column>
       <clr-dg-row *ngFor="let history of publishHistories" [clrDgItem]="history">
         <clr-dg-cell>{{history.createTime | date:'yyyy-MM-dd HH:mm:ss'}}</clr-dg-cell>
         <clr-dg-cell>{{history.user}}</clr-dg-cell>
         <clr-dg-cell>{{history.templateId}}</clr-dg-cell>
         <clr-dg-cell>{{history.cluster}}</clr-dg-cell>
         <clr-dg-cell>{{history.status == 1 ? 'success' : history.message}}</clr-dg-cell>
+        <clr-dg-cell class="col-operate">
+          <button class="wayne-button text" (click)="rollBackTpl(history)">{{'BUTTON.ROLLBACK' | translate}}</button>
+        </clr-dg-cell>
       </clr-dg-row>
       <clr-dg-footer>
         <wayne-paginate

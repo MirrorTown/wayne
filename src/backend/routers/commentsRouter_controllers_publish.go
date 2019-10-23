@@ -23,4 +23,11 @@ func init() {
 			MethodParams:     param.Make(),
 			Params:           nil})
 
+	beego.GlobalControllerRouter["github.com/Qihoo360/wayne/src/backend/controllers/publish:PublishController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/wayne/src/backend/controllers/publish:PublishController"],
+		beego.ControllerComments{
+			Method:           "RollBack",
+			Router:           `/tpl/:tplId([0-9]+)/namespace/:nsId([0-9]+)/clusters/:cluster`,
+			AllowHTTPMethods: []string{"post"},
+			MethodParams:     param.Make(),
+			Params:           nil})
 }

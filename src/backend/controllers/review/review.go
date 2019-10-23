@@ -7,6 +7,7 @@ import (
 	"github.com/Qihoo360/wayne/src/backend/client/api"
 	"github.com/Qihoo360/wayne/src/backend/controllers/base"
 	"github.com/Qihoo360/wayne/src/backend/controllers/common"
+	"github.com/Qihoo360/wayne/src/backend/controllers/publish"
 	"github.com/Qihoo360/wayne/src/backend/models"
 	"github.com/Qihoo360/wayne/src/backend/models/response"
 	"github.com/Qihoo360/wayne/src/backend/models/response/errors"
@@ -26,6 +27,10 @@ import (
 // 审核相关操作
 type ReviewController struct {
 	base.APIController
+}
+
+func init()  {
+	publish.Register("review", &ReviewController{})
 }
 
 func (c *ReviewController) URLMapping() {
@@ -97,7 +102,7 @@ func (c *ReviewController) Create() {
 	}
 	jsonkubeDeployment, err := json.Marshal(kubeDeployment)
 	if err != nil {
-		fmt.Println(err)
+		logs.Error(err)
 	}
 
 	cluster := c.Ctx.Input.Param(":cluster")
@@ -108,7 +113,7 @@ func (c *ReviewController) Create() {
 	review.TplId = tplId
 	review.DeploymentId = deploymentId
 	review.GrayPublish = grayPublish
-	review.Announcer = c.User.Name
+	review.Announcer = c.User.Display
 
 	var deplyment *models.Deployment
 	deplyment, err = models.DeploymentModel.GetById(deploymentId)
@@ -140,7 +145,7 @@ func (c *ReviewController) Update() {
 
 	review, err := models.ReviewModel.GetByName(name)
 	review.Status = models.ReviewStatus(status)
-	review.Auditors = c.User.Name
+	review.Auditors = c.User.Display
 	review.AnnounceTime = time.Now().Format("2006/1/2 15:04:05")
 	err = models.ReviewModel.UpdateByName(review)
 	if err != nil {
@@ -149,14 +154,14 @@ func (c *ReviewController) Update() {
 		return
 	}
 	if status == 1 {
-		c.deploytok8s(review)
+		c.Deploytok8s(review)
 	}else {
 		c.Success(review)
 	}
 
 }
 
-func (c *ReviewController) deploytok8s(review *models.Review) {
+func (c *ReviewController) Deploytok8s(review *models.Review) {
 	var kubeDeployment v1beta1.Deployment
 	err := json.Unmarshal([]byte(review.KubeDeployment), &kubeDeployment)
 	if err != nil {
@@ -195,10 +200,11 @@ func (c *ReviewController) deploytok8s(review *models.Review) {
 		TemplateId:   review.TplId,
 		Cluster:      review.Cluster,
 		User:         review.Announcer,
+		Image: 		  kubeDeployment.Spec.Template.Spec.Containers[0].Image,
 	}
 
 	defer func() {
-		models.PublishHistoryModel.Add(publishHistory)
+		//models.PublishHistoryModel.Add(publishHistory)
 		webhook.PublishEventDeployment(c.NamespaceId, review.AppId, review.Announcer, c.Ctx.Input.IP(), webhook.UpgradeDeployment, response.Resource{
 			Type:         publishHistory.Type,
 			ResourceId:   publishHistory.ResourceId,
@@ -267,7 +273,7 @@ func (c *ReviewController) deploytok8s(review *models.Review) {
 
 	//记录发布状态信息并发送订订讯息
 	var recode apimachinery.ClientSet
-	recode.Name = kubeDeployment.Spec.Template.Spec.Containers[0].Name
+	recode.Name = kubeDeployment.Spec.Template.Spec.Containers[0].Name + "【灰度】"
 	recode.User = review.Announcer
 	recode.Cluster = review.Cluster
 	recode.Namespace = kubeDeployment.ObjectMeta.Namespace

@@ -27,6 +27,7 @@ type PublishHistory struct {
 	Status       ReleaseStatus `orm:"type(integer)" json:"status,omitempty"`
 	Message      string        `orm:"type(text)" json:"message,omitempty"`
 	User         string        `orm:"size(128)" json:"user,omitempty"`
+	Image		 string		   `orm:"size(128)" json:"image,omitempty"`
 	CreateTime   *time.Time    `orm:"auto_now_add;type(datetime)" json:"createTime,omitempty"`
 }
 

@@ -8,4 +8,6 @@ export class PublishHistory {
   message: string;
   user: string;
   createTime: Date;
+  image: string;
+  templateId: number;
 }

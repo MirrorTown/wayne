@@ -2,20 +2,20 @@ import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core'
 import {forkJoin} from 'rxjs';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
-import {NgForm} from '@angular/forms';
-import {MessageHandlerService} from '../../../shared/message-handler/message-handler.service';
-import {Deployment} from '../../../shared/model/v1/deployment';
-import {ClusterMeta} from '../../../shared/model/v1/cluster';
-import {DeploymentStatus, DeploymentTpl} from '../../../shared/model/v1/deploymenttpl';
-import {KubeDeployment} from '../../../shared/model/v1/kubernetes/deployment';
-import {CacheService} from '../../../shared/auth/cache.service';
-import {defaultResources, ResourcesActionType} from '../../../shared/shared.const';
-import {PublishStatusService} from '../../../shared/client/v1/publishstatus.service';
-import {DeploymentClient} from '../../../shared/client/v1/kubernetes/deployment';
-import {ActivatedRoute} from '@angular/router';
-import {PageState} from '../../../shared/page/page-state';
-import {DeploymentService} from '../../../shared/client/v1/deployment.service';
-import {AuthService} from '../../../shared/auth/auth.service';
+import { NgForm } from '@angular/forms';
+import { MessageHandlerService } from '../../../shared/message-handler/message-handler.service';
+import { Deployment } from '../../../shared/model/v1/deployment';
+import { ClusterMeta } from '../../../shared/model/v1/cluster';
+import { DeploymentStatus, DeploymentTpl } from '../../../shared/model/v1/deploymenttpl';
+import { KubeDeployment } from '../../../shared/model/v1/kubernetes/deployment';
+import { CacheService } from '../../../shared/auth/cache.service';
+import { defaultResources, ResourcesActionType } from '../../../shared/shared.const';
+import { PublishStatusService } from '../../../shared/client/v1/publishstatus.service';
+import { DeploymentClient } from '../../../shared/client/v1/kubernetes/deployment';
+import { ActivatedRoute } from '@angular/router';
+import { PageState } from '../../../shared/page/page-state';
+import { DeploymentService } from '../../../shared/client/v1/deployment.service';
+import { AuthService } from '../../../shared/auth/auth.service';
 
 @Component({
   selector: 'publish-tpl',

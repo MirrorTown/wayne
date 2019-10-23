@@ -74,4 +74,11 @@ export class PublishService {
       .catch(error => throwError(error));
   }
 
+  rollback(image: string, cluster: string, tplId: number, nsId: number, template?: any): Observable<any> {
+    let params = new HttpParams();
+    params = params.set('image', image)
+    return this.http
+      .post(`/api/v1/publish/tpl/${tplId}/namespace/${nsId}/clusters/${cluster}`, template, {params: params})
+      .catch(error => throwError(error));
+  }
 }

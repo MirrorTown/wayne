@@ -10,6 +10,8 @@ import { ClrDatagridStateInterface } from '@clr/angular';
 import { PublishHistoryService } from './publish-history.service';
 import { Subscription } from 'rxjs/Subscription';
 import { PageState } from '../../../shared/page/page-state';
+import { ActivatedRoute } from '@angular/router';
+import {CacheService} from "../../../shared/auth/cache.service";
 
 @Component({
   selector: 'publish-history',
@@ -30,6 +32,8 @@ export class PublishHistoryComponent implements OnInit, OnDestroy {
 
   constructor(private publishService: PublishService,
               private publishHistoryService: PublishHistoryService,
+              private route: ActivatedRoute,
+              public cacheService: CacheService,
               private messageHandlerService: MessageHandlerService) {
   }
 
@@ -97,6 +101,24 @@ export class PublishHistoryComponent implements OnInit, OnDestroy {
       },
       error => this.messageHandlerService.handleError(error)
     );
+  }
+
+  get appId(): number {
+    return parseInt(this.route.parent.snapshot.params['id'], 10);
+  }
+
+  rollBackTpl(publish: PublishHistory) {
+    const namespaceId = this.cacheService.namespaceId;
+    if (publish) {
+      this.publishService.rollback(publish.image, publish.cluster, publish.templateId, namespaceId).subscribe(
+        response => {
+          this.messageHandlerService.showSuccess('回滚成功!');
+          this.refresh();
+        },
+        error => this.messageHandlerService.handleError(error)
+      );
+    }
+    console.log(publish);
   }
 
 }

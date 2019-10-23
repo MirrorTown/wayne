@@ -97,8 +97,8 @@ export class SignInComponent implements OnInit {
   }
 
   getTitle() {
-    const imagePrefix = this.authService.config['system.title'];
-    return imagePrefix ? imagePrefix : 'Wayne';
+    // const imagePrefix = this.authService.config['system.title'];
+    return 'SouChe';
   }
 
 }

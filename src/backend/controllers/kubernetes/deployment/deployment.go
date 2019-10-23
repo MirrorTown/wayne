@@ -123,7 +123,8 @@ func (c *KubeDeploymentController) Create() {
 		ResourceName: kubeDeployment.Name,
 		TemplateId:   int64(tplId),
 		Cluster:      cluster,
-		User:         c.User.Name,
+		User:         c.User.Display,
+		Image:	      kubeDeployment.Spec.Template.Spec.Containers[0].Image,
 	}
 
 	defer func() {
