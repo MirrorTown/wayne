@@ -185,7 +185,6 @@ export class PublishDeploymentTplComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log('enter....')
     const namespaceId = this.cacheService.namespaceId;
     this.deploymentService.listImages(new PageState({pageSize: 1000}), namespaceId).subscribe(value => {
       for (const image of value.data) {

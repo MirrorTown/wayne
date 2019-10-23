@@ -46,6 +46,7 @@
     "DROP": "下线",
     "EDIT": "编辑",
     "HISTORY": "发布历史",
+    "REFRESH": "刷新",
     "LANG_UP": "挂起",
     "LOG_IN": "LOG IN",
     "MORE_INFO": "More info...",
@@ -230,7 +231,8 @@
   "HISTORY": {
     "RELEASE_TIME": "发布时间",
     "RELEASE_USER": "发布者",
-    "TMP_ID": "模版 ID"
+    "TMP_ID": "模版 ID",
+    "TMP_IMAGE": "镜像版本"
   },
   "INGRESS": {
     "CREATE_EDIT": {

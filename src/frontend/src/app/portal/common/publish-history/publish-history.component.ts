@@ -118,7 +118,6 @@ export class PublishHistoryComponent implements OnInit, OnDestroy {
         error => this.messageHandlerService.handleError(error)
       );
     }
-    console.log(publish);
   }
 
 }

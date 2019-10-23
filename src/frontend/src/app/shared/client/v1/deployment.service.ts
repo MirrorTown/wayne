@@ -30,7 +30,6 @@ export class DeploymentService {
   }
 
   listImages(pageState: PageState, namespaceId?: number): Observable<any> {
-    console.log('list images')
     let params = new HttpParams();
     if (typeof(namespaceId) !== 'undefined') {
       params = params.set('hello', 'world');

@@ -28,6 +28,10 @@
               *ngIf="authService.currentAppPermission.deployment.read || authService.currentUser.admin">
         {{'BUTTON.HISTORY' | translate}}
       </button>
+      <button class="wayne-button normal" (click)="retrieve()"
+              *ngIf="authService.currentAppPermission.deployment.read || authService.currentUser.admin">
+        {{'BUTTON.REFRESH' | translate}}
+      </button>
       <button class="wayne-button normal" (click)="deleteDeployment()"
               *ngIf="authService.currentAppPermission.deployment.delete || authService.currentUser.admin">
         {{'DEPLOYMENT.DELETE' | translate}}
