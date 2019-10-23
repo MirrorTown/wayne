@@ -26,6 +26,12 @@
       <button style="margin-top: 10px; width:240px;height: 40px;font-size: 16px;" type="submit" (click)="oauth2Login()"
               class="wayne-button normal">{{getOAuth2Title()}}</button>
     </div>
+    <div *ngIf="authService.config?.ssoLogin" style="padding-bottom:5px;text-align:center;">
+      <hr style="width: 240px;"/>
+      <button style="margin-top: 10px; width:240px;height: 40px;font-size: 16px;" type="submit" (click)="ssoLogin()"
+              class="wayne-button normal">{{getSSOTitle()}}</button>
+    </div>
+
   </form>
 </div>
 <canvas class="background"></canvas>

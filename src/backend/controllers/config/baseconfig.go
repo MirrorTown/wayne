@@ -35,6 +35,7 @@ func (c *BaseConfigController) ListBase() {
 	configMap["enableRobin"] = beego.AppConfig.DefaultBool("EnableRobin", false)
 	configMap["ldapLogin"] = parseAuthEnabled("auth.ldap")
 	configMap["oauth2Login"] = parseAuthEnabled("auth.oauth2")
+	configMap["ssoLogin"] = parseAuthEnabled("auth.sso")
 	configMap["enableApiKeys"] = beego.AppConfig.DefaultBool("EnableApiKeys", false)
 
 	var configs []models.Config

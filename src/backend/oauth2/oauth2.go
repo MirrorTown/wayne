@@ -53,6 +53,7 @@ type OAuther interface {
 
 func NewOAuth2Service() {
 	allOauthes := []string{OAuth2TypeDefault}
+	beego.LoadAppConfig("ini", "src/backend/conf/app.conf")
 
 	for _, name := range allOauthes {
 		section, err := beego.AppConfig.GetSection("auth." + name)

@@ -77,12 +77,23 @@ export class SignInComponent implements OnInit {
   oauth2Login() {
     const currentUrl = document.location.origin;
     const ref = this.route.snapshot.queryParams['ref'] ? this.route.snapshot.queryParams['ref'] : '/';
-    window.location.replace(`/login/oauth2/oauth2?next=${currentUrl}/sign-in?ref=${ref}`);
+    window.location.replace(`http://localhost:8080/login/oauth2/oauth2?next=${currentUrl}/sign-in?ref=${ref}`);
+  }
+
+  ssoLogin() {
+    const currentUrl = document.location.origin;
+    const ref = this.route.snapshot.queryParams['ref'] ? this.route.snapshot.queryParams['ref'] : '/';
+    window.location.replace(`http://wayne-backend.souche-inc.com/login/sso/sso?next=${currentUrl}/sign-in?ref=${ref}`);
   }
 
   getOAuth2Title() {
     const oauth2Title = this.authService.config['system.oauth2-title'];
     return oauth2Title ? oauth2Title : 'OAuth 2.0 Login';
+  }
+
+  getSSOTitle() {
+    const ssoTitile = this.authService.config['system.sso-title'];
+    return ssoTitile ? ssoTitile : 'SSO Login';
   }
 
   getTitle() {

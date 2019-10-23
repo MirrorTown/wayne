@@ -1,8 +1,12 @@
 package auth
 
 import (
+	"encoding/base64"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
+	"net/http/cookiejar"
 	"strings"
 	"time"
 
@@ -15,6 +19,7 @@ import (
 	"github.com/Qihoo360/wayne/src/backend/models"
 	"github.com/Qihoo360/wayne/src/backend/models/response/errors"
 	selfoauth "github.com/Qihoo360/wayne/src/backend/oauth2"
+	selfsso "github.com/Qihoo360/wayne/src/backend/sso"
 	"github.com/Qihoo360/wayne/src/backend/util/hack"
 	"github.com/Qihoo360/wayne/src/backend/util/logs"
 )
@@ -77,6 +82,23 @@ func (c *AuthController) Login() {
 		Password: password,
 	}
 
+	var userinfo *selfsso.BasicUserInfo
+	var err error
+	if authType == models.AuthTypeSso {
+		ssoer, ok := selfsso.SsoInfos[oauth2Name]
+		if !ok {
+			logs.Warning("sso type (%s) is not supported . ", oauth2Name)
+			c.Ctx.Output.SetStatus(http.StatusBadRequest)
+			c.Ctx.Output.Body(hack.Slice("sso type is not supported."))
+			return
+		}
+		userinfo, err = c.getUserInfo(ssoer)
+		if err != nil {
+			logs.Error("获取用户信息失败,", err)
+		}
+		fmt.Println(userinfo)
+	}
+
 	if authType == models.AuthTypeOAuth2 {
 		oauther, ok := selfoauth.OAutherMap[oauth2Name]
 		if !ok {
@@ -99,7 +121,13 @@ func (c *AuthController) Login() {
 
 	}
 
-	user, err := authenticator.Authenticate(authModel)
+	var user = new(models.User)
+	if authType == models.AuthTypeSso {
+		//var ssoAuth sso.SSoAuth
+		user, err = selfsso.Authenticate(userinfo)
+	} else {
+		user, err = authenticator.Authenticate(authModel)
+	}
 	if err != nil {
 		logs.Warning("try to login in with user (%s) error %v. ", authModel.Username, err)
 		c.Ctx.Output.SetStatus(http.StatusBadRequest)
@@ -130,7 +158,7 @@ func (c *AuthController) Login() {
 
 	apiToken, err := token.SignedString(rsakey.RsaPrivateKey)
 	if err != nil {
-		logs.Error("create token form rsa private key  error.", rsakey.RsaPrivateKey, err.Error())
+		logs.Error("create token form rsa prijkmhnvate key  error.", rsakey.RsaPrivateKey, err.Error())
 		c.Ctx.Output.SetStatus(http.StatusInternalServerError)
 		c.Ctx.Output.Body(hack.Slice(err.Error()))
 		return
@@ -138,7 +166,7 @@ func (c *AuthController) Login() {
 
 	if next != "" {
 		// if oauth type is oauth, set token for client.
-		if authType == models.AuthTypeOAuth2 {
+		if authType == models.AuthTypeOAuth2 || authType == models.AuthTypeSso {
 			next = next + "&sid=" + apiToken
 		}
 		c.Redirect(next, http.StatusFound)
@@ -150,6 +178,45 @@ func (c *AuthController) Login() {
 	}
 	c.Data["json"] = base.Result{Data: loginResult}
 	c.ServeJSON()
+}
+
+func (c *AuthController) getUserInfo(s *selfsso.SsoInfo) (*selfsso.BasicUserInfo, error)  {
+	var userInfo = new(selfsso.BasicUserInfo)
+	//获取用户信息
+	token := c.Ctx.Input.Cookie("_security_token_inc")
+	if token == "" {
+		loginurl := s.RedirectUrl + base64.URLEncoding.EncodeToString([]byte(s.BackUrl))
+		c.Ctx.Redirect(http.StatusFound, loginurl)
+		return nil, nil
+	} else {
+		client := &http.Client{}
+		var req *http.Request
+		req, _ = http.NewRequest(http.MethodGet, s.GetAuth, nil)
+		jar, _ := cookiejar.New(nil)
+		jar.SetCookies(req.URL, []*http.Cookie{
+			&http.Cookie{Name: "_security_token_inc", Value: c.Ctx.Input.Cookie("_security_token_inc")},
+			&http.Cookie{Name: "isDingDing", Value: c.Ctx.Input.Cookie("isDingDing")},
+			&http.Cookie{Name: "tracknick", Value: c.Ctx.Input.Cookie("tracknick")},
+		})
+		client.Jar = jar
+		resp, err := client.Do(req)
+		if err != nil {
+			logs.Error("获取用户信息失败,",err)
+		}
+		b, err := ioutil.ReadAll(resp.Body)
+		defer resp.Body.Close()
+
+		var mapResult map[string]interface{}
+		err = json.Unmarshal(b, &mapResult)
+		if err != nil {
+			fmt.Println("JsonToMapDemo err: ", err)
+		}
+		userInfo.Name = mapResult["data"].(map[string]interface{})["userName"].(string)
+		userInfo.Email = mapResult["data"].(map[string]interface{})["email"].(string)
+		userInfo.Display = mapResult["data"].(map[string]interface{})["displayName"].(string)
+	}
+
+	return userInfo, nil
 }
 
 // @router /logout [get]

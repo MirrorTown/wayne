@@ -1,0 +1,88 @@
+package sso
+
+import (
+	"github.com/Qihoo360/wayne/src/backend/models"
+	"github.com/Qihoo360/wayne/src/backend/util/logs"
+	"github.com/astaxie/beego"
+	"strconv"
+)
+
+func init() {
+	NewSsoService()
+}
+
+var (
+	SsoInfos = make(map[string]*SsoInfo)
+)
+
+const (
+	SsoTypeDefault = "sso"
+)
+
+type BasicUserInfo struct {
+	Name    string `json:"name"`
+	Email   string `json:"email"`
+	Display string `json:"display"`
+}
+
+type SsoInfo struct {
+	BackUrl     string
+	CookieName string
+	RedirectUrl  string // get user info
+	GetAuth      string
+	Enabled      bool
+}
+
+func Authenticate(m *BasicUserInfo) (*models.User, error) {
+	username := m.Name
+	user, err := models.UserModel.GetUserByName(username)
+	//无用户名记录情况，同步sso信息到db
+	if err != nil {
+		var user = new(models.User)
+		user.Name = m.Name
+		user.Email = m.Email
+		user.Display = m.Display
+		user.Comment = "信息来源于SSO"
+		_, err := models.UserModel.AddUser(user)
+		if err != nil {
+			logs.Error("保存用户信息失败, ",err)
+		}else {
+			user, _ = models.UserModel.GetUserByName(username)
+		}
+	}
+
+	return user, nil
+}
+
+func NewSsoService() {
+	allSso := []string{SsoTypeDefault}
+	beego.LoadAppConfig("ini", "src/backend/conf/app.conf")
+
+	for _, name := range allSso {
+		section, err := beego.AppConfig.GetSection("auth." + name)
+		if err != nil {
+			logs.Info("can't enable sso"+name, err)
+			continue
+		}
+		enabled, err := strconv.ParseBool(section["enabled"])
+		if err != nil {
+			logs.Info("parse enabled oauth error", err)
+			continue
+		}
+
+		if !enabled {
+			continue
+		}
+
+		info := &SsoInfo{
+			BackUrl:     section["back_url"],
+			CookieName: section["cookie_name"],
+			RedirectUrl:  section["redirect_url"],
+			GetAuth:      section["get_auth"],
+			Enabled:      enabled,
+		}
+
+		SsoInfos[SsoTypeDefault] = info
+
+	}
+}

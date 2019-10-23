@@ -4,6 +4,7 @@ const (
 	AuthTypeDB     = "db"
 	AuthTypeOAuth2 = "oauth2"
 	AuthTypeLDAP   = "ldap"
+	AuthTypeSso    = "sso"
 )
 
 // AuthModel holds information used to authenticate.
