@@ -16,16 +16,16 @@ const (
 type harborModel struct{}
 
 type Harbor struct {
-	Id   int64  `orm:"auto" json:"id,omitempty"`
-	Name string `orm:"unique;index;size(128)" json:"name,omitempty"`
-	Url  string `orm:"unique;index;size(200)" json:"url,omitempty"` // harbor地址，示例： https://10.172.189.140
-	User    string     `orm:"null;size(128)" json:"user,omitempty"`
+	Id          int64      `orm:"auto" json:"id,omitempty"`
+	Name        string     `orm:"unique;index;size(128)" json:"name,omitempty"`
+	Url         string     `orm:"index;size(200)" json:"url,omitempty"` // harbor地址，示例： https://10.172.189.140
+	User        string     `orm:"null;size(128)" json:"user,omitempty"`
 	Passwd      string     `orm:"size(128)" json:"passwd,omitempty"`
-	Project  string     `orm:"null;size(128)" json:"project,omitempty"`
+	Project     string     `orm:"null;size(128)" json:"project,omitempty"`
 	Description string     `orm:"null;size(512)" json:"description,omitempty"`
 	CreateTime  *time.Time `orm:"auto_now_add;type(datetime)" json:"createTime,omitempty"`
 	UpdateTime  *time.Time `orm:"auto_now;type(datetime)" json:"updateTime,omitempty"`
-	Namespace        string     `orm:"size(128)" json:"namespace,omitempty"`
+	Namespace   string     `orm:"size(128)" json:"namespace,omitempty"`
 	// the harbor status
 	Status HarborStatus `orm:"default(0)" json:"status"`
 }
@@ -83,7 +83,6 @@ func (*harborModel) GetByProject(project string) (v *Harbor, err error) {
 	}
 	return nil, err
 }
-
 
 // Add insert a new Harbor into database and returns
 // last inserted Id on success.

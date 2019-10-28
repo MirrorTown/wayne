@@ -8,9 +8,9 @@ import (
 type ReviewStatus int32
 
 const (
-	ReviewStatusTobe      ReviewStatus = 0
-	ReviewStatusPass 	  ReviewStatus = 1
-	ReviewStatusReject    ReviewStatus = 2
+	ReviewStatusTobe   ReviewStatus = 0
+	ReviewStatusPass   ReviewStatus = 1
+	ReviewStatusReject ReviewStatus = 2
 
 	TableNameReview = "review"
 )
@@ -18,23 +18,22 @@ const (
 type reviewModel struct{}
 
 type Review struct {
-	Id   int64  `orm:"auto" json:"id,omitempty"`
-	Name string `orm:"index;size(128)" json:"name,omitempty"`
-	AppId    int64     `orm:"index;column(app_id)" json:"appId,omitempty"`
-	TplId    int64     `orm:"index;column(tpl_id)" json:"tplId,omitempty"`
-	DeploymentId int64  `orm:"index;column(deployment_id)" json:"deploymentId,omitempty"`
-	Announcer      string     `orm:"size(128)" json:"announcer,omitempty"`
-	PublishTime  *time.Time     `orm:"auto_now;type(datetime);column(publish_time)" json:"publishTime,omitempty"`
-	AnnounceTime  string     `orm:"type(datetime);column(announce_time)" json:"announceTime,omitempty"`
-	Auditors string     `orm:"null;size(128)" json:"auditors,omitempty"`
-	CreateTime  *time.Time `orm:"auto_now_add;type(datetime)" json:"createTime,omitempty"`
-	UpdateTime  *time.Time `orm:"auto_now;type(datetime)" json:"updateTime,omitempty"`
+	Id           int64      `orm:"auto" json:"id,omitempty"`
+	Name         string     `orm:"index;size(128)" json:"name,omitempty"`
+	AppId        int64      `orm:"index;column(app_id)" json:"appId,omitempty"`
+	TplId        int64      `orm:"index;column(tpl_id)" json:"tplId,omitempty"`
+	DeploymentId int64      `orm:"index;column(deployment_id)" json:"deploymentId,omitempty"`
+	Announcer    string     `orm:"size(128)" json:"announcer,omitempty"`
+	PublishTime  *time.Time `orm:"auto_now;type(datetime);column(publish_time)" json:"publishTime,omitempty"`
+	AnnounceTime string     `orm:"type(datetime);column(announce_time)" json:"announceTime,omitempty"`
+	Auditors     string     `orm:"null;size(128)" json:"auditors,omitempty"`
+	CreateTime   *time.Time `orm:"auto_now_add;type(datetime)" json:"createTime,omitempty"`
+	UpdateTime   *time.Time `orm:"auto_now;type(datetime)" json:"updateTime,omitempty"`
 	// the review status
-	Status ReviewStatus `orm:"default(0)" json:"status"`
-	KubeDeployment string `orm:"null;size(128);column(kube_deployment)" json:"kubeDeployment,omitempty"`
-	Cluster string `orm:"null;size(128)" json:"cluster,omitempty"`
-	GrayPublish string `orm:"null;size(128);column(gray_publish)" json:"grayPublish,omitempty"`
-
+	Status         ReviewStatus `orm:"default(0)" json:"status"`
+	KubeDeployment string       `orm:"null;type(text);column(kube_deployment)" json:"kubeDeployment,omitempty"`
+	Cluster        string       `orm:"null;size(128)" json:"cluster,omitempty"`
+	GrayPublish    string       `orm:"null;size(128);column(gray_publish)" json:"grayPublish,omitempty"`
 }
 
 func (*Review) TableName() string {
@@ -108,7 +107,7 @@ func (*reviewModel) UpdateByName(m *Review) (err error) {
 	// ascertain id exists in the database
 	if err = Ormer().Read(&v, "Name", "Status"); err == nil {
 		m.UpdateTime = nil
-		_, err = Ormer().Update(m,"Auditors", "Status", "AnnounceTime")
+		_, err = Ormer().Update(m, "Auditors", "Status", "AnnounceTime")
 		return err
 	}
 	return
