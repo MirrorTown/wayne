@@ -93,8 +93,9 @@ func (c *AuthController) Login() {
 			return
 		}
 		userinfo, err = c.getUserInfo(ssoer)
-		if err != nil {
+		if err != nil || userinfo == nil {
 			logs.Error("获取用户信息失败,", err)
+			return
 		}
 		fmt.Println(userinfo)
 	}
@@ -180,7 +181,7 @@ func (c *AuthController) Login() {
 	c.ServeJSON()
 }
 
-func (c *AuthController) getUserInfo(s *selfsso.SsoInfo) (*selfsso.BasicUserInfo, error)  {
+func (c *AuthController) getUserInfo(s *selfsso.SsoInfo) (*selfsso.BasicUserInfo, error) {
 	var userInfo = new(selfsso.BasicUserInfo)
 	//获取用户信息
 	token := c.Ctx.Input.Cookie("_security_token_inc")
@@ -201,7 +202,7 @@ func (c *AuthController) getUserInfo(s *selfsso.SsoInfo) (*selfsso.BasicUserInfo
 		client.Jar = jar
 		resp, err := client.Do(req)
 		if err != nil {
-			logs.Error("获取用户信息失败,",err)
+			logs.Error("获取用户信息失败,", err)
 		}
 		b, err := ioutil.ReadAll(resp.Body)
 		defer resp.Body.Close()

@@ -21,25 +21,26 @@ func (c *CronJob) StartDeployStatuJob() (err error) {
 	var cli apimachinery.ClientSet
 	cli.Status = models.Deploying
 	cli.Notify = models.ToBeNotify
+	mm, _ := time.ParseDuration("5m")
 
 	go func() {
-		fmt.Println("enter")
 		for range time.Tick(time.Second * 10) {
 			//获取发布列表
 			deploylist := cli.DeployServer().GetDeploys()
 			for _, sub := range deploylist {
 				//TODO 检测pod发布状态，同步到数据库并发送订订信息
-				podlist,err := pod.GetPodListByType(cli.Manager(sub.Cluster).KubeClient,sub.Namespace, sub.ResourceName, sub.ResourceType)
+				podlist, err := pod.GetPodListByType(cli.Manager(sub.Cluster).KubeClient, sub.Namespace, sub.ResourceName, sub.ResourceType)
 				if err != nil {
 					logs.Error("获取pod列表失败, ", err)
 				}
 				//var sendFlag bool
 				var sendFlag bool = true
-				if sub.Status == models.Deploying && len(podlist) >0 {
+				if sub.Status == models.Deploying && len(podlist) > 0 {
 					for _, podSpec := range podlist {
 						//当容器状态非Ready时处理方法,并剔除被终止的deployment影响
-						if podSpec.ObjectMeta.DeletionTimestamp.IsZero() && podSpec.Status.ContainerStatuses[0].Ready == false{
-							if podSpec.Status.ContainerStatuses[0].RestartCount > 0 {
+						if podSpec.ObjectMeta.DeletionTimestamp.IsZero() && podSpec.Status.ContainerStatuses[0].Ready == false {
+							//容器重启或则超出超市时间，将强制发布失败
+							if podSpec.Status.ContainerStatuses[0].RestartCount > 0 || sub.UpdateTime.Add(mm).Unix() < time.Now().Unix() {
 								//发送发布失败信息
 								senfMsg(models.DeployFail, models.Notified, sub, cli)
 							}
@@ -50,9 +51,9 @@ func (c *CronJob) StartDeployStatuJob() (err error) {
 					//发布成功并可通知状态
 					if sendFlag && sub.Notify == models.ToBeNotify {
 						senfMsg(models.DeploySuc, models.Notified, sub, cli)
-						//发布完成后自动删除灰度容器
+						//由正式发布完成后自动删除灰度容器；由灰度发布后成功的容器不删除
 						if !strings.Contains(sub.ResourceName, "grayscale") {
-							err := deployment.DeleteDeployment(cli.Manager(sub.Cluster).Client, sub.ResourceName + "-grayscale", sub.Namespace)
+							err := deployment.DeleteDeployment(cli.Manager(sub.Cluster).Client, sub.ResourceName+"-grayscale", sub.Namespace)
 							if err != nil {
 								logs.Info("Cann't Delete deployment (%s) by cluster (%s). Because %v", sub.Name, sub.Cluster, err)
 							}
@@ -60,16 +61,15 @@ func (c *CronJob) StartDeployStatuJob() (err error) {
 					}
 				}
 
-				time.Sleep(2*time.Second)
+				time.Sleep(1 * time.Second)
 			}
 		}
 	}()
 
-	fmt.Println("out")
 	return nil
 }
 
-func senfMsg(status string, notify int, sub models.Deploy, cli apimachinery.ClientSet ) error {
+func senfMsg(status string, notify int, sub models.Deploy, cli apimachinery.ClientSet) error {
 	sub.Status = status
 	sub.Notify = notify
 	cli.User, cli.Name, cli.ResourceType, cli.ResourceName, cli.Cluster, cli.Namespace =
@@ -81,4 +81,3 @@ func senfMsg(status string, notify int, sub models.Deploy, cli apimachinery.Clie
 	//err := cli.NotifyToDingding(msg, "1876xxxxx65")
 	return nil
 }
-

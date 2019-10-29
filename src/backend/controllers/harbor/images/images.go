@@ -44,22 +44,24 @@ func (c *HarborImageController) URLMapping() {
 	c.Mapping("ListTag", c.ListTag)
 }
 
-func (c *HarborImageController) ListTag()  {
+func (c *HarborImageController) ListTag() {
 	image := c.GetString("image")
 	if len(image) == 0 {
 		return
+	} else if len(strings.Split(image, "/")) < 2 {
+		return
 	}
-	fmt.Println(strings.Split(image,"/")[1], strings.Split(image,"/")[2])
-	projectName := strings.Split(image,"/")[1]
+
+	projectName := strings.Split(image, "/")[1]
 	harbor, err := models.HarborModel.GetByProject(projectName)
 	if err != nil {
 		logs.Error("获取harbor数据库信息失败")
 	}
-	cli, err := c.HarborClient(harbor.Url, harbor.User, harbor.Passwd);
+	cli, err := c.HarborClient(harbor.Url, harbor.User, harbor.Passwd)
 	if err != nil {
 		logs.Error("获取harbor客户端失败")
 	}
-	tag, err := cli.ListRepoTags(context.Background(),projectName , strings.Split(image,"/")[2])
+	tag, err := cli.ListRepoTags(context.Background(), projectName, strings.Split(image, "/")[2])
 	fmt.Println(tag)
 
 	c.Success(tag)
@@ -70,16 +72,16 @@ func (c *HarborImageController) List() {
 	// create harbor client
 	namespaceId := c.Ctx.Input.Param(":namespaceId")
 	var namespace *models.Namespace
-	nid, err := strconv.ParseInt(namespaceId,10, 64)
+	nid, err := strconv.ParseInt(namespaceId, 10, 64)
 	if err != nil {
 		log.Error("strcov err for namespaceID")
 	}
 	namespace, err = models.NamespaceModel.GetById(nid)
 
 	harbors, err := models.HarborModel.GetHaborByNS(namespace.KubeNamespace)
-	repositorieslist := make([]*models.Repository,0)
+	repositorieslist := make([]*models.Repository, 0)
 	for _, harbor := range harbors {
-		cli, err := c.HarborClient(harbor.Url, harbor.User, harbor.Passwd);
+		cli, err := c.HarborClient(harbor.Url, harbor.User, harbor.Passwd)
 		if err != nil {
 			logs.Error("获取harbor客户端失败")
 		}
@@ -96,7 +98,7 @@ func (c *HarborImageController) List() {
 		}*/
 
 		// list repo
-		_, repo, err := cli.ListReposByProjectName(context.Background(), harbor.Project);
+		_, repo, err := cli.ListReposByProjectName(context.Background(), harbor.Project)
 		if err != nil {
 			panic(err)
 		}
@@ -109,7 +111,7 @@ func (c *HarborImageController) List() {
 }
 
 // copy Repo to self-struct
-func copyRepo(repos []*harborModle.Repo, cli *harbor.Client, host string)  []*models.Repository {
+func copyRepo(repos []*harborModle.Repo, cli *harbor.Client, host string) []*models.Repository {
 	repositories := make([]*models.Repository, 0)
 	for _, v := range repos {
 		/*tag, err := cli.ListRepoTags(context.Background(), projectName, strings.Split(v.Name,"/")[1])
@@ -117,20 +119,19 @@ func copyRepo(repos []*harborModle.Repo, cli *harbor.Client, host string)  []*mo
 			panic(err)
 		}*/
 		//for i := 0; i < int(v.TagsCount); i++ {
-			repositories = append(repositories, &models.Repository{
-				ID:           v.ID,
-				Name:         strings.Split(host, "//")[1] + "/" + v.Name, /*+ ":" + tag[i].Name*/
-				ProjectID:    v.ProjectID,
-				Description:  v.Description,
-				PullCount:    v.PullCount,
-				StarCount:    v.StarCount,
-				TagsCount:    v.TagsCount,
-				//Tags:         tag[i].Name,
-				CreationTime: v.CreationTime,
-				UpdateTime:   v.UpdateTime,
-			})
+		repositories = append(repositories, &models.Repository{
+			ID:          v.ID,
+			Name:        strings.Split(host, "//")[1] + "/" + v.Name, /*+ ":" + tag[i].Name*/
+			ProjectID:   v.ProjectID,
+			Description: v.Description,
+			PullCount:   v.PullCount,
+			StarCount:   v.StarCount,
+			TagsCount:   v.TagsCount,
+			//Tags:         tag[i].Name,
+			CreationTime: v.CreationTime,
+			UpdateTime:   v.UpdateTime,
+		})
 		//}
-
 
 	}
 	return repositories

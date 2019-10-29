@@ -1,5 +1,5 @@
 window.CONFIG = {
-  URL: 'http://localhost:8080',
+  URL: 'http://wayne.souche-inc.com',
   RAVEN: true,
   RAVEN_DSN: 'RAVEN_DSN'
 };

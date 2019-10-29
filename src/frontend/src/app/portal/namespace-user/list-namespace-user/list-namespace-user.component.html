@@ -33,7 +33,7 @@
   </clr-dg-column>
   <clr-dg-row *ngFor="let namespaceUser of namespaceUsers" [clrDgItem]="namespaceUser">
     <clr-dg-cell>{{namespaceUser.id}}</clr-dg-cell>
-    <clr-dg-cell *ngIf="listType === 'namespace'" class="copy">{{namespaceUser.user.name}}</clr-dg-cell>
+    <clr-dg-cell *ngIf="listType === 'namespace'" class="copy">{{namespaceUser.user.display}}</clr-dg-cell>
     <clr-dg-cell *ngIf="listType === 'user'" class="copy">{{namespaceUser.namespace.name}}</clr-dg-cell>
     <clr-dg-cell>{{namespaceUser.groupsName }}</clr-dg-cell>
     <clr-dg-cell>{{namespaceUser.createTime | date:'yyyy-MM-dd HH:mm'}}</clr-dg-cell>

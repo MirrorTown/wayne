@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/Qihoo360/wayne/src/backend/apimachinery/deploy"
 	"github.com/Qihoo360/wayne/src/backend/client"
+	"github.com/astaxie/beego"
 	"net/http"
 )
 
@@ -13,15 +14,15 @@ type ClientSetInterface interface {
 }
 
 type ClientSet struct {
-	Client client.ResourceHandler
-	Cluster string
-	Name string
-	User string
-	Namespace string
+	Client       client.ResourceHandler
+	Cluster      string
+	Name         string
+	User         string
+	Namespace    string
 	ResourceName string
 	ResourceType string
-	Status string
-	Notify int
+	Status       string
+	Notify       int
 }
 
 func (cs *ClientSet) DeployServer() deploy.DeployInterface {
@@ -31,7 +32,7 @@ func (cs *ClientSet) DeployServer() deploy.DeployInterface {
 //NotifyToDingding
 func (cs *ClientSet) NotifyToDingding(msg string, mobile string) (err error) {
 	//请求地址模板
-	webHook := `https://oapi.dingtalk.com/robot/send?access_token=6db350898e42505df243e8d106cf8de9f820025fedd0ac021061ebbec2e68a85`
+	webHook := "https://oapi.dingtalk.com/robot/send?access_token=" + beego.AppConfig.String("access_token")
 	content := `{"msgtype": "markdown",
 				"markdown": {
 				"title": "发布通知",
@@ -70,11 +71,10 @@ func (cs *ClientSet) NotifyToDingding(msg string, mobile string) (err error) {
 	return nil
 }
 
-func (*ClientSet) Manager(cluster string) *client.ClusterManager  {
+func (*ClientSet) Manager(cluster string) *client.ClusterManager {
 	kubeManager, err := client.Manager(cluster)
 	if err != nil {
 		panic(err)
 	}
 	return kubeManager
 }
-

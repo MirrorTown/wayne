@@ -8,6 +8,7 @@ import (
 	"k8s.io/api/apps/v1beta1"
 	"k8s.io/apimachinery/pkg/labels"
 	"net/http"
+	"strings"
 
 	"github.com/Qihoo360/wayne/src/backend/client"
 	"github.com/Qihoo360/wayne/src/backend/controllers/base"
@@ -124,7 +125,7 @@ func (c *KubeDeploymentController) Create() {
 		TemplateId:   int64(tplId),
 		Cluster:      cluster,
 		User:         c.User.Display,
-		Image:	      kubeDeployment.Spec.Template.Spec.Containers[0].Image,
+		Image:        kubeDeployment.Spec.Template.Spec.Containers[0].Image,
 	}
 
 	defer func() {
@@ -192,13 +193,13 @@ func (c *KubeDeploymentController) Create() {
 	deploymentTplString.Template = deploymentTpl
 	err = models.DeploymentTplModel.UpdateById(deploymentTplString)
 	if err != nil {
-		logs.Error("更新发布模板失败, ",err)
+		logs.Error("更新发布模板失败, ", err)
 	}
 
 	//记录发布状态信息并发送订订讯息
 	var recode apimachinery.ClientSet
 	recode.Name = kubeDeployment.Spec.Template.Spec.Containers[0].Name
-	recode.User = c.LoggedInController.User.Name
+	recode.User = c.LoggedInController.User.Display
 	recode.Cluster = cluster
 	recode.Namespace = kubeDeployment.ObjectMeta.Namespace
 	recode.ResourceName = kubeDeployment.ObjectMeta.Name
@@ -216,8 +217,7 @@ func copyTemplateData(str []byte, image string) (string, error) {
 	if err != nil {
 		logs.Error("Json解析失败")
 	}
-	m["spec"].(map[string]interface{})["template"].(map[string]interface{})["spec"].
-		(map[string]interface{})["containers"].([]interface{})[0].(map[string]interface{})["image"] = image;
+	m["spec"].(map[string]interface{})["template"].(map[string]interface{})["spec"].(map[string]interface{})["containers"].([]interface{})[0].(map[string]interface{})["image"] = image
 	//fmt.Println(m["spec"]["template"]["spec"]["containers"]["image"])
 	jsonStr, err := json.Marshal(m)
 	return string(jsonStr), err
@@ -279,10 +279,10 @@ func (c *KubeDeploymentController) Get() {
 	namespace := c.Ctx.Input.Param(":namespace")
 	name := c.Ctx.Input.Param(":deployment")
 	manager := c.Manager(cluster)
-	result, err := deployment.GetDeploymentDetail(manager.Client, manager.CacheFactory, name, namespace)
-	if err != nil {
+	result, err := deployment.GetDeploymentDetail(manager.Client, manager.CacheFactory, name+"-grayscale", namespace)
+	if err != nil || len(result.Pods.Warnings) == 0 {
 		//补充灰度发布后获取详情功能
-		result, err = deployment.GetDeploymentDetail(manager.Client, manager.CacheFactory, name + "-grayscale", namespace)
+		result, err = deployment.GetDeploymentDetail(manager.Client, manager.CacheFactory, name, namespace)
 		if err != nil {
 			logs.Info("get kubernetes deployment detail error.", cluster, namespace, name, err)
 			c.HandleError(err)
@@ -306,6 +306,10 @@ func (c *KubeDeploymentController) Delete() {
 	cli := c.Client(cluster)
 
 	err := deployment.DeleteDeployment(cli, name, namespace)
+	//如果正式下线，灰度强制下线
+	if !strings.Contains(name, "grayscale") {
+		_ = deployment.DeleteDeployment(cli, name+"-grayscale", namespace)
+	}
 	if err != nil {
 		logs.Info("Delete deployment (%s) by cluster (%s) error.%v", name, cluster, err)
 		c.HandleError(err)
