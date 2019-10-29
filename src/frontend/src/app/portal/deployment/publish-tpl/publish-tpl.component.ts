@@ -1,5 +1,5 @@
-import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
-import {forkJoin} from 'rxjs';
+import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { forkJoin } from 'rxjs';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 import { NgForm } from '@angular/forms';
