@@ -5,6 +5,7 @@ import { AuthService } from '../../auth/auth.service';
 import { ActivatedRoute } from '@angular/router';
 import { LoginTokenKey } from '../../shared.const';
 import * as particlesJS from 'particlesjs/dist/particles';
+import {environment} from "../../../../environments/environment.hmr";
 
 @Component({
   selector: 'sign-in',
@@ -81,9 +82,10 @@ export class SignInComponent implements OnInit {
   }
 
   ssoLogin() {
+    var config = require("config")
     const currentUrl = document.location.origin;
     const ref = this.route.snapshot.queryParams['ref'] ? this.route.snapshot.queryParams['ref'] : '/';
-    window.location.replace(window.CONFIG.URL + `/login/sso/sso?next=${currentUrl}/sign-in?ref=${ref}`);
+    window.location.replace(environment.url + `/login/sso/sso?next=${currentUrl}/sign-in?ref=${ref}`);
   }
 
   getOAuth2Title() {
