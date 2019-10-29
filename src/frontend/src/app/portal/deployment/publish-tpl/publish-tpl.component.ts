@@ -298,7 +298,7 @@ export class PublishDeploymentTplComponent implements OnInit {
         kubeDeployment.metadata.namespace = this.cacheService.kubeNamespace;
         kubeDeployment.spec.replicas = this.clusterMetas[cluster].value;
         // 当前仅支持第一个为业务容器镜像替换
-        if (this.actionType === ResourcesActionType.PUBLISH) {
+        if (this.actionType === ResourcesActionType.PUBLISH || this.actionType === ResourcesActionType.GRAYPUBLISH) {
           kubeDeployment.spec.template.spec.containers[0].image = this.containerImage + ':' + this.tag;
         }
         // 灰度发布策略
