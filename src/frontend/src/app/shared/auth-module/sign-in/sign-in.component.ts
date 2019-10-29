@@ -83,7 +83,7 @@ export class SignInComponent implements OnInit {
   ssoLogin() {
     const currentUrl = document.location.origin;
     const ref = this.route.snapshot.queryParams['ref'] ? this.route.snapshot.queryParams['ref'] : '/';
-    window.location.replace(`http://wayne-backend.souche-inc.com/login/sso/sso?next=${currentUrl}/sign-in?ref=${ref}`);
+    window.location.replace(`http://wayne.souche-inc.com/login/sso/sso?next=${currentUrl}/sign-in?ref=${ref}`);
   }
 
   getOAuth2Title() {

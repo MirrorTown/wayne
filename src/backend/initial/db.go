@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Qihoo360/wayne/src/backend/apimachinery"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	"github.com/go-sql-driver/mysql"
@@ -16,6 +17,11 @@ import (
 )
 
 const DbDriverName = "mysql"
+
+type HomeP interface {
+	Home() (string, error)
+	GetCurrentDirectory() string
+}
 
 func InitDb() {
 	orm.RegisterDriver(DbDriverName, orm.DRMySQL)
@@ -38,7 +44,8 @@ func InitDb() {
 
 func ensureDatabase() error {
 	needInit := false
-	err := beego.LoadAppConfig("ini", "/opt/go/bin/src/wayne/src/backend/conf/app.conf")
+	home := HomeP(&apimachinery.HomePath{}).GetCurrentDirectory()
+	err := beego.LoadAppConfig("ini", home + "/src/wayne/src/backend/conf/app.conf")
 	if err != nil {
 		panic(err)
 	}

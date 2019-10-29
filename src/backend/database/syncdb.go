@@ -3,14 +3,21 @@ package main
 import (
 	"fmt"
 
+	"github.com/Qihoo360/wayne/src/backend/apimachinery"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 
 	_ "github.com/Qihoo360/wayne/src/backend/plugins"
 )
 
+type HomeP interface {
+	Home() (string, error)
+	GetCurrentDirectory() string
+}
+
 func init() {
-	err := beego.LoadAppConfig("ini", "/opt/go/bin/src/wayne/src/backend/conf/app.conf")
+	home := HomeP(&apimachinery.HomePath{}).GetCurrentDirectory()
+	err := beego.LoadAppConfig("ini", home +"/src/wayne/src/backend/conf/app.conf")
 	if err != nil {
 		panic(err)
 	}

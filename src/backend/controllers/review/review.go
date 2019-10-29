@@ -273,7 +273,7 @@ func (c *ReviewController) Deploytok8s(review *models.Review) {
 
 	//记录发布状态信息并发送订订讯息
 	var recode apimachinery.ClientSet
-	recode.Name = kubeDeployment.Spec.Template.Spec.Containers[0].Name + "【灰度】"
+	recode.Name = kubeDeployment.Spec.Template.Spec.Containers[0].Name
 	recode.User = review.Announcer
 	recode.Cluster = review.Cluster
 	recode.Namespace = kubeDeployment.ObjectMeta.Namespace
