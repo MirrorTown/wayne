@@ -100,7 +100,7 @@ func (c *DeploymentTplController) Create() {
 		c.AbortBadRequestFormat("KubeDeployment")
 	}
 
-	deployTpl.User = c.User.Name
+	deployTpl.User = c.User.Display
 	_, err = models.DeploymentTplModel.Add(&deployTpl)
 
 	if err != nil {
