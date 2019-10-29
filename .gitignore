@@ -26,6 +26,12 @@ dist/
 
 ## Project
 .env
+go.mod
+go.sum
+src/frontend/package-lock.json
+src/frontend/package.json
+src/backend/conf/dev.conf
+src/backend/conf/app.conf
 src/backend/conf/dev.conf
 _dev/
 _build/
