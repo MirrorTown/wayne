@@ -278,7 +278,7 @@ func (c *KubeDeploymentController) Get() {
 	name := c.Ctx.Input.Param(":deployment")
 	manager := c.Manager(cluster)
 	result, err := deployment.GetDeploymentDetail(manager.Client, manager.CacheFactory, name+"-grayscale", namespace)
-	if err != nil || len(result.Pods.Warnings) == 0 {
+	if err != nil {
 		//补充灰度发布后获取详情功能
 		result, err = deployment.GetDeploymentDetail(manager.Client, manager.CacheFactory, name, namespace)
 		if err != nil {
