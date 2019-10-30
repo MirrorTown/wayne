@@ -39,7 +39,6 @@ export class DeploymentService {
   }
 
   listTags(image?: string): Observable<any> {
-    console.log('list images')
     let params = new HttpParams();
     if (typeof(image) !== 'undefined') {
       params = params.set('image', image);

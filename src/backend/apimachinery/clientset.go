@@ -32,17 +32,19 @@ func (cs *ClientSet) DeployServer() deploy.DeployInterface {
 //NotifyToDingding
 func (cs *ClientSet) NotifyToDingding(msg string, mobile string) (err error) {
 	//请求地址模板
+	/*robot := dingrobot.New(beego.AppConfig.String("access_token"))
+	robot.AtMobiles(mobile).Markdown("发布通知", msg)*/
 	webHook := "https://oapi.dingtalk.com/robot/send?access_token=" + beego.AppConfig.String("access_token")
-	content := `{"msgtype": "markdown",
-				"markdown": {
+	content := `{"msgtype": "text",
+				"text": {
 				"title": "发布通知",
-				"text": "%s"
+				"content": "%s"
 				},
 				"at": {
 					"atMobiles": [
 						"%s"
 					],
-					"isAtAll": "False"
+					"isAtAll": "false"
 					}
 				}`
 	//创建一个请求

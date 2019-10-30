@@ -160,6 +160,14 @@ func (*userModel) GetUserById(id int64) (v *User, err error) {
 	return v, nil
 }
 
+func (*userModel) GetUserByDisplay(display string) (v *User, err error) {
+	v = &User{Display: display}
+	if err = Ormer().Read(v, "Display"); err != nil {
+		return nil, err
+	}
+	return v, nil
+}
+
 func (*userModel) GetUserByName(name string) (v *User, err error) {
 	v = &User{Name: name}
 	if err = Ormer().Read(v, "Name"); err != nil {

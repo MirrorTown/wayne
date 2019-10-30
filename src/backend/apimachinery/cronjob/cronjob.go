@@ -78,6 +78,10 @@ func senfMsg(status string, notify int, sub models.Deploy, cli apimachinery.Clie
 	cli.DeployServer().UpdateDeployStatus(sub.Status, sub.Notify)
 	msg := fmt.Sprintf(deploy.RELEASEBEGIN, sub.Status, sub.Name, sub.User, time.Now().Unix()-sub.UpdateTime.Unix(), time.Now().Format("2006 01/02 15:04:05.000"))
 	fmt.Println(msg)
-	//err := cli.NotifyToDingding(msg, "1876xxxxx65")
+	user, _ := models.UserModel.GetUserByDisplay(sub.User)
+	err := cli.NotifyToDingding(msg, user.Name)
+	if err != nil {
+		logs.Error("发送DingTalk失败, ", err)
+	}
 	return nil
 }

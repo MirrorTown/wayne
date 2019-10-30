@@ -170,7 +170,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     this.namespaceClient.getResourceUsage(this.cacheService.namespaceId).subscribe(
       response => {
         this.resources = response.data;
-        console.log(this.resources)
         Object.getOwnPropertyNames(this.resources).forEach(cluster => {
           this.clusters.push({name: cluster, state: false});
         });
