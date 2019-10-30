@@ -20,25 +20,25 @@ func (d *deploy) GetDeployStatus() string {
 
 func (d *deploy) UpdateDeployStatus(status string, notify int) string {
 	m := models.Deploy{
-		User:   d.publishUser,
-		Name:   d.publishName,
-		Cluster: d.publishCluster,
-		Namespace:  d.publishNamespace,
+		User:         d.publishUser,
+		Name:         d.publishName,
+		Cluster:      d.publishCluster,
+		Namespace:    d.publishNamespace,
 		ResourceName: d.publishResourceName,
 		ResourceType: d.publishResourceType,
-		Status: status,
-		Notify: notify,
+		Status:       status,
+		Notify:       notify,
 	}
 
 	err := m.UpdatePublishStatus(&m)
 	if err != nil {
-		logs.Error("update deploy status failed, " , err)
+		logs.Error("update deploy status failed, ", err)
 	}
 
 	return "ok"
 }
 
-func (d *deploy) GetDeploys() ([]models.Deploy) {
+func (d *deploy) GetDeploys() []models.Deploy {
 	m := models.Deploy{}
 
 	filter := make(map[string]interface{})
@@ -46,7 +46,7 @@ func (d *deploy) GetDeploys() ([]models.Deploy) {
 	filter["notify"] = d.notify
 	deploys, err := m.GetDeploys(filter)
 	if err != nil {
-		panic(err)
+		logs.Error("get deploy error, ", err)
 	}
 	return deploys
 }

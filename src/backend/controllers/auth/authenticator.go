@@ -97,7 +97,6 @@ func (c *AuthController) Login() {
 			logs.Error("获取用户信息失败,", err)
 			return
 		}
-		fmt.Println(userinfo)
 	}
 
 	if authType == models.AuthTypeOAuth2 {
