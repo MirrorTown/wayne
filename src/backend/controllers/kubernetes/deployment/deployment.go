@@ -4,13 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/Qihoo360/wayne/src/backend/apimachinery"
-	"github.com/Qihoo360/wayne/src/backend/client/api"
-	"k8s.io/api/apps/v1beta1"
-	"k8s.io/apimachinery/pkg/labels"
-	"net/http"
-	"strings"
-
 	"github.com/Qihoo360/wayne/src/backend/client"
+	"github.com/Qihoo360/wayne/src/backend/client/api"
 	"github.com/Qihoo360/wayne/src/backend/controllers/base"
 	"github.com/Qihoo360/wayne/src/backend/controllers/common"
 	"github.com/Qihoo360/wayne/src/backend/models"
@@ -21,6 +16,10 @@ import (
 	"github.com/Qihoo360/wayne/src/backend/util"
 	"github.com/Qihoo360/wayne/src/backend/util/logs"
 	"github.com/Qihoo360/wayne/src/backend/workers/webhook"
+	"k8s.io/api/apps/v1beta1"
+	"k8s.io/apimachinery/pkg/labels"
+	"net/http"
+	"strings"
 )
 
 type KubeDeploymentController struct {
@@ -205,7 +204,6 @@ func (c *KubeDeploymentController) Create() {
 	recode.ResourceName = kubeDeployment.ObjectMeta.Name
 	recode.ResourceType = api.KindToResourceType[kubeDeployment.TypeMeta.Kind]
 	status := recode.DeployServer().UpdateDeployStatus(models.Deploying, models.ToBeNotify)
-	//recode.NotifyToDingding(recode.Name, "187xxxxxx65")
 	fmt.Println(status)
 
 	c.Success("ok")

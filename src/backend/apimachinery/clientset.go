@@ -49,7 +49,6 @@ func (cs *ClientSet) NotifyToDingding(msg string, mobile string) (err error) {
 				}`
 	//创建一个请求
 	body := fmt.Sprintf(content, msg, mobile)
-	fmt.Println(body)
 	jsonValue := []byte(body)
 	req, err := http.NewRequest("POST", webHook, bytes.NewBuffer(jsonValue))
 	if err != nil {
