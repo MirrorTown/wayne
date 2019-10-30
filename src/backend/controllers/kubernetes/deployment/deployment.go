@@ -277,15 +277,14 @@ func (c *KubeDeploymentController) Get() {
 	namespace := c.Ctx.Input.Param(":namespace")
 	name := c.Ctx.Input.Param(":deployment")
 	manager := c.Manager(cluster)
-	result, err := deployment.GetDeploymentDetail(manager.Client, manager.CacheFactory, name+"-grayscale", namespace)
-	if err != nil {
-		//补充灰度发布后获取详情功能
-		result, err = deployment.GetDeploymentDetail(manager.Client, manager.CacheFactory, name, namespace)
-		if err != nil {
-			logs.Info("get kubernetes deployment detail error.", cluster, namespace, name, err)
-			c.HandleError(err)
-			return
-		}
+	resultGray, errGray := deployment.GetDeploymentDetail(manager.Client, manager.CacheFactory, name+"-grayscale", namespace)
+	result, err := deployment.GetDeploymentDetail(manager.Client, manager.CacheFactory, name, namespace)
+	if err != nil && errGray != nil {
+		logs.Info("get kubernetes deployment detail error.", cluster, namespace, name, err)
+		c.HandleError(err)
+		return
+	} else if err != nil && errGray == nil {
+		result = resultGray
 	}
 	c.Success(result)
 }
