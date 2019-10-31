@@ -119,6 +119,21 @@ func (*deploymentModel) UpdateOrders(deployments []*Deployment) error {
 	return err
 }
 
+func (*deploymentModel) GetAllByName(items []string) ([]Deployment, error) {
+	deployments := []Deployment{}
+	qs := Ormer().
+		QueryTable(new(Deployment))
+
+	qs = qs.Filter("deployment__name__in", strings.Join(items, ","))
+	_, err := qs.All(&deployments)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return deployments, nil
+}
+
 func (*deploymentModel) Add(m *Deployment) (id int64, err error) {
 	m.App = &App{Id: m.AppId}
 	m.CreateTime = nil

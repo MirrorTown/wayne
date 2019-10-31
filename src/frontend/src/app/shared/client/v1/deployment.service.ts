@@ -47,7 +47,7 @@ export class DeploymentService {
       .catch(error => throwError(error));
   }
 
-  list(pageState: PageState, deleted?: string, appId?: string): Observable<any> {
+    list(pageState: PageState, deleted?: string, appId?: string): Observable<any> {
     let params = new HttpParams();
     params = params.set('pageNo', pageState.page.pageNo + '');
     params = params.set('pageSize', pageState.page.pageSize + '');
