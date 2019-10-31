@@ -5,6 +5,7 @@ import (
 	"github.com/Qihoo360/wayne/src/backend/controllers/base"
 	"github.com/Qihoo360/wayne/src/backend/models"
 	"github.com/Qihoo360/wayne/src/backend/util/logs"
+	"strings"
 )
 
 type DeploymentController struct {
@@ -82,12 +83,12 @@ func (c *DeploymentController) List() {
 		param.Query["name__contains"] = name
 	}
 
-	//var items = make([]string, 0) // TODO data from hongbao
-	//items = append(items, "localtest-hongmao")
+	var items = make([]string, 0) // TODO data from hongbao
+	items = append(items, "localtest-hongmao")
 	deployment := []models.Deployment{}
 	if c.AppId != 0 {
 		param.Query["App__Id"] = c.AppId
-		//param.Query["Name__in"] = strings.Join(items, ",")
+		param.Query["Name__in"] = strings.Join(items, ",")
 	} else if !c.User.Admin {
 		param.Query["App__AppUsers__User__Id__exact"] = c.User.Id
 		perName := models.PermissionModel.MergeName(models.PermissionTypeDeployment, models.PermissionRead)
