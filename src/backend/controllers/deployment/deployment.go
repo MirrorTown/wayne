@@ -2,7 +2,9 @@ package deployment
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/Qihoo360/wayne/src/backend/controllers/base"
+	"github.com/Qihoo360/wayne/src/backend/controllers/hongmao"
 	"github.com/Qihoo360/wayne/src/backend/models"
 	"github.com/Qihoo360/wayne/src/backend/util/logs"
 	"strings"
@@ -10,6 +12,10 @@ import (
 
 type DeploymentController struct {
 	base.APIController
+}
+
+type GetApplication interface {
+	GetApplication(url string) []map[string]interface{}
 }
 
 func (c *DeploymentController) URLMapping() {
@@ -83,12 +89,20 @@ func (c *DeploymentController) List() {
 		param.Query["name__contains"] = name
 	}
 
-	var items = make([]string, 0) // TODO data from hongbao
-	items = append(items, "localtest-hongmao")
+	//非Admin用户仅可操作授权于虹猫相关项目权限的应用
+	if !c.User.Admin {
+		var items = make([]string, 0)
+		url := fmt.Sprintf("https://hongmao.souche-inc.com/aliyun/userApp/getapp?email=%s&access_token=", c.User.Email)
+		itemsMap := GetApplication(&hongmao.HongMaoController{}).GetApplication(url)
+		for item := range itemsMap {
+			items = append(items, itemsMap[item]["applicationName"].(string))
+		}
+		param.Query["Name__icontains"] = strings.Join(items, ",")
+	}
+
 	deployment := []models.Deployment{}
 	if c.AppId != 0 {
 		param.Query["App__Id"] = c.AppId
-		param.Query["Name__in"] = strings.Join(items, ",")
 	} else if !c.User.Admin {
 		param.Query["App__AppUsers__User__Id__exact"] = c.User.Id
 		perName := models.PermissionModel.MergeName(models.PermissionTypeDeployment, models.PermissionRead)

@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	TableNameDeployment = "deployment"
+	TableNameDeployment = "deployment_test"
 )
 
 type deploymentModel struct{}
@@ -124,7 +124,7 @@ func (*deploymentModel) GetAllByName(items []string) ([]Deployment, error) {
 	qs := Ormer().
 		QueryTable(new(Deployment))
 
-	qs = qs.Filter("deployment__name__in", strings.Join(items, ","))
+	qs = qs.Filter("name__in", strings.Join(items, ","))
 	_, err := qs.All(&deployments)
 
 	if err != nil {

@@ -1,8 +1,10 @@
 package hongmao
 
 import (
+	"errors"
 	"fmt"
 	"github.com/Qihoo360/wayne/src/backend/controllers/base"
+	"github.com/Qihoo360/wayne/src/backend/models"
 	"github.com/Qihoo360/wayne/src/backend/util/logs"
 	"github.com/astaxie/beego"
 	"io/ioutil"
@@ -54,17 +56,48 @@ func (h *HongMaoController) Prepare() {
 // @Failure 403 body is empty
 // @router /app/sysnc [get]
 func (h *HongMaoController) Sysnc() {
-	appItems := h.getApplication(h.User.Email)
-	for v := range appItems.m {
-		fmt.Println(v)
+	var name = make([]string, 0)
+	name = append(name, "waynetemplate")
+	deploymentTemplate, err := models.DeploymentModel.GetAllByName(name)
+	if err != nil || len(deploymentTemplate) == 0 {
+		logs.Error("获取模板失败,", err)
+		h.HandleError(errors.New("获取模板失败"))
+		return
 	}
+
+	apps, err := models.AppModel.GetNames(false)
+	for appI := range apps {
+		allAppUrl := fmt.Sprintf("https://hongmao.souche-inc.com/aliyun/application/selectAppBySzoneName?szoneName=%s&access_token=", apps[appI].Name)
+		allAppMap := h.GetApplication(allAppUrl)
+
+		for index := range allAppMap {
+			models.DeploymentModel.Add(&models.Deployment{
+				Name:        apps[appI].Name + "-" + strings.TrimSpace(allAppMap[index]["name"].(string)),
+				MetaData:    deploymentTemplate[0].MetaData,
+				Description: getDes(allAppMap[index]["description"]),
+				OrderId:     0,
+				User:        h.User.Display,
+				Deleted:     false,
+				AppId:       apps[appI].Id,
+			})
+		}
+	}
+
+	h.Success("完成同步!")
 }
 
-func (h *HongMaoController) getApplication(email string) *set {
+func getDes(desc interface{}) string {
+	if desc == nil {
+		return ""
+	}
+	return desc.(string)
+}
+
+func (h *HongMaoController) GetApplication(url string) []map[string]interface{} {
 	accessToken := h.getAccessToken()
 	client := &http.Client{}
 	var req *http.Request
-	req, _ = http.NewRequest(http.MethodGet, fmt.Sprintf("https://hongmao.souche-inc.com/aliyun/userApp/getapp?email=%s&access_token=%s", email, accessToken), nil)
+	req, _ = http.NewRequest(http.MethodGet, url+accessToken, nil)
 
 	resp, err := client.Do(req)
 	if err != nil {
@@ -78,12 +111,8 @@ func (h *HongMaoController) getApplication(email string) *set {
 	if err != nil {
 		fmt.Println("JsonToMapDemo err: ", err)
 	}
-	//var AppItems = make([]string, 0)
-	appItems := NewSet()
-	for _, v := range mapResult {
-		appItems.Add(v["applicationName"].(string))
-	}
-	return appItems
+
+	return mapResult
 }
 
 func (h *HongMaoController) getAccessToken() string {
