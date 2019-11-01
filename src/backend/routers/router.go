@@ -6,6 +6,7 @@ package routers
 import (
 	"github.com/Qihoo360/wayne/src/backend/controllers/auth"
 	"github.com/Qihoo360/wayne/src/backend/controllers/harbor"
+	"github.com/Qihoo360/wayne/src/backend/controllers/hongmao"
 	"github.com/Qihoo360/wayne/src/backend/controllers/review"
 	"net/http"
 	"path"
@@ -431,13 +432,21 @@ func init() {
 		),
 	)
 
-	beego.Router("/api/v1/harbor/:namespaceId/images",&image.HarborImageController{},"get:List")
-	beego.Router("/api/v1/harbor/tags",&image.HarborImageController{},"get:ListTag")
+	beego.Router("/api/v1/harbor/:namespaceId/images", &image.HarborImageController{}, "get:List")
+	beego.Router("/api/v1/harbor/tags", &image.HarborImageController{}, "get:ListTag")
 
 	nsWithHarbor := beego.NewNamespace("/api/v1",
 		beego.NSNamespace("/harbors",
 			beego.NSInclude(
 				&harbor.HarborController{},
+			),
+		),
+	)
+
+	nsWithHongmao := beego.NewNamespace("/api/v1",
+		beego.NSNamespace("/hongmao",
+			beego.NSInclude(
+				&hongmao.HongMaoController{},
 			),
 		),
 	)
@@ -467,4 +476,6 @@ func init() {
 	beego.AddNamespace(nsWithHarbor)
 
 	beego.AddNamespace(nsWithReview)
+
+	beego.AddNamespace(nsWithHongmao)
 }

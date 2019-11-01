@@ -138,7 +138,7 @@ func (c *AppController) Create() {
 		return
 	}
 
-	app.User = c.User.Name
+	app.User = c.User.Display
 	_, err = models.AppModel.Add(&app)
 
 	if err != nil {

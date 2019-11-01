@@ -9,6 +9,9 @@
           <clr-icon shape="add"></clr-icon>
           创建项目
         </button>
+        <button class="wayne-button normal" (click)="sysncapp()">
+          {{'BUTTON.SYNCAPP' | translate}}
+        </button>
         <create-edit-app (create)="createApp($event)"></create-edit-app>
       </div>
     </div>

@@ -2,13 +2,20 @@ package deployment
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/Qihoo360/wayne/src/backend/controllers/base"
+	"github.com/Qihoo360/wayne/src/backend/controllers/hongmao"
 	"github.com/Qihoo360/wayne/src/backend/models"
 	"github.com/Qihoo360/wayne/src/backend/util/logs"
+	"strings"
 )
 
 type DeploymentController struct {
 	base.APIController
+}
+
+type GetApplication interface {
+	GetApplication(url string) []map[string]interface{}
 }
 
 func (c *DeploymentController) URLMapping() {
@@ -80,6 +87,17 @@ func (c *DeploymentController) List() {
 	name := c.Input().Get("name")
 	if name != "" {
 		param.Query["name__contains"] = name
+	}
+
+	//非Admin用户仅可操作授权于虹猫相关项目权限的应用
+	if !c.User.Admin {
+		var items = make([]string, 0)
+		url := fmt.Sprintf("https://hongmao.souche-inc.com/aliyun/userApp/getapp?email=%s&access_token=", c.User.Email)
+		itemsMap := GetApplication(&hongmao.HongMaoController{}).GetApplication(url)
+		for item := range itemsMap {
+			items = append(items, itemsMap[item]["applicationName"].(string))
+		}
+		param.Query["Name__icontains"] = strings.Join(items, ",")
 	}
 
 	deployment := []models.Deployment{}

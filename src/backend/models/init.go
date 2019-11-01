@@ -16,8 +16,9 @@ var (
 	AppStarredModel               *appStarredModel
 	NamespaceUserModel            *namespaceUserModel
 	ClusterModel                  *clusterModel
-	HarborModel					  *harborModel
-	ReviewModel					  *reviewModel
+	HarborModel                   *harborModel
+	HongmaoUserModel              *hongmaoUserModel
+	ReviewModel                   *reviewModel
 	DeploymentModel               *deploymentModel
 	DeploymentTplModel            *deploymentTplModel
 	PermissionModel               *permissionModel
