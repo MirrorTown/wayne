@@ -61,6 +61,23 @@ export class AppService {
       .catch(error => throwError(error));
   }
 
+  syncApp(namespaceId?: number, appId?: number): Observable<any> {
+    if ((typeof (namespaceId) === 'undefined') || (!namespaceId)) {
+      namespaceId = 0;
+    }
+    const options: any = {};
+    if (appId != null) {
+      let params = new HttpParams();
+      params = params.set('app_id', appId + '');
+      options.params = params;
+    }
+    console.log("enter sysnc")
+    return this.http
+      .get(`/api/v1/hongmao/app/sysnc`, options)
+
+      .catch(error => throwError(error));
+  }
+
   listResourceCount(namespaceId?: number, appId?: number): Observable<any> {
     if ((typeof (namespaceId) === 'undefined') || (!namespaceId)) {
       namespaceId = 0;

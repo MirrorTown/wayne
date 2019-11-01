@@ -14,6 +14,7 @@ import { AppService } from '../../shared/client/v1/app.service';
 import { NamespaceService } from '../../shared/client/v1/namespace.service';
 import { PageState } from '../../shared/page/page-state';
 import { isNotEmpty } from '../../shared/utils';
+import {CacheService} from "../../shared/auth/cache.service";
 
 @Component({
   selector: 'wayne-app',
@@ -34,6 +35,7 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(private breadcrumbService: BreadcrumbService,
               private appService: AppService,
               private route: ActivatedRoute,
+              public cacheService: CacheService,
               private messageHandlerService: MessageHandlerService,
               private namespaceService: NamespaceService,
               private deletionDialogService: ConfirmationDialogService) {
@@ -99,6 +101,17 @@ export class AppComponent implements OnInit, OnDestroy {
     if (created) {
       this.retrieve();
     }
+  }
+
+  sysncapp(){
+    this.appService.syncApp().subscribe(
+      resopse => {
+        console.log(resopse.data);
+      },
+      error => {
+        this.messageHandlerService.handleError(error);
+      }
+    );
   }
 
   openModal(): void {
