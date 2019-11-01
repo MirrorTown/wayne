@@ -49,8 +49,6 @@ func Authenticate(m *BasicUserInfo) (*models.User, error) {
 			logs.Error("保存用户信息失败, ", err)
 		}
 		olduser = user
-	} else {
-		return nil, err
 	}
 
 	return olduser, nil

@@ -129,7 +129,7 @@ func (c *AuthController) Login() {
 	} else {
 		user, err = authenticator.Authenticate(authModel)
 	}
-	if err != nil {
+	if err != nil || user == nil {
 		logs.Warning("try to login in with user (%s) error %v. ", authModel.Username, err)
 		c.Ctx.Output.SetStatus(http.StatusBadRequest)
 		c.Ctx.Output.Body(hack.Slice(fmt.Sprintf("Login failed. %v", err)))
