@@ -4,6 +4,7 @@ import (
 	"github.com/Qihoo360/wayne/src/backend/models"
 	"github.com/Qihoo360/wayne/src/backend/util/logs"
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/orm"
 	"strconv"
 )
 
@@ -27,17 +28,17 @@ type BasicUserInfo struct {
 
 type SsoInfo struct {
 	BackUrl     string
-	CookieName string
-	RedirectUrl  string // get user info
-	GetAuth      string
-	Enabled      bool
+	CookieName  string
+	RedirectUrl string // get user info
+	GetAuth     string
+	Enabled     bool
 }
 
 func Authenticate(m *BasicUserInfo) (*models.User, error) {
 	username := m.Name
-	user, err := models.UserModel.GetUserByName(username)
+	olduser, err := models.UserModel.GetUserByName(username)
 	//无用户名记录情况，同步sso信息到db
-	if err != nil {
+	if err == orm.ErrNoRows {
 		var user = new(models.User)
 		user.Name = m.Name
 		user.Email = m.Email
@@ -45,13 +46,14 @@ func Authenticate(m *BasicUserInfo) (*models.User, error) {
 		user.Comment = "信息来源于SSO"
 		_, err := models.UserModel.AddUser(user)
 		if err != nil {
-			logs.Error("保存用户信息失败, ",err)
-		}else {
-			user, _ = models.UserModel.GetUserByName(username)
+			logs.Error("保存用户信息失败, ", err)
 		}
+		olduser = user
+	} else {
+		return nil, err
 	}
 
-	return user, nil
+	return olduser, nil
 }
 
 func NewSsoService() {
@@ -76,10 +78,10 @@ func NewSsoService() {
 
 		info := &SsoInfo{
 			BackUrl:     section["back_url"],
-			CookieName: section["cookie_name"],
-			RedirectUrl:  section["redirect_url"],
-			GetAuth:      section["get_auth"],
-			Enabled:      enabled,
+			CookieName:  section["cookie_name"],
+			RedirectUrl: section["redirect_url"],
+			GetAuth:     section["get_auth"],
+			Enabled:     enabled,
 		}
 
 		SsoInfos[SsoTypeDefault] = info

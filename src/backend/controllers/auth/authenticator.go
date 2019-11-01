@@ -209,7 +209,7 @@ func (c *AuthController) getUserInfo(s *selfsso.SsoInfo) (*selfsso.BasicUserInfo
 		var mapResult map[string]interface{}
 		err = json.Unmarshal(b, &mapResult)
 		if err != nil {
-			fmt.Println("JsonToMapDemo err: ", err)
+			logs.Error("JsonToMapDemo err: ", err)
 		}
 		userInfo.Name = mapResult["data"].(map[string]interface{})["userName"].(string)
 		userInfo.Email = mapResult["data"].(map[string]interface{})["email"].(string)
