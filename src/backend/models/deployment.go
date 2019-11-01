@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	TableNameDeployment = "deployment_test"
+	TableNameDeployment = "deployment"
 )
 
 type deploymentModel struct{}
