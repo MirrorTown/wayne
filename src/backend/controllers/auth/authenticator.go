@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"net"
 	"net/http"
 	"net/http/cookiejar"
 	"strings"
@@ -136,7 +137,7 @@ func (c *AuthController) Login() {
 	}
 
 	now := time.Now()
-	user.LastIp = c.Ctx.Input.IP()
+	user.LastIp = RemoteIp(c.Ctx.Request)
 	user.LastLogin = &now
 	user, err = models.UserModel.EnsureUser(user)
 	if err != nil {
@@ -178,6 +179,23 @@ func (c *AuthController) Login() {
 	}
 	c.Data["json"] = base.Result{Data: loginResult}
 	c.ServeJSON()
+}
+
+func RemoteIp(req *http.Request) string {
+	remoteAddr := req.RemoteAddr
+	if ip := req.Header.Get("XRealIP"); ip != "" {
+		remoteAddr = ip
+	} else if ip = req.Header.Get("XForwardedFor"); ip != "" {
+		remoteAddr = ip
+	} else {
+		remoteAddr, _, _ = net.SplitHostPort(remoteAddr)
+	}
+
+	if remoteAddr == "::1" {
+		remoteAddr = "127.0.0.1"
+	}
+
+	return remoteAddr
 }
 
 func (c *AuthController) getUserInfo(s *selfsso.SsoInfo) (*selfsso.BasicUserInfo, error) {
