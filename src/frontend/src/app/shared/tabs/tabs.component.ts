@@ -123,10 +123,15 @@ export class TabsComponent implements AfterViewInit, OnDestroy {
   filtertabs() {
     this._tabs.forEach(item => {
       const el = item.el.nativeElement;
-      el.classList.remove('hide');
-      if (el.innerText.indexOf(this.searchContent) === -1) {
+      if (el.innerText.indexOf(this.searchContent) >= 0) {
+        el.classList.remove('hide');
+      }else {
         el.classList.add('hide');
       }
+      /*el.classList.remove('hide');
+      if (el.innerText.indexOf(this.searchContent) === -1) {
+        el.classList.add('hide');
+      }*/
       this.boxResize();
     });
   }

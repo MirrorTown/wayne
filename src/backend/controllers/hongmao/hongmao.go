@@ -83,7 +83,8 @@ func (h *HongMaoController) Sysnc() {
 		}
 	}
 
-	h.Success("完成同步!")
+	h.Ctx.WriteString("完成同步!")
+	return
 }
 
 func getDes(desc interface{}) string {

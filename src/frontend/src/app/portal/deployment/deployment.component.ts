@@ -257,7 +257,7 @@ export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit 
     this.deploymentId = parseInt(this.route.snapshot.params['deploymentId'], 10);
     combineLatest(
       [this.clusterService.getNames(),
-      this.deploymentService.list(PageState.fromState({sort: {by: 'id', reverse: false}}, {pageSize: 1000}), 'false', this.appId + ''),
+      this.deploymentService.list(PageState.fromState({sort: {by: 'id', reverse: false}}, {pageSize: 2000}), 'false', this.appId + ''),
       this.appService.getById(this.appId, namespaceId)]
     ).subscribe(
       response => {

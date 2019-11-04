@@ -15,12 +15,17 @@ export class SearchSectionComponent implements ControlValueAccessor, OnDestroy {
   @ViewChild('input', { static: false }) inputElement: ElementRef;
   _value: string;
   evtList: Array<Function> = Array();
+  sendflag: boolean;
+  sendValue: string;
   get value() {
     return this._value;
   }
   set value(value: string) {
     if (value !== this._value) {
-      this.updateEmit(value);
+      this.sendValue = value;
+      // this.updateEmit(value);
+    }else {
+      this.sendValue = "";
     }
   }
   updateEmit = (_: any) => { };
@@ -47,5 +52,11 @@ export class SearchSectionComponent implements ControlValueAccessor, OnDestroy {
     this.updateEmit = fn;
   }
   registerOnTouched(fn: any): void {
+  }
+
+  clieckEvent(evnet) {
+    if ( evnet.keyCode == 13 ) {
+      this.updateEmit(this.sendValue);
+    }
   }
 }

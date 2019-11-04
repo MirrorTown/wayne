@@ -7,7 +7,6 @@ import (
 	"github.com/Qihoo360/wayne/src/backend/controllers/hongmao"
 	"github.com/Qihoo360/wayne/src/backend/models"
 	"github.com/Qihoo360/wayne/src/backend/util/logs"
-	"strings"
 )
 
 type DeploymentController struct {
@@ -91,13 +90,18 @@ func (c *DeploymentController) List() {
 
 	//非Admin用户仅可操作授权于虹猫相关项目权限的应用
 	if !c.User.Admin {
+		app, err := models.AppModel.GetById(c.AppId)
+		if err != nil {
+			logs.Error("查询数据库表App失败, ", err)
+			return
+		}
 		var items = make([]string, 0)
 		url := fmt.Sprintf("https://hongmao.souche-inc.com/aliyun/userApp/getapp?email=%s&access_token=", c.User.Email)
 		itemsMap := GetApplication(&hongmao.HongMaoController{}).GetApplication(url)
 		for item := range itemsMap {
-			items = append(items, itemsMap[item]["applicationName"].(string))
+			items = append(items, app.Name+"-"+itemsMap[item]["applicationName"].(string))
 		}
-		param.Query["Name__icontains"] = strings.Join(items, ",")
+		param.Query["Name__in"] = items
 	}
 
 	deployment := []models.Deployment{}
