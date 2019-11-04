@@ -33,6 +33,7 @@ import { MarkdownModule } from 'ngx-markdown';
 import { LibraryPortalModule } from '../../../lib/portal/library-portal.module';
 import { AutoscaleModule } from './autoscale/autoscale.module';
 import { ReviewModule } from './review/review.module';
+import {PodMonitorComponent} from "./pod-monitor/pod-monitor.component";
 
 @NgModule({
   imports: [
@@ -74,6 +75,7 @@ import { ReviewModule } from './review/review.module';
     NavComponent,
     PortalComponent,
     PodLoggingComponent,
+    PodMonitorComponent,
   ]
 })
 export class PortalModule {

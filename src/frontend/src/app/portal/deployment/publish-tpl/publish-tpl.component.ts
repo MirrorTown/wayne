@@ -322,7 +322,7 @@ export class PublishDeploymentTplComponent implements OnInit {
     forkJoin(observables).subscribe(
       response => {
         this.published.emit(true);
-        this.messageHandlerService.showSuccess('发布成功！');
+        this.messageHandlerService.showSuccess('已进入发布队列，请关注发布结果！');
       },
       error => {
         this.published.emit(true);

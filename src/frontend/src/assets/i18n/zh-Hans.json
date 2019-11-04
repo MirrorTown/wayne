@@ -266,6 +266,7 @@
     "DATABASE_CONFIGURATION": "数据库配置",
     "DEPARTMENT": "部门概览",
     "REVIEW": "发布审核",
+    "MONITOR": "监控",
     "DEPLOYMENT": "部署",
     "DEPLOYMENT_LIST": "部署列表",
     "AUTO_POD_SCALE": "自动水平伸缩",

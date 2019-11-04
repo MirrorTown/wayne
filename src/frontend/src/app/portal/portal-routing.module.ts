@@ -39,6 +39,7 @@ import { PORTALROUTES } from '../../../lib/portal/library-routing-portal';
 import { AutoscaleComponent } from './autoscale/autoscale.component';
 import { CreateEditAutoscaletplComponent } from './autoscale/create-edit-autoscaletpl/create-edit-autoscaletpl.component';
 import { ReviewComponent } from'./review/review.component';
+import {PodMonitorComponent} from "./pod-monitor/pod-monitor.component";
 
 const routes: Routes = [
   {
@@ -109,6 +110,10 @@ const routes: Routes = [
   {
     path: 'portal/logging/namespace/:nid/app/:id/:resourceType/:resourceName/pod/:podName/:cluster/:namespace',
     component: PodLoggingComponent
+  },
+  {
+    path: 'portal/pod/monitor',
+    component: PodMonitorComponent
   },
   {
     path: 'portal/logging/namespace/:nid/app/:id/:resourceType/:resourceName/pod/:podName/container/:container/:cluster/:namespace',

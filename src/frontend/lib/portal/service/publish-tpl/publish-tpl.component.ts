@@ -154,7 +154,7 @@ export class PublishServiceTplComponent {
       this.serviceTpl.id,
       kubeService).subscribe(
       response => {
-        this.messageHandlerService.showSuccess('发布成功！');
+        this.messageHandlerService.showSuccess('已进入发布队列，请关注发布结果！');
         this.published.emit(true);
       },
       error => {
