@@ -50,6 +50,8 @@ var (
 	IngressTemplateModel          *ingressTemplateModel
 	HPAModel                      *hpaModel
 	HPATemplateModel              *hpaTemplateModel
+	LinkTypeModel                 *linkTypeModel
+	CustomLinkModel               *customLinkModel
 )
 
 func init() {
@@ -96,7 +98,9 @@ func init() {
 		new(Ingress),
 		new(IngressTemplate),
 		new(HPA),
-		new(HPATemplate))
+		new(HPATemplate),
+		new(LinkType),
+		new(CustomLink))
 
 	// init models
 	HarborModel = &harborModel{}
@@ -136,6 +140,8 @@ func init() {
 	IngressTemplateModel = &ingressTemplateModel{}
 	HPAModel = &hpaModel{}
 	HPATemplateModel = &hpaTemplateModel{}
+	LinkTypeModel = &linkTypeModel{}
+	CustomLinkModel = &customLinkModel{}
 }
 
 // singleton init ormer ,only use for normal db operation

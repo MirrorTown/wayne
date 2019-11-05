@@ -159,7 +159,7 @@ func (c *AuthController) Login() {
 
 	apiToken, err := token.SignedString(rsakey.RsaPrivateKey)
 	if err != nil {
-		logs.Error("create token form rsa prijkmhnvate key  error.", rsakey.RsaPrivateKey, err.Error())
+		logs.Error("create token form rsa private key  error.", rsakey.RsaPrivateKey, err.Error())
 		c.Ctx.Output.SetStatus(http.StatusInternalServerError)
 		c.Ctx.Output.Body(hack.Slice(err.Error()))
 		return

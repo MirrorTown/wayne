@@ -15,7 +15,7 @@ export class SearchSectionComponent implements ControlValueAccessor, OnDestroy {
   @ViewChild('input', { static: false }) inputElement: ElementRef;
   _value: string;
   evtList: Array<Function> = Array();
-  sendflag: boolean;
+  // sendflag: boolean;
   sendValue: string;
   get value() {
     return this._value;

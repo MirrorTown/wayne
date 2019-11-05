@@ -127,7 +127,6 @@ func (h *resourceHandler) Get(kind string, namespace string, name string) (runti
 
 // Get object from cache
 func (h *resourceHandler) List(kind string, namespace string, labelSelector string) ([]runtime.Object, error) {
-	//labelSelector = ""
 	resource, ok := api.KindToResourceMap[kind]
 	if !ok {
 		return nil, fmt.Errorf("Resource kind (%s) not support yet . ", kind)

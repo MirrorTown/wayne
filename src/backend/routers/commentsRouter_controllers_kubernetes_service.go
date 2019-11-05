@@ -6,21 +6,23 @@ import (
 )
 
 func init() {
-
-	beego.GlobalControllerRouter["github.com/Qihoo360/wayne/src/backend/controllers/kubernetes/service:KubeServiceController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/wayne/src/backend/controllers/kubernetes/service:KubeServiceController"],
+	const KubeServiceController = "github.com/Qihoo360/wayne/src/backend/controllers/kubernetes/service:KubeServiceController"
+	beego.GlobalControllerRouter[KubeServiceController] = append(
+		beego.GlobalControllerRouter[KubeServiceController],
 		beego.ControllerComments{
 			Method:           "Get",
 			Router:           `/:service/detail/namespaces/:namespace/clusters/:cluster`,
 			AllowHTTPMethods: []string{"get"},
 			MethodParams:     param.Make(),
-			Params:           nil})
-
-	beego.GlobalControllerRouter["github.com/Qihoo360/wayne/src/backend/controllers/kubernetes/service:KubeServiceController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/wayne/src/backend/controllers/kubernetes/service:KubeServiceController"],
+			Filters:          nil,
+			Params:           nil,
+		},
 		beego.ControllerComments{
 			Method:           "Create",
 			Router:           `/:serviceId/tpls/:tplId/clusters/:cluster`,
 			AllowHTTPMethods: []string{"post"},
 			MethodParams:     param.Make(),
-			Params:           nil})
-
+			Filters:          nil,
+			Params:           nil,
+		})
 }

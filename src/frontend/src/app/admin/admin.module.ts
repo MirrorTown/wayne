@@ -69,6 +69,8 @@ import { KubeClusterroleModule } from './kubernetes/clusterrole/kube-clusterrole
 import { KubeClusterrolebindingModule } from './kubernetes/clusterrolebinding/kube-clusterrolebinding.module';
 import { KubeCrdModule } from './kubernetes/crd/kube-crd.module';
 import { HarborModule } from './harbor/harbor.module';
+import { RoadMapModule } from './roadmap/roadmap.module';
+import { CustomlinkModule } from './customlink/customlink.module';
 
 @NgModule({
   imports: [
@@ -132,7 +134,9 @@ import { HarborModule } from './harbor/harbor.module';
     KubeClusterroleModule,
     KubeClusterrolebindingModule,
     KubeNamespaceModule,
-    KubeCrdModule
+    KubeCrdModule,
+    RoadMapModule,
+    CustomlinkModule
   ],
   providers: [
     AdminAuthCheckGuard,
