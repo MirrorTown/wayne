@@ -45,7 +45,7 @@ func InitDb() {
 func ensureDatabase() error {
 	needInit := false
 	home := HomeP(&apimachinery.HomePath{}).GetCurrentDirectory()
-	err := beego.LoadAppConfig("ini", home + "/src/wayne/src/backend/conf/app.conf")
+	err := beego.LoadAppConfig("ini", home+"/src/wayne/src/backend/conf/app.conf")
 	if err != nil {
 		panic(err)
 	}
@@ -107,5 +107,6 @@ func ensureDatabase() error {
 }
 
 func addLocation(dbURL string) string {
-	return fmt.Sprintf("%s?charset=utf8&loc=%s", dbURL, beego.AppConfig.DefaultString("DBLoc", "Asia%2FShanghai"))
+	// https://stackoverflow.com/questions/30074492/what-is-the-difference-between-utf8mb4-and-utf8-charsets-in-mysql
+	return fmt.Sprintf("%s?charset=utf8mb4&loc=%s", dbURL, beego.AppConfig.DefaultString("DBLoc", "Asia%2FShanghai"))
 }

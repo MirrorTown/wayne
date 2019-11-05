@@ -20,6 +20,7 @@ import (
 	"github.com/Qihoo360/wayne/src/backend/controllers/config"
 	"github.com/Qihoo360/wayne/src/backend/controllers/configmap"
 	"github.com/Qihoo360/wayne/src/backend/controllers/cronjob"
+	"github.com/Qihoo360/wayne/src/backend/controllers/customlink"
 	"github.com/Qihoo360/wayne/src/backend/controllers/daemonset"
 	"github.com/Qihoo360/wayne/src/backend/controllers/deployment"
 	image "github.com/Qihoo360/wayne/src/backend/controllers/harbor/images"
@@ -329,6 +330,11 @@ func init() {
 				&bill.BillController{},
 			),
 		),
+		beego.NSNamespace("/namespaces/:namespaceid([0-9]+)/customlink",
+			beego.NSInclude(
+				&customlink.ShowLinkController{},
+			),
+		),
 	)
 
 	nsWithoutApp := beego.NewNamespace("/api/v1",
@@ -341,6 +347,16 @@ func init() {
 		beego.NSNamespace("/configs/base",
 			beego.NSInclude(
 				&config.BaseConfigController{},
+			),
+		),
+		beego.NSNamespace("/linktypes",
+			beego.NSInclude(
+				&customlink.LinkTypeController{},
+			),
+		),
+		beego.NSNamespace("/customlinks",
+			beego.NSInclude(
+				&customlink.CustomLinkController{},
 			),
 		),
 		beego.NSRouter("/apps/statistics", &app.AppController{}, "get:AppStatistics"),

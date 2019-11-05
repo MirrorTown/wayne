@@ -39,14 +39,14 @@
         <label class="label-level2" [id]="i ? 'image-config' + i : 'image-config'">{{'TEMPLATE.IMAGE_CONFIG' | translate}}</label>
         <clr-input-container>
           <label class="required">{{'TEMPLATE.CONTAINER_NAME' | translate}}</label>
-          <input type="text" clrInput size="90" required name="container.name_{{i}}" pattern="[a-z]([-a-z0-9]*[a-z0-9])?"
+          <input type="text" clrInput size="60" required name="container.name_{{i}}" pattern="[a-z]([-a-z0-9]*[a-z0-9])?"
             [(ngModel)]="container.name" [placeholder]="'RULE.CONTAINER' | translate" (input)="containerNameChange()"
             (compositionend)="containerNameChange()">
           <clr-control-error>{{'RULE.REGEXT' | translate}}[a-z]([-a-z0-9]*[a-z0-9])?</clr-control-error>
         </clr-input-container>
         <clr-input-container>
           <label class="required">{{'TEMPLATE.IMAGE_ADDRESS' | translate}}</label>
-          <input type="text" clrInput size="90" name="container.image_{{i}}" required pattern="{{getImagePrefixReg()}}"
+          <input type="text" clrInput size="60" name="container.image_{{i}}" required pattern="{{getImagePrefixReg()}}"
             [(ngModel)]="container.image" [placeholder]="'TEMPLATE.IMAGE_ADDRESS' | translate">
           <clr-control-error>{{'RULE.REGEXT' | translate}}{{getImagePrefixReg()}}</clr-control-error>
         </clr-input-container>
@@ -96,7 +96,7 @@
           </select>
         </clr-select-container>
       </div>
-     
+
       <div class="container-box">
         <label class="label-level2" [id]="i ? '启动命令' + i : '启动命令'">启动命令
           <button (click)="onAddContainerCommand(i)" style="margin-left: 10px;" class="wayne-button primary">
@@ -166,7 +166,7 @@
               [placeholder]="'TEMPLATE.SECRET_NAME' | translate">
           </clr-input-container>
         </div>
-        
+
         <div *ngFor="let env of container.env; let j = index; trackBy:trackByFn">
           <div class="form-group form-group-padding">
             <label for="envType-{{i}}-{{j}}" class="clr-col-md-3 form-group-label-override required">{{'TEMPLATE.ADD_ONE'
@@ -277,7 +277,7 @@
               <option value="2" [selected]="container.readinessProbe.exec">{{'TEMPLATE.EXECUTE_COMMAND' | translate}}</option>
             </select>
           </clr-select-container>
-          
+
           <ng-container *ngIf="container.readinessProbe.httpGet">
             <clr-input-container>
               <input type="number" clrInput size="30" required name="container.readinessProbe.httpGet.port_{{i}}" [(ngModel)]="container.readinessProbe.httpGet.port"
@@ -335,7 +335,7 @@
                 [placeholder]="'PLACEHOLDER.SECOND' | translate">
             </clr-input-container>
           </div>
-          
+
           <div class="form-inline">
             <clr-input-container>
               <label>{{'TEMPLATE.FAIL_NUM' | translate}}</label>
@@ -352,7 +352,7 @@
                 [placeholder]="'PLACEHOLDER.SECOND' | translate">
             </clr-input-container>
           </div>
-         
+
           <clr-select-container>
             <label class="required">{{'TEMPLATE.READINESS_CHECK_WAY' | translate}}</label>
             <select clrSelect name="livenessProbeType_{{i}}" (change)="livenessProbeTypeChange($event.target.value,i)">

@@ -89,7 +89,8 @@ import { KubeClusterroleComponent } from './kubernetes/clusterrole/kube-clusterr
 import { KubeClusterrolebindingComponent } from './kubernetes/clusterrolebinding/kube-clusterrolebinding.component';
 import { KubeCrdComponent } from './kubernetes/crd/kube-crd.component';
 import { HarborComponent } from './harbor/harbor.component';
-
+import { RoadmapComponent } from './roadmap/roadmap.component';
+import { CustomlinkComponent } from './customlink/customlink.component';
 
 const routes: Routes = [
   {
@@ -150,6 +151,8 @@ const routes: Routes = [
       {path: 'daemonset/tpl/trash', component: TrashDaemonsettplComponent},
       {path: 'config/database', component: ConfigComponent},
       {path: 'config/system', component: ConfigSystemComponent},
+      {path: 'config/roadmap', component: RoadmapComponent},
+      {path: 'config/customlink', component: CustomlinkComponent},
       {path: 'kubernetes/dashboard', component: KubernetesDashboardComponent},
       {path: 'kubernetes/dashboard/:cluster', component: KubernetesDashboardComponent},
       {path: 'kubernetes/node', component: NodesComponent},
