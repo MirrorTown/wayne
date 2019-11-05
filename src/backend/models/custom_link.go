@@ -1,5 +1,7 @@
 package models
 
+import "time"
+
 const (
 	TableNameCustomLink = "custom_link"
 )
@@ -19,7 +21,9 @@ type CustomLink struct {
 	//链接状态，默认启用，false为禁用
 	Status bool `orm:"default(true)" json:"status,omitempty"`
 
-	Displayname string `orm:"-" json:"displayname,omitempty"`
+	Displayname string    `orm:"-" json:"displayname,omitempty"`
+	CreateTime  time.Time `orm:"auto_now_add;type(datetime)" json:"createTime,omitempty"`
+	UpdateTime  time.Time `orm:"auto_now;type(datetime)" json:"updateTime,omitempty"`
 }
 
 func (*CustomLink) TableName() string {
