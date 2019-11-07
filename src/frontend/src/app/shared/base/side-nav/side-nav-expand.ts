@@ -39,11 +39,16 @@ export class SideNavExpand extends SideNavCollapse implements OnInit, OnDestroy 
   }
 
   addMathLinks(sideNav: any[]) {
-    sideNav.forEach(item => {
+    let index = 0;
+    sideNav.forEach((item,i) => {
+      if (item.text == "MENU.HOSTALIAS") {
+        index = i
+      }
       if (item.type === SideNavType.GroupLink && item.child) {
         item.links = item.child.filter(child => child.a).map(child => `${this.prefix}${child.a.link}`);
       }
     });
+    sideNav.splice(index,1);
     return sideNav;
   }
 
