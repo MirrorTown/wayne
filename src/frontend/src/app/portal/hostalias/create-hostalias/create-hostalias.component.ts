@@ -78,7 +78,7 @@ export class CreateHostAliasComponent implements OnInit {
       this.hostaliasId = id;
     } else {
       this.actionType = ActionType.ADD_NEW;
-      this.hostAliasTitle = '创建HostAlias';
+      this.hostAliasTitle = '新增HostAlias';
       this.hostaliasId = 0;
     }
   }

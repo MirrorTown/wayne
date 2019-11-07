@@ -210,9 +210,8 @@ func (c *KubeDeploymentController) Create() {
 	recode.ResourceName = kubeDeployment.ObjectMeta.Name
 	recode.ResourceType = api.KindToResourceType[kubeDeployment.TypeMeta.Kind]
 	status := recode.DeployServer().UpdateDeployStatus(models.Deploying, models.ToBeNotify)
-	fmt.Println(status)
 
-	c.Success("ok")
+	c.Success(status)
 }
 
 func copyTemplateData(str []byte, image string) (string, error) {

@@ -28,7 +28,6 @@ func (c *CronJob) StartDeployStatuJob() (err error) {
 			//获取发布列表
 			deploylist := cli.DeployServer().GetDeploys()
 			for _, sub := range deploylist {
-				//TODO 检测pod发布状态，同步到数据库并发送订订信息
 				podlist, err := pod.GetPodListByType(cli.Manager(sub.Cluster).KubeClient, sub.Namespace, sub.ResourceName, sub.ResourceType)
 				if err != nil {
 					logs.Error("获取pod列表失败, ", err)

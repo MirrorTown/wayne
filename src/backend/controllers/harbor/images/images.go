@@ -2,7 +2,6 @@ package images
 
 import (
 	"context"
-	"fmt"
 	"github.com/Qihoo360/wayne/src/backend/controllers/base"
 	"github.com/Qihoo360/wayne/src/backend/models"
 	"github.com/Qihoo360/wayne/src/backend/util/logs"
@@ -62,7 +61,6 @@ func (c *HarborImageController) ListTag() {
 		logs.Error("获取harbor客户端失败")
 	}
 	tag, err := cli.ListRepoTags(context.Background(), projectName, strings.Split(image, "/")[2])
-	fmt.Println(tag)
 
 	c.Success(tag)
 }

@@ -283,10 +283,8 @@ func (c *ReviewController) Deploytok8s(review *models.Review) {
 	recode.ResourceName = kubeDeployment.ObjectMeta.Name
 	recode.ResourceType = api.KindToResourceType[kubeDeployment.TypeMeta.Kind]
 	status := recode.DeployServer().UpdateDeployStatus(models.Deploying, models.ToBeNotify)
-	//recode.NotifyToDingding(recode.Name, "187xxxxxx65")
-	fmt.Println(status)
 
-	c.Success("ok")
+	c.Success(status)
 }
 
 func copyTemplateData(str []byte, image string) (string, error) {

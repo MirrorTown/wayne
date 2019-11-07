@@ -110,7 +110,9 @@ func (h *HongMaoController) GetApplication(url string) []map[string]interface{} 
 	var mapResult []map[string]interface{}
 	err = json.Unmarshal(b, &mapResult)
 	if err != nil {
-		fmt.Println("JsonToMapDemo err: ", err)
+		logs.Error("JsonToMapDemo err: ", err)
+		h.HandleError(err)
+		return nil
 	}
 
 	return mapResult
@@ -136,7 +138,7 @@ func (h *HongMaoController) getAccessToken() string {
 	var mapResult map[string]interface{}
 	err = json.Unmarshal(b, &mapResult)
 	if err != nil {
-		fmt.Println("JsonToMapDemo err: ", err)
+		logs.Error("JsonToMapDemo err: ", err)
 	}
 
 	return mapResult["access_token"].(string)
