@@ -1,0 +1,22 @@
+<clr-modal [(clrModalOpen)]="createHostAliasOpened" [clrModalSize]="'lg'">
+  <h3 class="modal-title">{{hostAliasTitle}}</h3>
+  <div class="modal-body">
+    <form #hostaliasForm="ngForm" clrForm clrLayout="horizontal">
+      <wayne-collapse>
+        <label class="label-level1" id="release-message">{{'TITLE.HOSTALIASE_INFO' | translate}}</label>
+        <clr-textarea-container>
+          <label class="required">{{'TITLE.HOSTALIASE_INFO' | translate}}</label>
+          <textarea clrTextarea name="deployment_description" [(ngModel)]="hostaliasStr" rows="3" style="width: 65%"
+                    required>
+        </textarea>
+          <clr-control-error>hostalias map is required</clr-control-error>
+        </clr-textarea-container>
+      </wayne-collapse>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="onCancel()">{{'BUTTON.CANCEL' | translate}}</button>
+    <button type="button" class="btn btn-primary" [disabled]="!isValid"
+            (click)="onSubmit()">{{'BUTTON.SUBMIT' | translate}}</button>
+  </div>
+</clr-modal>

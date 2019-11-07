@@ -23,13 +23,12 @@ import (
 	"time"
 )
 
-
 // 审核相关操作
 type ReviewController struct {
 	base.APIController
 }
 
-func init()  {
+func init() {
 	publish.Register("review", &ReviewController{})
 }
 
@@ -142,9 +141,11 @@ func (c *ReviewController) Create() {
 func (c *ReviewController) Update() {
 	name := c.Ctx.Input.Param(":name")
 	status := c.GetIntParamFromURL(":status")
+	nsId := c.GetIntParamFromURL(":namespaceid")
 
 	review, err := models.ReviewModel.GetByName(name)
 	review.Status = models.ReviewStatus(status)
+	review.NamespaceId = nsId
 	review.Auditors = c.User.Display
 	review.AnnounceTime = time.Now().Format("2006/1/2 15:04:05")
 	err = models.ReviewModel.UpdateByName(review)
@@ -155,7 +156,7 @@ func (c *ReviewController) Update() {
 	}
 	if status == 1 {
 		c.Deploytok8s(review)
-	}else {
+	} else {
 		c.Success(review)
 	}
 
@@ -165,7 +166,7 @@ func (c *ReviewController) Deploytok8s(review *models.Review) {
 	var kubeDeployment v1beta1.Deployment
 	err := json.Unmarshal([]byte(review.KubeDeployment), &kubeDeployment)
 	if err != nil {
-		logs.Error("转换json到struct失败!",err)
+		logs.Error("转换json到struct失败!", err)
 	}
 
 	cli := c.Manager(review.Cluster)
@@ -192,6 +193,8 @@ func (c *ReviewController) Deploytok8s(review *models.Review) {
 	}
 
 	common.DeploymentPreDeploy(&kubeDeployment, deploymentModel, clusterModel, namespaceModel)
+	//增加HostAlias信息
+	common.DeploymentAddHostAlias(&kubeDeployment, review.AppId, review.NamespaceId)
 
 	publishHistory := &models.PublishHistory{
 		Type:         models.PublishTypeDeployment,
@@ -200,7 +203,7 @@ func (c *ReviewController) Deploytok8s(review *models.Review) {
 		TemplateId:   review.TplId,
 		Cluster:      review.Cluster,
 		User:         review.Announcer,
-		Image: 		  kubeDeployment.Spec.Template.Spec.Containers[0].Image,
+		Image:        kubeDeployment.Spec.Template.Spec.Containers[0].Image,
 	}
 
 	defer func() {
@@ -254,7 +257,7 @@ func (c *ReviewController) Deploytok8s(review *models.Review) {
 	}
 
 	// 灰度发布不改变副本数量
-	if review.GrayPublish != "True"{
+	if review.GrayPublish != "True" {
 		err = models.DeploymentModel.Update(*kubeDeployment.Spec.Replicas, deploymentModel, review.Cluster)
 		if err != nil {
 			logs.Error("update deployment metadata error.%v", err)
@@ -268,7 +271,7 @@ func (c *ReviewController) Deploytok8s(review *models.Review) {
 	deploymentTplString.Template = deploymentTpl
 	err = models.DeploymentTplModel.UpdateById(deploymentTplString)
 	if err != nil {
-		logs.Error("更新发布模板失败, ",err)
+		logs.Error("更新发布模板失败, ", err)
 	}
 
 	//记录发布状态信息并发送订订讯息
@@ -292,8 +295,7 @@ func copyTemplateData(str []byte, image string) (string, error) {
 	if err != nil {
 		logs.Error("Json解析失败")
 	}
-	m["spec"].(map[string]interface{})["template"].(map[string]interface{})["spec"].
-	(map[string]interface{})["containers"].([]interface{})[0].(map[string]interface{})["image"] = image;
+	m["spec"].(map[string]interface{})["template"].(map[string]interface{})["spec"].(map[string]interface{})["containers"].([]interface{})[0].(map[string]interface{})["image"] = image
 	//fmt.Println(m["spec"]["template"]["spec"]["containers"]["image"])
 	jsonStr, err := json.Marshal(m)
 	return string(jsonStr), err

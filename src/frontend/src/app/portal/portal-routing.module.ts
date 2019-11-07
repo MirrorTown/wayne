@@ -40,6 +40,7 @@ import { AutoscaleComponent } from './autoscale/autoscale.component';
 import { CreateEditAutoscaletplComponent } from './autoscale/create-edit-autoscaletpl/create-edit-autoscaletpl.component';
 import { ReviewComponent } from'./review/review.component';
 import {PodMonitorComponent} from "./pod-monitor/pod-monitor.component";
+import {HostAliaseComponent} from "./hostalias/hostalias.component";
 
 const routes: Routes = [
   {
@@ -64,6 +65,7 @@ const routes: Routes = [
           {path: 'deployment/:deploymentId', component: DeploymentComponent},
           {path: 'deployment/:deploymentId/tpl', component: CreateEditDeploymentTplComponent},
           {path: 'deployment/:deploymentId/tpl/:tplId', component: CreateEditDeploymentTplComponent},
+          {path: 'hostalias', component: HostAliaseComponent},
           {path: 'configmap', component: ConfigMapComponent},
           {path: 'configmap/:configMapId', component: ConfigMapComponent},
           {path: 'configmap/:configMapId/tpl', component: CreateEditConfigMapTplComponent},

@@ -7,6 +7,7 @@ import (
 	"github.com/Qihoo360/wayne/src/backend/controllers/auth"
 	"github.com/Qihoo360/wayne/src/backend/controllers/harbor"
 	"github.com/Qihoo360/wayne/src/backend/controllers/hongmao"
+	"github.com/Qihoo360/wayne/src/backend/controllers/hostAlias"
 	"github.com/Qihoo360/wayne/src/backend/controllers/review"
 	"net/http"
 	"path"
@@ -475,6 +476,14 @@ func init() {
 		),
 	)
 
+	nsWithHostAliase := beego.NewNamespace("/api/v1",
+		beego.NSNamespace("hostalias",
+			beego.NSInclude(
+				&hostAlias.HostAliasController{},
+			),
+		),
+	)
+
 	beego.AddNamespace(nsWithKubernetes)
 
 	beego.AddNamespace(nsWithKubernetesApp)
@@ -494,4 +503,6 @@ func init() {
 	beego.AddNamespace(nsWithReview)
 
 	beego.AddNamespace(nsWithHongmao)
+
+	beego.AddNamespace(nsWithHostAliase)
 }

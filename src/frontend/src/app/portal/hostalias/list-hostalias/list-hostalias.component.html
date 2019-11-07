@@ -1,0 +1,50 @@
+<clr-datagrid (clrDgRefresh)="refresh($event)">
+  <clr-dg-column>
+    <ng-container>
+      IP
+    </ng-container>
+  </clr-dg-column>
+  <clr-dg-column [clrDgField]="'hostnames'" *ngIf="listType === 'hostalias'">
+    <ng-container *clrDgHideableColumn="showState['host_name']">
+      HOSTNAME
+    </ng-container>
+  </clr-dg-column>
+  <clr-dg-column
+    *ngIf="
+      authService.currentUser.admin"
+  >
+    <ng-container *clrDgHideableColumn="showState['action']">
+      {{'TITLE.ACTION' | translate}}
+    </ng-container>
+  </clr-dg-column>
+  <clr-dg-row *ngFor="let hostalias of hostaliases" [clrDgItem]="hostalias">
+    <clr-dg-cell>{{hostalias.ip}}</clr-dg-cell>
+    <clr-dg-cell>{{hostalias.hostnames}}</clr-dg-cell>
+    <clr-dg-cell
+      *ngIf="
+      authService.currentUser.admin"
+    >
+      <button class="wayne-button text"
+              *ngIf="
+        authService.currentUser.admin"
+              (click)="editHostAlias(hostalias)">
+        {{'BUTTON.EDIT' | translate}}
+      </button>
+      <button class="wayne-button text"
+              *ngIf="
+        authService.currentUser.admin"
+              (click)="deleteHostAlias(hostalias)">
+        {{'BUTTON.DELETE' | translate}}</button>
+    </clr-dg-cell>
+  </clr-dg-row>
+
+  <clr-dg-footer>
+    <wayne-paginate
+      [(currentPage)]="currentPage"
+      [total]="page.totalCount"
+      [pageSizes]="[10, 20, 50]"
+      (sizeChange)="pageSizeChange($event)"
+    >
+    </wayne-paginate>
+  </clr-dg-footer>
+</clr-datagrid>

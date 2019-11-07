@@ -162,6 +162,12 @@ const adminSideNav: any[] = [
   },
   { type: SideNavType.Divider },
   {
+    type: SideNavType.GroupLink, icon: { title: 'MENU.HOSTALIAS', shape: 'file-settings' }, text: 'MENU.HOSTALIAS', child: [
+      { a: { link: 'hostalias', text: 'MENU.LIST', options: { exact: true } } },
+      { a: { link: 'hostalias/info', text: 'MENU.TEMPLATE_LIST', options: { exact: true } } },
+    ]
+  },
+  {
     type: SideNavType.GroupLink, icon: { title: 'MENU.CONFIGMAP', shape: 'file-settings' }, text: 'MENU.CONFIGMAP', child: [
       { a: { link: 'configmap', text: 'MENU.LIST', options: { exact: true } } },
       { a: { link: 'configmap/trash', text: 'MENU.RECYCLED', options: { exact: true } } },

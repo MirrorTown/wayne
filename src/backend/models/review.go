@@ -34,6 +34,7 @@ type Review struct {
 	KubeDeployment string       `orm:"null;type(text);column(kube_deployment)" json:"kubeDeployment,omitempty"`
 	Cluster        string       `orm:"null;size(128)" json:"cluster,omitempty"`
 	GrayPublish    string       `orm:"null;size(128);column(gray_publish)" json:"grayPublish,omitempty"`
+	NamespaceId    int64        `orm:"-" json:"namespaceid,omitempty"`
 }
 
 func (*Review) TableName() string {

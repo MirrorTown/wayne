@@ -83,6 +83,15 @@
                                       authService.currentUser.admin"></div>
   <a
     clrVerticalNavLink
+    [title]="'MENU.HOSTALIAS' | translate"
+    routerLink="hostalias"
+    routerLinkActive="active"
+    *ngIf="authService.currentAppPermission.configmap.read || authService.currentUser.admin">
+    <clr-icon clrVerticalNavIcon shape="file-settings"></clr-icon>
+    {{'MENU.HOSTALIAS' | translate}}
+  </a>
+  <a
+    clrVerticalNavLink
     [title]="'MENU.CONFIGMAP' | translate"
     routerLink="configmap"
     routerLinkActive="active"

@@ -1,6 +1,7 @@
 package common
 
 import (
+	"github.com/Qihoo360/wayne/src/backend/util/logs"
 	"strings"
 
 	"k8s.io/api/apps/v1beta1"
@@ -82,4 +83,21 @@ func DeploymentPreDeploy(kubeDeployment *v1beta1.Deployment, deploy *models.Depl
 	}
 	kubeDeployment.Spec.Template.Annotations[util.PodAnnotationControllerKindLabelKey] = strings.ToLower(string(models.KubeApiTypeDeployment))
 
+}
+
+func DeploymentAddHostAlias(kubeDeployment *v1beta1.Deployment, appId int64, nsId int64) error {
+	hostAliases, err := models.HostAliasModel.GetById(appId, nsId)
+	if err != nil {
+		logs.Error("Deployment添加HostAliase失败")
+		return err
+	}
+
+	for _, v := range hostAliases {
+		kubeDeployment.Spec.Template.Spec.HostAliases = append(kubeDeployment.Spec.Template.Spec.HostAliases, v1.HostAlias{
+			IP:        v.Ip,
+			Hostnames: strings.Split(v.Hostnames, ","),
+		})
+	}
+
+	return err
 }

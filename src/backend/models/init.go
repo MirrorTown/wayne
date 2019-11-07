@@ -18,6 +18,7 @@ var (
 	ClusterModel                  *clusterModel
 	HarborModel                   *harborModel
 	HongmaoUserModel              *hongmaoUserModel
+	HostAliasModel                *hostAliasModel
 	ReviewModel                   *reviewModel
 	DeploymentModel               *deploymentModel
 	DeploymentTplModel            *deploymentTplModel
@@ -58,6 +59,7 @@ func init() {
 	// init orm tables
 	orm.RegisterModel(
 		new(Harbor),
+		new(HostAlias),
 		new(Deploy),
 		new(Review),
 		new(User),
@@ -112,6 +114,7 @@ func init() {
 	ClusterModel = &clusterModel{}
 	NamespaceModel = &namespaceModel{}
 	DeploymentModel = &deploymentModel{}
+	HostAliasModel = &hostAliasModel{}
 	DeploymentTplModel = &deploymentTplModel{}
 	GroupModel = &groupModel{}
 	SecretModel = &secretModel{}

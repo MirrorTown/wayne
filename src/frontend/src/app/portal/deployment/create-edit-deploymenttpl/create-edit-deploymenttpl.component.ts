@@ -663,7 +663,6 @@ export class CreateEditDeploymentTplComponent extends ContainerTpl implements On
     // this.removeResourceUnit(kubeStatefulSet);
     for (let key = 0; key < this.containersLength; key++) {
       const imagelist = kubeDeployment.spec.template.spec.containers[key].image.split(':')
-      console.log(imagelist[0], imagelist[1]);
       kubeDeployment.spec.template.spec.containers[key].image = imagelist[0];
       kubeDeployment.spec.template.spec.containers[key].tag = imagelist[1];
     }

@@ -60,6 +60,14 @@ div.datagrid-foot-description {
   font-family: Consolas, monospace;
 }
 
+.col-hostname {
+  min-width: 100px !important;
+}
+
+.col-ip {
+  max-width: 280px !important;
+}
+
 .col-cluster {
   width: 140px !important;
 }

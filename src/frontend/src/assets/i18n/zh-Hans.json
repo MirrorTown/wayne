@@ -195,6 +195,14 @@
     "EDIT": "编辑部署",
     "NUM": "部署份数"
   },
+  "HOSTALIASE": {
+    "IP": "ip",
+    "HOSTNAME": "hostname",
+    "CREATE": "新增HostAlias",
+    "EDIT": "编辑HostAliase",
+    "LIST": "HostAlias列表",
+    "DELETE": "删除HostAliase"
+  },
   "DEPLOYMENT_ADMIN": {
     "CREATE": {
       "APPLYMENT": "应用",
@@ -257,6 +265,7 @@
     "HARBOR": "镜像中心",
     "CONFIGHARBOR": "配置",
     "CLUSTER_LIST": "集群列表",
+    "HOSTALIAS": "HostAlias",
     "CONFIGMAP": "配置集",
     "CONFIGMAP_LIST": "配置集列表",
     "CONFIGURATION": "配置",
@@ -529,6 +538,7 @@
     "ONLINE_POD": "发布结果",
     "RELEASE": "发布",
     "RELEASE_EXPLAIN": "发布说明",
+    "HOSTALIASE_INFO": "HostAlias配置",
     "ROLE": "角色",
     "SCHEDULING_INTERVAL": "调度间隔",
     "SHOW_COLUMN": "展示列",

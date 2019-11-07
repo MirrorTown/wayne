@@ -34,12 +34,14 @@ import { LibraryPortalModule } from '../../../lib/portal/library-portal.module';
 import { AutoscaleModule } from './autoscale/autoscale.module';
 import { ReviewModule } from './review/review.module';
 import {PodMonitorComponent} from "./pod-monitor/pod-monitor.component";
+import { HostAliasModule } from './hostalias/hostalias.module';
 
 @NgModule({
   imports: [
     AppUserModule,
     NamespaceUserModule,
     ReviewModule,
+    HostAliasModule,
     PortalRoutingModule,
     SharedModule,
     IndexModule,

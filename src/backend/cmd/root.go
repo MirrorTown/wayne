@@ -19,6 +19,7 @@ func Run() {
 
 	// K8S Client
 	initial.InitClient()
+	initial.InitCronJob()
 
 	// 初始化RsaPrivateKey
 	initial.InitRsaKey()

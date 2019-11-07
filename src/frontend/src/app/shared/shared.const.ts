@@ -192,7 +192,8 @@ export const enum ConfirmationTargets {
   NODE,
   HPA,
   ENDPOINT,
-  HARBOR
+  HARBOR,
+  HOSTALIASE
 }
 
 export const enum ActionType {

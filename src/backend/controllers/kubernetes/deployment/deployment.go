@@ -27,7 +27,7 @@ type KubeDeploymentController struct {
 }
 
 type Replica struct {
-	num int32
+	Num int32
 }
 
 func (c *KubeDeploymentController) URLMapping() {
@@ -120,6 +120,8 @@ func (c *KubeDeploymentController) Create() {
 	}
 
 	common.DeploymentPreDeploy(&kubeDeployment, deploymentModel, clusterModel, namespaceModel)
+	//增加k8s deployment hostalias配置
+	common.DeploymentAddHostAlias(&kubeDeployment, c.AppId, c.NamespaceId)
 
 	publishHistory := &models.PublishHistory{
 		Type:         models.PublishTypeDeployment,
@@ -344,7 +346,7 @@ func (c *KubeDeploymentController) UpdateScale() {
 		logs.Error("Invalid param body.%v", err)
 		c.AbortBadRequestFormat("replica num")
 	}
-	err = deployment.UpdateScale(cli, name, namespace, replica.num)
+	err = deployment.UpdateScale(cli, name, namespace, replica.Num)
 	if err != nil {
 		logs.Info("Update scale for deployment (%s) by cluster (%s) error.%v", name, cluster, err)
 		c.HandleError(err)
