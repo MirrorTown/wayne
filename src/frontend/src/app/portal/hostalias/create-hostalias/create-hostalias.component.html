@@ -6,7 +6,7 @@
         <label class="label-level1" id="release-message">{{'TITLE.HOSTALIASE_INFO' | translate}}</label>
         <clr-textarea-container>
           <label class="required">{{'TITLE.HOSTALIASE_INFO' | translate}}</label>
-          <textarea clrTextarea name="deployment_description" [(ngModel)]="hostaliasStr" rows="3" style="width: 65%"
+          <textarea clrTextarea name="deployment_description" [(ngModel)]="hostaliasStr" placeholder="172.16.21.8 localhost test.souche-inc.com" rows="3" style="width: 65%"
                     required>
         </textarea>
           <clr-control-error>hostalias map is required</clr-control-error>

@@ -387,6 +387,7 @@
     "ASSOCIATED_LABEL": "关联标签",
     "CHECK_FILE": "校验文件",
     "CONTAINER_NUM": "容量大小",
+    "MONITORS": "monitors",
     "CREATE": "创建 PVC",
     "CREATE_EDIT_TMP": {
       "CLUSTER_MESSAGE": "需要先在后台配置 Namespace 可用集群才可以创建 PVC"

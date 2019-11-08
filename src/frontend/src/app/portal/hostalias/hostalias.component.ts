@@ -111,7 +111,6 @@ export class HostAliaseComponent implements OnInit, OnDestroy {
           const data = response.data;
           this.pageState.page.totalPage = data.totalPage;
           this.pageState.page.totalCount = data.totalCount;
-          console.log(data);
           this.changedHostAliass = data.list;
         },
         error => this.messageHandlerService.handleError(error)

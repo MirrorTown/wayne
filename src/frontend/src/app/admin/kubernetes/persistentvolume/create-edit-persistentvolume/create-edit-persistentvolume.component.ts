@@ -66,6 +66,7 @@ export class CreateEditPersistentVolumeComponent implements OnInit {
     this.currentForm = this.fb.group({
       name: '',
       rbdImage: '',
+      rbdMonitor: '',
       cephfsPath: '',
       type: 'rbd',
       storage: '10',
@@ -163,6 +164,7 @@ export class CreateEditPersistentVolumeComponent implements OnInit {
           });
         }
         kubePv.spec.rbd.image = formValue.rbdImage;
+        kubePv.spec.rbd.monitors = formValue.rbdMonitor.split(",");
         kubePv.spec.cephfs = undefined;
         break;
       case 'cephfs':
@@ -175,6 +177,7 @@ export class CreateEditPersistentVolumeComponent implements OnInit {
           });
         }
         kubePv.spec.cephfs.path = formValue.cephfsPath;
+        kubePv.spec.rbd.monitors = formValue.rbdMonitor.split(",");
         kubePv.spec.rbd = undefined;
         break;
     }
@@ -240,6 +243,7 @@ export class CreateEditPersistentVolumeComponent implements OnInit {
         type: type,
         storage: storage,
         rbdImage: pv.spec.rbd ? pv.spec.rbd.image : '',
+        rbdMonitor: pv.spec.rbd.monitors,
         cephfsPath: pv.spec.cephfs ? pv.spec.cephfs.path : '',
         accessModes: this.fb.group({
           ReadWriteOnce: readWriteOnce,
