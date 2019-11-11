@@ -1,5 +1,7 @@
 // Portal Deployment StatefulSet DaemonSet CronJob Base tpl Class
 
+import {VolumeMount} from "../../model/v1/kubernetes/deployment";
+
 export const templateDom = [
   {
     id: 'create-template',
@@ -134,6 +136,17 @@ export class ContainerTpl {
       this.kubeResource.spec.template.spec.containers[index].command = [];
     }
     this.kubeResource.spec.template.spec.containers[index].command.push('');
+  }
+
+  onAddContainerVolume(index: number) {
+    if (!this.kubeResource.spec.template.spec.containers[index].volumeMounts) {
+      this.kubeResource.spec.template.spec.containers[index].volumeMounts = [];
+    }
+    this.kubeResource.spec.template.spec.containers[index].volumeMounts.push(new VolumeMount());
+  }
+
+  onDeleteContainerVolume(i: number, j: number) {
+    this.kubeResource.spec.template.spec.containers[i].volumeMounts.splice(j, 1);
   }
 
   onAddContainerArgs(index: number) {

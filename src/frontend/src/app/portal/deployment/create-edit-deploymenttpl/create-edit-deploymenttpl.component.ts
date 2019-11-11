@@ -545,7 +545,6 @@ export class CreateEditDeploymentTplComponent extends ContainerTpl implements On
     this.deploymentTpl.id = undefined;
     this.deploymentTpl.name = this.deployment.name;
     this.deploymentTpl.createTime = this.deploymentTpl.updateTime = new Date();
-    console.log(this.deploymentTpl)
     this.deploymentTplService.create(this.deploymentTpl, this.app.id).subscribe(
       status => {
         this.isSubmitOnGoing = false;
