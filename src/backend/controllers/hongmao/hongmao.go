@@ -57,7 +57,7 @@ func (h *HongMaoController) Prepare() {
 // @router /app/sysnc [get]
 func (h *HongMaoController) Sysnc() {
 	var name = make([]string, 0)
-	name = append(name, "waynetemplate")
+	name = append(name, "wayne-template")
 	deploymentTemplate, err := models.DeploymentModel.GetAllByName(name)
 	if err != nil || len(deploymentTemplate) == 0 {
 		logs.Error("获取模板失败,", err)
@@ -83,7 +83,7 @@ func (h *HongMaoController) Sysnc() {
 		}
 	}
 
-	h.Ctx.WriteString("完成同步!")
+	h.Success("Sync success")
 	return
 }
 
