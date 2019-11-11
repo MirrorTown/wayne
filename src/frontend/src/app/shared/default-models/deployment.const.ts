@@ -13,7 +13,8 @@ export const defaultDeployment = `{
                 "labels": {}
             },
             "spec": {
-                "containers": []
+                "containers": [],
+                "volumes": []
             }
         },
         "strategy": {

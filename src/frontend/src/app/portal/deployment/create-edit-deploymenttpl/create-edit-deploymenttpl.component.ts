@@ -14,7 +14,7 @@ import {
   EnvVar,
   EnvVarSource,
   ExecAction,
-  Handler,
+  Handler, HostPathVolumeSource,
   HTTPGetAction,
   KubeDeployment,
   Lifecycle,
@@ -23,8 +23,8 @@ import {
   ResourceRequirements,
   RollingUpdateDeployment,
   SecretEnvSource,
-  SecretKeySelector,
-  TCPSocketAction,
+  SecretKeySelector, SecretVolumeSource,
+  TCPSocketAction, Volume,
 } from '../../../shared/model/v1/kubernetes/deployment';
 import 'rxjs/add/observable/combineLatest';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -76,6 +76,7 @@ export class CreateEditDeploymentTplComponent extends ContainerTpl implements On
   imagelist = [];
   tag = '';
   taglist = [];
+  volumeType = new Map();
 
   constructor(private deploymentTplService: DeploymentTplService,
               private aceEditorService: AceEditorService,
@@ -186,8 +187,26 @@ export class CreateEditDeploymentTplComponent extends ContainerTpl implements On
     }
   }
 
+  volumeTypeChange(index: number, type: string) {
+    if (type === 'hostpath' && !this.kubeResource.spec.template.spec.volumes[index].hostPath) {
+      console.log("hostpath null")
+      this.kubeResource.spec.template.spec.volumes[index].secret = null;
+      this.kubeResource.spec.template.spec.volumes[index].hostPath = new HostPathVolumeSource();
+      // this.kubeResource.spec.template.spec.volumes[index].hostPath.path = '/tmp';
+      console.log(this.kubeResource.spec.template.spec.volumes[index].secret, this.kubeResource.spec.template.spec.volumes[index].hostPath)
+    } else if (type === 'secret' && !this.kubeResource.spec.template.spec.volumes[index].secret) {
+      console.log("secret null")
+      this.kubeResource.spec.template.spec.volumes[index].hostPath = null;
+      this.kubeResource.spec.template.spec.volumes[index].secret = new SecretVolumeSource();
+      // this.kubeResource.spec.template.spec.volumes[index].secret.secretName = 'default-template';
+      // this.kubeResource.spec.template.spec.volumes[index].secret.defaultMode = 420;
+      console.log(this.kubeResource.spec.template.spec.volumes[index].secret, this.kubeResource.spec.template.spec.volumes[index].hostPath)
+    }
+  }
+
   initDefault() {
     this.kubeResource = JSON.parse(defaultDeployment);
+    // this.kubeResource.spec.template.spec.volumes.push(this.defaultPodVoume());
     this.kubeResource.spec.template.spec.containers.push(this.defaultContainer());
   }
 
@@ -201,6 +220,13 @@ export class CreateEditDeploymentTplComponent extends ContainerTpl implements On
     return container;
   }
 
+  defaultPodVoume(): Volume {
+    const volume = new Volume();
+    volume.hostPath = new HostPathVolumeSource();
+    // volume.secret = new SecretVolumeSource();
+    return volume
+  }
+
   getRepoTag(h: any, index: number): void {
     // const value = document.getElementById('images').value;
     this.taglist = [];
@@ -212,14 +238,12 @@ export class CreateEditDeploymentTplComponent extends ContainerTpl implements On
   }
 
   ngOnInit(): void {
-    console.log('enter....')
     const namespaceId = this.cacheService.namespaceId;
-    console.log(namespaceId)
     this.deploymentService.listImages(new PageState({pageSize: 1000}), namespaceId).subscribe(value => {
       for (const image of value.data) {
         this.imagelist.push({Name: image['name']});
       }
-    })
+    });
     this.initDefault();
     const appId = parseInt(this.route.parent.snapshot.params['id'], 10);
     const deploymentId = parseInt(this.route.snapshot.params['deploymentId'], 10);
@@ -463,6 +487,19 @@ export class CreateEditDeploymentTplComponent extends ContainerTpl implements On
     return index;
   }
 
+
+  onAddPodVolume() {
+    if (this.kubeResource.spec.template.spec.volumes == undefined) {
+      this.kubeResource.spec.template.spec.volumes = new Array<Volume>();
+      console.log("volume undefined ,to be inited")
+    }
+    this.kubeResource.spec.template.spec.volumes.push(this.defaultPodVoume());
+  }
+
+  onDelPodVolume(index: number) {
+    this.kubeResource.spec.template.spec.volumes.splice(index,1);
+  }
+
   defaultEnv(type: number): EnvVar {
     const env = new EnvVar();
     switch (parseInt(type.toString(), 10)) {
@@ -530,6 +567,7 @@ export class CreateEditDeploymentTplComponent extends ContainerTpl implements On
       kubeDeployment.spec.template.spec.containers[key].image = kubeDeployment.spec.template.spec.containers[key].image + ':' + kubeDeployment.spec.template.spec.containers[key].tag;
     }
     kubeDeployment = this.convertRollingUpdateIntOrString(kubeDeployment);
+    kubeDeployment = this.convertVolumeStrategy(kubeDeployment);
     kubeDeployment = this.convertProbeCommandToArray(kubeDeployment);
     kubeDeployment = this.addResourceUnit(kubeDeployment);
     kubeDeployment = this.fillDeploymentLabel(kubeDeployment);
@@ -553,6 +591,17 @@ export class CreateEditDeploymentTplComponent extends ContainerTpl implements On
       }
     }
 
+    return kubeDeployment;
+  }
+
+  convertVolumeStrategy(kubeDeployment: KubeDeployment) {
+    kubeDeployment.spec.template.spec.volumes.forEach(item => {
+      if (JSON.stringify(item.secret) === "{}") {
+        item.secret = undefined;
+      }else if (JSON.stringify(item.hostPath) === "{}") {
+        item.hostPath = undefined;
+      }
+    });
     return kubeDeployment;
   }
 
@@ -666,7 +715,6 @@ export class CreateEditDeploymentTplComponent extends ContainerTpl implements On
       kubeDeployment.spec.template.spec.containers[key].image = imagelist[0];
       kubeDeployment.spec.template.spec.containers[key].tag = imagelist[1];
     }
-    console.log(kubeDeployment.spec.template.spec.containers[0].image)
     this.removeUnused(kubeDeployment);
     this.fillDefault(kubeDeployment);
     this.convertProbeCommandToText(kubeDeployment);
@@ -732,11 +780,15 @@ export class CreateEditDeploymentTplComponent extends ContainerTpl implements On
       kubeDeployment.spec.strategy = new DeploymentStrategy();
       kubeDeployment.spec.strategy.type = 'RollingUpdate';
     }
+    if (!this.kubeResource.spec.template.spec.volumes) {
+      kubeDeployment.spec.template.spec.volumes = new Array<Volume>();
+    }
     if (kubeDeployment.spec.strategy.type === 'RollingUpdate' && !kubeDeployment.spec.strategy.rollingUpdate) {
       kubeDeployment.spec.strategy.rollingUpdate = new RollingUpdateDeployment();
       kubeDeployment.spec.strategy.rollingUpdate.maxSurge = '20%';
       kubeDeployment.spec.strategy.rollingUpdate.maxUnavailable = 1;
     }
+
     if (kubeDeployment.spec.template.spec.containers && kubeDeployment.spec.template.spec.containers.length > 0) {
       for (const container of kubeDeployment.spec.template.spec.containers) {
         if (!container.resources) {

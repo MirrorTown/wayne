@@ -829,7 +829,7 @@ export class EmptyDirVolumeSource {
 
 export class HostPathVolumeSource {
   path: string;
-
+  type: string;
 
 
 

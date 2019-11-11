@@ -60,6 +60,91 @@
         </clr-input-container>
       </div>
     </wayne-collapse>
+    <wayne-collapse>
+      <label class="label-level1" id="volume-strategy">{{'TEMPLATE.VOLUME_STRATEGY' | translate}}</label>
+      <button (click)="onAddPodVolume()" style="margin-left: 10px;" class="wayne-button primary">
+        <clr-icon shape="add-text"></clr-icon>
+        添加Volume
+      </button>
+      <div *ngFor="let volume of kubeResource.spec.template.spec.volumes; let v = index; trackBy:trackByFn">
+      <clr-radio-container clrInline>
+        <label class="required">{{'TEMPLATE.VOLUME_WAY' | translate}}</label>
+        <clr-radio-wrapper>
+          <input type="radio" clrRadio name="statefulSetVolumeType_{{v}}" id="statefulSetVolumeType1_{{v}}"
+                 [checked]="kubeResource.spec.template.spec.volumes[v].hostPath != null" (change)="volumeTypeChange(v, 'hostpath')">
+          <label for="statefulSetVolumeType1_{{v}}">{{'TEMPLATE.HOSTPATH' | translate}}</label>
+        </clr-radio-wrapper>
+        <clr-radio-wrapper>
+          <input type="radio" clrRadio name="statefulSetVolumeType_{{v}}" id="statefulSetVolumeType2_{{v}}"
+                 [checked]="kubeResource.spec.template.spec.volumes[v].secret != null" (change)="volumeTypeChange(v, 'secret')">
+          <label for="statefulSetVolumeType2_{{v}}">{{'TEMPLATE.SECRET' | translate}}</label>
+        </clr-radio-wrapper>
+      </clr-radio-container>
+        <clr-icon style="float: right;" (click)="onDelPodVolume(v)" shape="trash" class="is-solid"></clr-icon>
+
+        <clr-input-container>
+          <label>
+            名称
+          </label>
+          <input type="text" clrInput required name="volume_name_{{v}}"
+                 [(ngModel)]="kubeResource.spec.template.spec.volumes[v].name" placeholder="Name">
+          <clr-control-error>名称不能为空</clr-control-error>
+        </clr-input-container>
+      <div *ngIf="kubeResource.spec.template.spec.volumes[v].hostPath != null">
+        <clr-input-container>
+          <label>
+            {{'TEMPLATE.HOST_PATH' | translate}}
+            <a role="tooltip" aria-haspopup="true" class="tooltip tooltip-lg">
+              <clr-icon shape="info-circle" size="24"></clr-icon>
+              <span class="tooltip-content">{{'RULE.HOST_PATH' | translate}}</span>
+            </a>
+          </label>
+          <input type="text" clrInput required name="hostpath_path_{{v}}" pattern="^/.*$"
+                 [(ngModel)]="kubeResource.spec.template.spec.volumes[v].hostPath.path" [placeholder]="'RULE.PATH' | translate">
+          <clr-control-error>{{'RULE.PATH' | translate}}</clr-control-error>
+        </clr-input-container>
+        <clr-input-container>
+          <label>
+            {{'TEMPLATE.HOST_TYPE' | translate}}
+            <a role="tooltip" aria-haspopup="true" class="tooltip tooltip-lg">
+              <clr-icon shape="info-circle" size="24"></clr-icon>
+              <span class="tooltip-content">{{'RULE.TYPE' | translate}}</span>
+            </a>
+          </label>
+          <input type="text" clrInput required name="hostpath_type_{{v}}"
+                 [(ngModel)]="kubeResource.spec.template.spec.volumes[v].hostPath.type" [placeholder]="'RULE.HOST_TYPE' | translate">
+          <clr-control-error>{{'RULE.TYPE' | translate}}</clr-control-error>
+        </clr-input-container>
+      </div>
+      <div class="form-inline" *ngIf="kubeResource.spec.template.spec.volumes[v].secret != null">
+        <clr-input-container>
+          <label>
+            {{'TEMPLATE.SECRET_NAME' | translate}}
+            <a role="tooltip" aria-haspopup="true" class="tooltip tooltip-lg">
+              <clr-icon shape="info-circle" size="24"></clr-icon>
+              <span class="tooltip-content">{{'RULE.SECRET_NAME' | translate}}</span>
+            </a>
+          </label>
+          <input type="text" clrInput required name="secret_name_{{v}}"
+                 [(ngModel)]="kubeResource.spec.template.spec.volumes[v].secret.secretName" [placeholder]="'RULE.SECRET_NAME' | translate">
+          <clr-control-error>{{'RULE.SECRET_NAME' | translate}}</clr-control-error>
+        </clr-input-container>
+        <clr-input-container>
+          <label>
+            {{'TEMPLATE.DEFAULTMODE' | translate}}
+            <a role="tooltip" aria-haspopup="true" class="tooltip tooltip-lg">
+              <clr-icon shape="info-circle" size="24"></clr-icon>
+              <span class="tooltip-content">{{'RULE.DEFAULTMODE' | translate}}</span>
+            </a>
+          </label>
+          <input type="number" clrInput required name="secret_default_mode_{{v}}" pattern="([0-9]).*?"
+                 [(ngModel)]="kubeResource.spec.template.spec.volumes[v].secret.defaultMode" [placeholder]="420">
+          <clr-control-error>{{'RULE.DEFAULTMODE' | translate}}</clr-control-error>
+        </clr-input-container>
+      </div>
+      </div>
+    </wayne-collapse>
+
     <wayne-collapse *ngFor="let container of kubeResource.spec.template.spec.containers; let i = index">
       <label class="label-level1" [id]="i ? 'container-config' + i : 'container-config'">{{'TEMPLATE.CONTAINER_CONFIG'
         | translate}}
