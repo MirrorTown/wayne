@@ -56,7 +56,13 @@ func Authenticate(m *BasicUserInfo) (*models.User, error) {
 
 func NewSsoService() {
 	allSso := []string{SsoTypeDefault}
-	beego.LoadAppConfig("ini", "src/backend/conf/app.conf")
+	err := beego.LoadAppConfig("ini", "src/backend/conf/app.conf")
+	if err != nil {
+		err = beego.LoadAppConfig("ini", "/opt/wayne/conf/app.conf")
+		if err != nil {
+			panic(err)
+		}
+	}
 
 	for _, name := range allSso {
 		section, err := beego.AppConfig.GetSection("auth." + name)

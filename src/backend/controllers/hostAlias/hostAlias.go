@@ -36,7 +36,7 @@ func (h *HostAliasController) Prepare() {
 
 // @Title Create
 // @Description create HostAlias
-// @Param	body		body 	models.HostAlias
+// @Param	body		body 	models.HostAlias true "The hostalias content"
 // @Success 200 return id success
 // @Failure 403 body is empty
 // @router /namespace/:nsId/apps/:appId [post]
@@ -67,7 +67,7 @@ func (h *HostAliasController) Create() {
 
 // @Title Update
 // @Description create HostAlias
-// @Param	body		body 	models.HostAlias
+// @Param	body		body 	models.HostAlias true "The hostalias content"
 // @Success 200 return id success
 // @Failure 403 body is empty
 // @router / [put]

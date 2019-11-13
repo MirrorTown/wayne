@@ -47,7 +47,10 @@ func ensureDatabase() error {
 	home := HomeP(&apimachinery.HomePath{}).GetCurrentDirectory()
 	err := beego.LoadAppConfig("ini", home+"/src/wayne/src/backend/conf/app.conf")
 	if err != nil {
-		panic(err)
+		err = beego.LoadAppConfig("ini", "/opt/wayne/conf/app.conf")
+		if err != nil {
+			panic(err)
+		}
 	}
 	dbName := beego.AppConfig.String("DBName")
 	dbURL := fmt.Sprintf("%s:%s@%s/", beego.AppConfig.String("DBUser"),

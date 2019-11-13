@@ -1,4 +1,5 @@
 export const environment = {
   production: true,
-  hmr: false
+  hmr: false,
+  url: "http://wayne.souche-inc.com"
 };

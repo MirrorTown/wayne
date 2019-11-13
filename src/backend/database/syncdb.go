@@ -17,9 +17,12 @@ type HomeP interface {
 
 func init() {
 	home := HomeP(&apimachinery.HomePath{}).GetCurrentDirectory()
-	err := beego.LoadAppConfig("ini", home +"/src/wayne/src/backend/conf/app.conf")
+	err := beego.LoadAppConfig("ini", home+"/src/wayne/src/backend/conf/app.conf")
 	if err != nil {
-		panic(err)
+		err = beego.LoadAppConfig("ini", "/opt/wayne/conf/app.conf")
+		if err != nil {
+			panic(err)
+		}
 	}
 }
 
