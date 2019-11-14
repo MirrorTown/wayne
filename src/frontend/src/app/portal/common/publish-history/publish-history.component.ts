@@ -110,7 +110,7 @@ export class PublishHistoryComponent implements OnInit, OnDestroy {
   rollBackTpl(publish: PublishHistory) {
     const namespaceId = this.cacheService.namespaceId;
     if (publish) {
-      this.publishService.rollback(publish.image, publish.cluster, publish.templateId, namespaceId).subscribe(
+      this.publishService.rollback(publish.image, publish.cluster, publish.templateId, namespaceId, publish).subscribe(
         response => {
           this.messageHandlerService.showSuccess('回滚成功!');
           this.refresh();

@@ -2,6 +2,7 @@ package publish
 
 import (
 	"github.com/Qihoo360/wayne/src/backend/resources/deployment"
+	"io/ioutil"
 	"k8s.io/apimachinery/pkg/util/json"
 
 	//"k8s.io/apimachinery/pkg/util/json"
@@ -20,10 +21,10 @@ type PublishController struct {
 var register = make(map[string]DeployToK8s)
 
 type DeployToK8s interface {
-	Deploytok8s(review *models.Review) ()
+	Deploytok8s(review *models.Review)
 }
 
-func Register(name string, registry DeployToK8s)  {
+func Register(name string, registry DeployToK8s) {
 	if _, dub := register[name]; dub {
 		logs.Info("It's already exist!")
 		return
@@ -111,11 +112,29 @@ func (c *PublishController) List() {
 
 // @Title RollBack
 // @Description rollback Publish to special version
-// @Param	body		body 	models.Review	true		"The app content"
+// @Param	body		body 	models.PublishHistory	true		"The app content"
 // @Success 200 return id success
 // @Failure 403 body is empty
 // @router /tpl/:tplId([0-9]+)/namespace/:nsId([0-9]+)/clusters/:cluster [post]
-func (c *PublishController) RollBack()  {
+func (c *PublishController) RollBack() {
+	temp, _ := ioutil.ReadAll(c.Ctx.Request.Body)
+	var tmpHistory *models.PublishHistory
+	err := json.Unmarshal(temp, &tmpHistory)
+	if err != nil {
+		logs.Error("获取回滚模板失败,", err)
+		c.AbortBadRequest("获取回滚模板失败")
+		return
+	}
+	instHistory := models.PublishHistory{
+		Type:         tmpHistory.Type,
+		ResourceId:   tmpHistory.ResourceId,
+		ResourceName: tmpHistory.ResourceName,
+		TemplateId:   tmpHistory.TemplateId,
+		Cluster:      tmpHistory.Cluster,
+		Message:      "执行回滚操作",
+		User:         c.User.Display,
+		Image:        tmpHistory.Image,
+	}
 
 	nsid := c.GetIntParamFromURL(":nsId")
 	cluster := c.Ctx.Input.Param(":cluster")
@@ -133,25 +152,24 @@ func (c *PublishController) RollBack()  {
 	if err != nil {
 		logs.Error("JsonToMapDemo err: ", err)
 	}
-	mapResult["spec"].(map[string]interface{})["template"].(map[string]interface{})["spec"].
-	(map[string]interface{})["containers"].([]interface{})[0].(map[string]interface{})["image"] = image;
+	mapResult["spec"].(map[string]interface{})["template"].(map[string]interface{})["spec"].(map[string]interface{})["containers"].([]interface{})[0].(map[string]interface{})["image"] = image
 
 	jsonTempl, _ := json.Marshal(mapResult)
 	kubeDeploymentTpl.Template = string(jsonTempl)
-	err= models.DeploymentTplModel.UpdateById(kubeDeploymentTpl)
+	err = models.DeploymentTplModel.UpdateById(kubeDeploymentTpl)
 	if err != nil {
-		logs.Error("更新deploymenttpl模板失败, ",err)
+		logs.Error("更新deploymenttpl模板失败, ", err)
 	}
 
 	namespace, err := models.NamespaceModel.GetById(nsid)
 	if err != nil {
-		logs.Error("获取namespace表数据失败!",err)
+		logs.Error("获取namespace表数据失败!", err)
 		return
 	}
 
 	cli, err := client.Client(cluster)
 	if err != nil {
-		logs.Error("获取k8s客户端失败!",err)
+		logs.Error("获取k8s客户端失败!", err)
 		return
 	}
 	newDeployment, err := deployment.GetDeployment(cli, kubeDeploymentTpl.Name, namespace.KubeNamespace)
@@ -162,9 +180,19 @@ func (c *PublishController) RollBack()  {
 	newDeployment.Spec.Template.Spec.Containers[0].Image = image
 	_, err = deployment.UpdateDeployment(cli, newDeployment)
 	if err != nil {
+		instHistory.Status = models.ReleaseFailure
 		logs.Error("回滚失败!", err)
 		c.HandleError(err)
 		return
 	}
+	instHistory.Status = models.ReleaseSuccess
 
+	defer func() {
+		_, err = models.PublishHistoryModel.Add(&instHistory)
+		if err != nil {
+			logs.Error("插入历史操作记录失败,", err)
+		}
+	}()
+
+	c.Success("回滚完成")
 }

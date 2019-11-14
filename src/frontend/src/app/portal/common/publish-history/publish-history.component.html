@@ -34,6 +34,11 @@
           {{'TITLE.STATUS' | translate}}
         </ng-container>
       </clr-dg-column>
+      <clr-dg-column>
+        <ng-container *clrDgHideableColumn="{hidden: false}">
+          {{'TITLE.MESSAGE' | translate}}
+        </ng-container>
+      </clr-dg-column>
       <clr-dg-column *ngIf="type === 0">
         <ng-container *clrDgHideableColumn="{hidden: false}">
           {{'TITLE.ROLLBACK' | translate}}
@@ -46,6 +51,7 @@
         <clr-dg-cell *ngIf="type === 0">{{history.image}}</clr-dg-cell>
         <clr-dg-cell>{{history.cluster}}</clr-dg-cell>
         <clr-dg-cell>{{history.status == 1 ? 'success' : history.message}}</clr-dg-cell>
+        <clr-dg-cell>{{history.message}}</clr-dg-cell>
         <clr-dg-cell class="col-operate" *ngIf="type === 0">
           <button class="wayne-button text" (click)="rollBackTpl(history)">{{'BUTTON.ROLLBACK' | translate}}</button>
         </clr-dg-cell>
