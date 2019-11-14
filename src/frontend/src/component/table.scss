@@ -55,6 +55,11 @@ div.datagrid-foot-description {
   width: 158px !important;
 }
 
+.col-event-count {
+  min-width: 80px !important;
+  font-family: Consolas, monospace;
+}
+
 .col-time {
   min-width: 160px !important;
   font-family: Consolas, monospace;
@@ -128,6 +133,10 @@ div.datagrid-foot-description {
 }
 
 .col-cluster-name {
+  width: 110px !important;
+}
+
+.col-event-name {
   width: 110px !important;
 }
 

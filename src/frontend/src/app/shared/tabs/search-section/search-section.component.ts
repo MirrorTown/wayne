@@ -54,8 +54,8 @@ export class SearchSectionComponent implements ControlValueAccessor, OnDestroy {
   registerOnTouched(fn: any): void {
   }
 
-  clieckEvent(evnet) {
-    if ( evnet.keyCode == 13 ) {
+  clieckEvent(event) {
+    if ( event.keyCode == 13 ) {
       this.updateEmit(this.sendValue);
     }
   }

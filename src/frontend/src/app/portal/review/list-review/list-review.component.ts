@@ -35,7 +35,6 @@ export class ListReviewComponent implements OnInit {
     this.state.page.to = pageSize - 1;
     this.state.page.size = pageSize;
     this.currentPage = 1;
-    console.log(this.state);
     this.paginate.emit(this.state);
   }
 

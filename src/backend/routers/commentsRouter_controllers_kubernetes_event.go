@@ -16,5 +16,13 @@ func init() {
 			MethodParams:     param.Make(),
 			Filters:          nil,
 			Params:           nil,
+		},
+		beego.ControllerComments{
+			Method:           "ListEvent",
+			Router:           "/clusters/:cluster",
+			Filters:          nil,
+			AllowHTTPMethods: []string{"get"},
+			Params:           nil,
+			MethodParams:     param.Make(),
 		})
 }

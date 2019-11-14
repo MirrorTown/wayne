@@ -18,6 +18,7 @@ const adminSideNav: any[] = [
   {
     type: SideNavType.GroupLink, icon: { title: 'MENU.CLUSTER', shape: 'cloud-scale' }, text: 'MENU.CLUSTER', child: [
       { a: { link: 'cluster', text: 'MENU.LIST', options: { exact: true } } },
+      { a: { link: 'cluster/event', text: 'MENU.EVENT', options: { exact: true } } },
       { a: { link: 'cluster/trash', text: 'MENU.RECYCLED', options: { exact: true } } },
     ]
   },

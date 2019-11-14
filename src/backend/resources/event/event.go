@@ -27,6 +27,30 @@ import (
 var FailedReasonPartials = []string{"failed", "err", "exceeded", "invalid", "unhealthy",
 	"mismatch", "insufficient", "conflict", "outof", "nil", "backoff"}
 
+func GetK8sEvents(indexer *client.CacheFactory, q *basecommon.QueryParam) (*basecommon.Page, error) {
+	events, err := indexer.EventLister().List(labels.Everything())
+	if err != nil {
+		return nil, err
+	}
+
+	result := make([]common.Event, 0)
+
+	for _, event := range events {
+		result = append(result, common.Event{
+			Message:         event.Message,
+			SourceComponent: event.Source.Component,
+			Name:            event.InvolvedObject.Name,
+			Count:           event.Count,
+			FirstSeen:       event.FirstTimestamp,
+			LastSeen:        event.LastTimestamp,
+			Reason:          event.Reason,
+			Type:            event.Type,
+		})
+	}
+
+	return pageResult(result, q), nil
+}
+
 func GetPodsWarningEvents(indexer *client.CacheFactory, pods []*apiv1.Pod) ([]common.Event, error) {
 	events, err := indexer.EventLister().List(labels.Everything())
 	if err != nil {

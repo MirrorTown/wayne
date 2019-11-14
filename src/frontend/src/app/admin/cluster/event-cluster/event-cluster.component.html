@@ -1,0 +1,87 @@
+<div class="clr-row">
+  <div class="clr-col-lg-12 clr-col-md-12 clr-col-sm-12 clr-col-xs-12">
+    <div class="clr-row flex-items-xs-between flex-items-xs-top" style="padding-left: 15px; padding-right: 15px;">
+      <h2 class="header-title">集群事件</h2>
+    </div>
+    <div class="clr-row flex-items-xs-between" style="padding-left: 15px; height:32px;">
+      <div class="option-left">
+        <input  type="text" size="20" name="cluster_event" list="clusters" required style="border:0;border-bottom:1px solid #0298e3;"
+                [(ngModel)]="cluster" placeholder='请选择集群查询'>
+        <datalist id="clusters">
+          <option *ngFor="let cluster of clusters" [value]="">{{cluster.name}}</option>
+        </datalist>
+        <button class="btn btn-link" (click)="searchEvent()">
+          <clr-icon shape="search"></clr-icon>
+          搜索集群事件
+        </button>
+      </div>
+    </div>
+    <clr-datagrid (clrDgRefresh)="searchEvent($event)">
+      <clr-dg-column class="col-id">
+        <ng-container *clrDgHideableColumn="{hidden: false}">
+          事件涞源
+        </ng-container>
+      </clr-dg-column>
+      <clr-dg-column class="col-event-name" [clrDgField]="'type'">
+        <ng-container *clrDgHideableColumn="{hidden: false}">
+         事件级别
+        </ng-container>
+      </clr-dg-column>
+      <clr-dg-column class="col-event-name">
+        <ng-container *clrDgHideableColumn="{hidden: false}">
+          事件名称
+        </ng-container>
+      </clr-dg-column>
+      <clr-dg-column class="col-metadata">
+        <ng-container *clrDgHideableColumn="{hidden: false}">
+          事件消息
+        </ng-container>
+      </clr-dg-column>
+      <clr-dg-column class="col-event-count">
+        <ng-container *clrDgHideableColumn="{hidden: false}">
+          发生次数
+        </ng-container>
+      </clr-dg-column>
+      <clr-dg-column class="col-time">
+        <ng-container *clrDgHideableColumn="{hidden: false}">
+          第一次发生时间
+        </ng-container>
+      </clr-dg-column>
+      <clr-dg-column class="col-time">
+        <ng-container *clrDgHideableColumn="{hidden: false}">
+          最近一次发生时间
+        </ng-container>
+      </clr-dg-column>
+      <clr-dg-column>
+        <ng-container *clrDgHideableColumn="{hidden: false}">
+          事件原因
+        </ng-container>
+      </clr-dg-column>
+      <clr-dg-row *ngFor="let event of events" [clrDgItem]="event">
+        <clr-dg-cell class="col-id">{{event.sourceComponent}}</clr-dg-cell>
+        <clr-dg-cell class="col-event-name copy">{{event.type}}</clr-dg-cell>
+        <clr-dg-cell class="col-event-name copy">{{event.name}}</clr-dg-cell>
+        <clr-dg-cell class="col-metadata">
+          <div class="text-overflow">
+            <a href="javascript:;" (click)="detailMetaDataTpl(event.message)">{{event.message}}</a>
+          </div>
+        </clr-dg-cell>
+        <clr-dg-cell class="col-event-count">{{event.count}}</clr-dg-cell>
+        <clr-dg-cell class="col-time">{{event.firstSeen | date:'yyyy-MM-dd HH:mm:ss'}}</clr-dg-cell>
+        <clr-dg-cell class="col-time">{{event.lastSeen | date:'yyyy-MM-dd HH:mm:ss'}}</clr-dg-cell>
+        <clr-dg-cell>{{event.reason}}</clr-dg-cell>
+      </clr-dg-row>
+
+
+      <clr-dg-footer>
+        <wayne-paginate
+          [(currentPage)]="currentPage"
+          [total]="pageState.page.totalCount"
+          [pageSizes]="[10, 20, 50]"
+          (sizeChange)="pageSizeChange($event)"
+        >
+        </wayne-paginate>
+      </clr-dg-footer>
+    </clr-datagrid>
+  </div>
+</div>

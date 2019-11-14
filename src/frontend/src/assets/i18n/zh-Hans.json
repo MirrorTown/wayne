@@ -258,6 +258,7 @@
   "MENU": {
     "API_KEYS": "API 密钥",
     "APP": "项目",
+    "EVENT": "事件",
     "APP_OVERVIEW": "项目概览",
     "AUDIT_LOD": "审计日志",
     "BG_HOME": "后台首页",

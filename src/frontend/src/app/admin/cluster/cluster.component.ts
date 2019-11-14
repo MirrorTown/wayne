@@ -10,6 +10,8 @@ import { ListClusterComponent } from './list-cluster/list-cluster.component';
 import { Cluster } from '../../shared/model/v1/cluster';
 import { ClusterService } from '../../shared/client/v1/cluster.service';
 import { PageState } from '../../shared/page/page-state';
+import {Event} from "../../shared/model/v1/event";
+import {EventClient} from "../../shared/client/v1/kubernetes/event";
 
 @Component({
   selector: 'wayne-cluster',

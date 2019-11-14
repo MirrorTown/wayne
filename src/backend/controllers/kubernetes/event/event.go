@@ -7,7 +7,6 @@ import (
 	"github.com/Qihoo360/wayne/src/backend/client/api"
 	"github.com/Qihoo360/wayne/src/backend/common"
 	"github.com/Qihoo360/wayne/src/backend/controllers/base"
-	"github.com/Qihoo360/wayne/src/backend/models"
 	erroresult "github.com/Qihoo360/wayne/src/backend/models/response/errors"
 	"github.com/Qihoo360/wayne/src/backend/resources/event"
 	"github.com/Qihoo360/wayne/src/backend/util/logs"
@@ -19,17 +18,19 @@ type KubeEventController struct {
 
 func (c *KubeEventController) URLMapping() {
 	c.Mapping("List", c.List)
+	c.Mapping("ListEvent", c.ListEvent)
 }
 
 func (c *KubeEventController) Prepare() {
 	// Check administration
-	c.APIController.Prepare()
+	/*c.APIController.Prepare()
 
 	methodActionMap := map[string]string{
 		"List": models.PermissionRead,
+		"ListEvent": models.PermissionRead,
 	}
 	_, method := c.GetControllerAndAction()
-	c.PreparePermission(methodActionMap, method, models.PermissionTypeKubePod)
+	c.PreparePermission(methodActionMap, method, models.PermissionTypeKubePod)*/
 }
 
 // @Title GetPodEvent
@@ -64,4 +65,23 @@ func (c *KubeEventController) List() {
 		return
 	}
 	c.Success(result)
+}
+
+// @Title ListK8sEvent
+// @Description Get K8s Cluster Event by cluster name
+// @Param	pageNo		query 	int	false		"the page current no"
+// @Param	pageSize		query 	int	false		"the page size"
+// @Param	name		query 	string	true		"the query cluster name."
+// @Success 200 {object} models.Deployment success
+// @router /clusters/:cluster [get]
+func (c *KubeEventController) ListEvent() {
+	cluster := c.Ctx.Input.Param(":cluster")
+	param := c.BuildKubernetesQueryParam()
+	manager := c.Manager(cluster)
+	events, err := event.GetK8sEvents(manager.CacheFactory, param)
+	if err != nil {
+		logs.Error(fmt.Sprintf("获取集群%s 事件信息失败,", cluster), err)
+	}
+
+	c.Success(events)
 }

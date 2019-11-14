@@ -23,4 +23,11 @@ export class EventClient {
       .catch(error => throwError(error));
   }
 
+  listEventByCluster(pageState: PageState, cluster: string): Observable<any> {
+    let params = BaseClient.buildParam(pageState);
+    return this.http
+      .get(`/api/v1/events/clusters/${cluster}`, {params: params})
+      .catch(error => throwError(error));
+  }
+
 }

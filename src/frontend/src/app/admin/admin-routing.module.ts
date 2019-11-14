@@ -91,6 +91,7 @@ import { KubeCrdComponent } from './kubernetes/crd/kube-crd.component';
 import { HarborComponent } from './harbor/harbor.component';
 import { RoadmapComponent } from './roadmap/roadmap.component';
 import { CustomlinkComponent } from './customlink/customlink.component';
+import { EventClusterComponent } from './cluster/event-cluster/event-cluster.component';
 
 const routes: Routes = [
   {
@@ -112,6 +113,7 @@ const routes: Routes = [
       {path: 'cluster', component: ClusterComponent},
       {path: 'harbor', component: HarborComponent},
       {path: 'cluster/trash', component: TrashClusterComponent},
+      {path: 'cluster/event', component: EventClusterComponent},
       {path: 'app', component: AppComponent},
       {path: 'app/trash', component: TrashAppComponent},
       {path: 'deployment', component: DeploymentComponent},

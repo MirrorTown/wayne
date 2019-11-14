@@ -366,6 +366,11 @@ func init() {
 				&cluster.ClusterController{},
 			),
 		),
+		beego.NSNamespace("/events",
+			beego.NSInclude(
+				&kevent.KubeEventController{},
+			),
+		),
 		beego.NSNamespace("/auditlogs",
 			beego.NSInclude(
 				&auditlog.AuditLogController{},

@@ -17,6 +17,10 @@ func (cell ObjectCell) GetProperty(name dataselector.PropertyName) dataselector.
 		return dataselector.StdComparableTime(cell.ObjectMeta.CreationTimestamp.Time)
 	case dataselector.NamespaceProperty:
 		return dataselector.StdComparableString(cell.ObjectMeta.Namespace)
+	case dataselector.LastSeen:
+		return dataselector.StdComparableTime(cell.LastSeen.Time)
+	case dataselector.Type:
+		return dataselector.StdComparableString(cell.Type)
 	default:
 		// if name is not supported then just return a constant dummy value, sort will have no effect.
 		return nil
