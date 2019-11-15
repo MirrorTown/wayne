@@ -104,7 +104,7 @@ func (c *LoggedInController) publishRequestMessage(code int, data interface{}) {
 		URI:            c.Ctx.Input.URI(),
 		Controller:     controller,
 		Method:         method,
-		User:           c.User.Name,
+		User:           c.User.Display,
 		IP:             c.Ctx.Input.IP(),
 		ResponseStatus: code,
 		ResponseBody:   body,

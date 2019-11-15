@@ -101,7 +101,7 @@ func (a NamespaceUserAuditor) Audit(data *message.RequestMessageData) error {
 	var userName, namespaceName, groupsName string
 	if !noResponseBody && namespaceUser.Id != 0 {
 		userId = namespaceUser.Id
-		userName = namespaceUser.User.Name
+		userName = namespaceUser.User.Display
 		namespaceName = namespaceUser.Namespace.String()
 
 		groups := make([]string, 0)
@@ -167,7 +167,7 @@ func (a AppAuditor) Audit(data *message.RequestMessageData) error {
 	var userName, appName, groupsName string
 	if !noResponseBody && appUser.Id != 0 {
 		userId = appUser.Id
-		userName = appUser.User.Name
+		userName = appUser.User.Display
 		appName = appUser.App.String()
 
 		groups := make([]string, 0)
