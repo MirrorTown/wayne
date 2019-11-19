@@ -2,6 +2,7 @@ package images
 
 import (
 	"context"
+	"fmt"
 	"github.com/Qihoo360/wayne/src/backend/controllers/base"
 	"github.com/Qihoo360/wayne/src/backend/models"
 	"github.com/Qihoo360/wayne/src/backend/util/logs"
@@ -48,6 +49,9 @@ func (c *HarborImageController) ListTag() {
 	if len(image) == 0 {
 		return
 	} else if len(strings.Split(image, "/")) < 2 {
+		return
+	} else if strings.Contains(strings.Split(image, "/")[0], "aliyuncs.com") {
+		fmt.Println(strings.Split(image, "/")[0])
 		return
 	}
 

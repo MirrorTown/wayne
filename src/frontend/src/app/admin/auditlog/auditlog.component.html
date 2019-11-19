@@ -15,13 +15,13 @@
         <ng-container *clrDgHideableColumn="{hidden: false}">用户IP</ng-container>
       </clr-dg-column>
       <clr-dg-column>
-        <ng-container *clrDgHideableColumn="{hidden: false}">SubjectId</ng-container>
+        <ng-container *clrDgHideableColumn="{hidden: true}">SubjectId</ng-container>
       </clr-dg-column>
       <clr-dg-column [clrDgField]="'logType'">
         <ng-container *clrDgHideableColumn="{hidden: false}">操作类型</ng-container>
       </clr-dg-column>
       <clr-dg-column [clrDgField]="'logLevel'">
-        <ng-container *clrDgHideableColumn="{hidden: false}">日志级别</ng-container>
+        <ng-container *clrDgHideableColumn="{hidden: false}">审计级别</ng-container>
       </clr-dg-column>
       <clr-dg-column [clrDgField]="'action'">
         <ng-container *clrDgHideableColumn="{hidden: false}">Action</ng-container>
@@ -33,8 +33,8 @@
         <ng-container *clrDgHideableColumn="{hidden: false}">{{'BUTTON.DETAIL' | translate}}</ng-container>
       </clr-dg-column>
 
-      <clr-dg-row *ngFor="let al of auditLogs" [clrDgItem]="al">
-        <clr-dg-cell class="col-id">{{al.id}}</clr-dg-cell>
+      <clr-dg-row *ngFor="let al of auditLogs; let i = index" [clrDgItem]="al">
+        <clr-dg-cell class="col-id">{{i + 1}}</clr-dg-cell>
         <clr-dg-cell>{{al.user}}</clr-dg-cell>
         <clr-dg-cell>{{al.userIp}}</clr-dg-cell>
         <clr-dg-cell>{{al.subjectId}}</clr-dg-cell>

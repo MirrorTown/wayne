@@ -8,6 +8,7 @@ import { Deployment } from '../../../shared/model/v1/deployment';
 import { ClusterMeta } from '../../../shared/model/v1/cluster';
 import { DeploymentStatus, DeploymentTpl } from '../../../shared/model/v1/deploymenttpl';
 import { KubeDeployment } from '../../../shared/model/v1/kubernetes/deployment';
+import { combineLatest } from 'rxjs';
 import { CacheService } from '../../../shared/auth/cache.service';
 import { defaultResources, ResourcesActionType } from '../../../shared/shared.const';
 import { PublishStatusService } from '../../../shared/client/v1/publishstatus.service';
@@ -46,6 +47,8 @@ export class PublishDeploymentTplComponent implements OnInit {
   containerImage = '';
   taglist = [];
   tag = '';
+  lastStr: string;
+  delaytimer: any;
 
   constructor(private messageHandlerService: MessageHandlerService,
               public cacheService: CacheService,
@@ -66,7 +69,13 @@ export class PublishDeploymentTplComponent implements OnInit {
       if (!clusterMeta.checked) {
         return true;
       }
-      return parseInt(clusterMeta.value, 10) <= this.replicaLimit;
+      const num = parseInt(clusterMeta.value, 10);
+      if (num <= this.replicaLimit && num > 0) {
+        return true;
+      } else if (num <= 0) {
+        return false;
+      }
+      // return parseInt(clusterMeta.value, 10) <= this.replicaLimit;
     }
     return false;
   }
@@ -174,14 +183,49 @@ export class PublishDeploymentTplComponent implements OnInit {
     return replicas;
   }
 
+  getRepotagDelay(h: any): void {
+    this.lastStr = h.containerImage;
+    clearTimeout(this.delaytimer);
+    // @ts-ignore
+    this.delaytimer = setTimeout((hdx) => {
+      if (h.containerImage === this.lastStr) {
+        this.getRepoTag(h);
+      }
+    }, 800);
+  }
+
   getRepoTag(h: any): void {
     // const value = document.getElementById('images').value;
     this.taglist = [];
-    this.deploymentService.listTags(h.containerImage).subscribe(value => {
-      for (const tag of value.data) {
+    var imageCrList = [];
+    const observables = Array(
+      this.deploymentService.listTags(h.containerImage),
+      // this.deploymentService.listAliyunCrTags(h.containerImage, 0, this.cacheService.namespaceId),
+      this.deploymentService.listAliyunCrImages(0, this.cacheService.namespaceId, h.containerImage)
+    );
+     combineLatest(observables).subscribe(value => {
+      for (const tag of value[0].data) {
+        console.log(tag);
         this.taglist.push({Name: tag.name});
       }
+       for (const tag of value[1].data) {
+         console.log(tag);
+         if (tag.name != null) {
+           this.taglist.push({Name: tag.name});
+         }
+       }
+       console.log(value[2].data);
+       for (const image of value[2].data) {
+         console.log(image);
+         imageCrList.push({Name: image['name']});
+       }
     });
+     var imageCr = this.unique(imageCrList);
+     this.imagelist.push(imageCr);
+  }
+
+  unique (arr) {
+    return Array.from(new Set(arr))
   }
 
   ngOnInit(): void {

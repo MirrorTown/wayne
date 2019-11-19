@@ -29,7 +29,7 @@
                 <ng-container *ngIf="actionType==0 || actionType==2">
                   <input class="clr-input" placeholder="部署份数" [(ngModel)]="clusterMetas[cluster].value" id="{{cluster}}-replica" [readonly]="actionType!=0"
                     name="{{cluster}}-replica" type="number"  style="margin-left: 20px;">
-                  <span class="clr-subtext" *ngIf="!replicaValidation(cluster)">部署份数超过系统最大限制{{replicaLimit}}</span>
+                  <span class="clr-subtext" *ngIf="!replicaValidation(cluster)">部署份数超过系统最大限制{{replicaLimit}}或则小于最小限制0</span>
                 </ng-container>
               </div>
             </div>
@@ -44,7 +44,7 @@
               <div class="clr-input-wrapper">
 
                 <ng-container *ngIf="actionType==0 || actionType==5">
-                  <input class="required" type="text" (input)="getRepoTag(this)" size="90" name="container" list="images" pattern="{{getImagePrefixReg()}}"
+                  <input class="required" type="text" (input)="getRepotagDelay(this)" size="90" name="container" list="images" pattern="{{getImagePrefixReg()}}"
                           [(ngModel)]="containerImage" [placeholder]="'TEMPLATE.IMAGE_ADDRESS' | translate">
                   <datalist id="images">
                     <option *ngFor="let image of imagelist" [value]="image.Name">{{image.Name}}</option>
