@@ -131,7 +131,7 @@ func (c *PublishController) RollBack() {
 		ResourceName: tmpHistory.ResourceName,
 		TemplateId:   tmpHistory.TemplateId,
 		Cluster:      tmpHistory.Cluster,
-		Message:      "执行回滚操作",
+		Message:      "回滚操作",
 		User:         c.User.Display,
 		Image:        tmpHistory.Image,
 	}

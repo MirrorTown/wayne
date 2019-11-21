@@ -11,7 +11,7 @@ import { PublishHistoryService } from './publish-history.service';
 import { Subscription } from 'rxjs/Subscription';
 import { PageState } from '../../../shared/page/page-state';
 import { ActivatedRoute } from '@angular/router';
-import {CacheService} from "../../../shared/auth/cache.service";
+import { CacheService } from '../../../shared/auth/cache.service';
 
 @Component({
   selector: 'publish-history',
@@ -105,6 +105,15 @@ export class PublishHistoryComponent implements OnInit, OnDestroy {
 
   get appId(): number {
     return parseInt(this.route.parent.snapshot.params['id'], 10);
+  }
+
+  confirmRollBack(publish: PublishHistory) {
+    var result = confirm('请再次确认是否回滚');
+    if (result == true) {
+      this.rollBackTpl(publish);
+    }else {
+      console.log("回滚取消");
+    }
   }
 
   rollBackTpl(publish: PublishHistory) {
