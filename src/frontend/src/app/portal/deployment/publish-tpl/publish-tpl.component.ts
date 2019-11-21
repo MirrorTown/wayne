@@ -200,28 +200,22 @@ export class PublishDeploymentTplComponent implements OnInit {
     var imageCrList = [];
     const observables = Array(
       this.deploymentService.listTags(h.containerImage),
-      // this.deploymentService.listAliyunCrTags(h.containerImage, 0, this.cacheService.namespaceId),
-      this.deploymentService.listAliyunCrImages(0, this.cacheService.namespaceId, h.containerImage)
+      this.deploymentService.listAliyunCrTags(h.containerImage)
     );
      combineLatest(observables).subscribe(value => {
-      for (const tag of value[0].data) {
-        console.log(tag);
-        this.taglist.push({Name: tag.name});
-      }
-       for (const tag of value[1].data) {
-         console.log(tag);
-         if (tag.name != null) {
+       if (value[0] != null) {
+         for (const tag of value[0].data) {
            this.taglist.push({Name: tag.name});
          }
        }
-       console.log(value[2].data);
-       for (const image of value[2].data) {
-         console.log(image);
-         imageCrList.push({Name: image['name']});
+       if (value[1] != null) {
+         for (const tag of value[1].data) {
+           if (tag.tag != null) {
+             this.taglist.push({Name: tag.tag});
+           }
+         }
        }
     });
-     var imageCr = this.unique(imageCrList);
-     this.imagelist.push(imageCr);
   }
 
   unique (arr) {
@@ -230,9 +224,20 @@ export class PublishDeploymentTplComponent implements OnInit {
 
   ngOnInit(): void {
     const namespaceId = this.cacheService.namespaceId;
-    this.deploymentService.listImages(new PageState({pageSize: 1000}), namespaceId).subscribe(value => {
-      for (const image of value.data) {
-        this.imagelist.push({Name: image['name']});
+    const observables = Array(
+      this.deploymentService.listImages(new PageState({pageSize: 1000}), namespaceId),
+      this.deploymentService.listAliyunCrImages(0, this.cacheService.namespaceId)
+    );
+    combineLatest(observables).subscribe(value => {
+      if (value[0] != null) {
+        for (const image of value[0].data) {
+          this.imagelist.push({Name: image['name']});
+        }
+      }
+      if (value[1] != null) {
+        for (const image of value[1].data) {
+          this.imagelist.push({Name: image.repoDomainList["vpc"] + "/" + image["repoNamespace"] + "/" + image['repoName']});
+        }
       }
     });
   }

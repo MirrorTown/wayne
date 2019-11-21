@@ -90,7 +90,7 @@ export class DeploymentService {
       .catch(error => throwError(error));
   }
 
-  listAliyunCrImages(status: number, namespaceId: number, repoNamePrefix: string): Observable<any> {
+  listAliyunCrImages(status: number, namespaceId: number, repoNamePrefix?: string): Observable<any> {
     let params = new HttpParams();
     if (typeof(repoNamePrefix) !== 'undefined') {
       params = params.set('repoNamePrefix', repoNamePrefix);
@@ -99,12 +99,12 @@ export class DeploymentService {
       .catch(error => throwError(error));
   }
 
-  listAliyunCrTags(image: string, status: number, namespaceid: number): Observable<any> {
+  listAliyunCrTags(image: string): Observable<any> {
     let params = new HttpParams();
     if (typeof(image) !== 'undefined') {
       params = params.set('image', image);
     }
-    return this.http.get(`/api/v1/harbor/tags`, {params: params})
+    return this.http.get(`/aliyun/wayne/cr/taglist`, {params: params})
       .catch(error => throwError(error));
   }
 

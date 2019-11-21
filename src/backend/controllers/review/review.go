@@ -231,10 +231,10 @@ func (c *ReviewController) Deploytok8s(review *models.Review) {
 	// 灰度发布新增grayscale字段
 	if review.GrayPublish == "True" {
 		scaleName := kubeDeployment.ObjectMeta.Name + "-grayscale"
+		kubeDeployment.Spec.Selector.MatchLabels["app"] = kubeDeployment.ObjectMeta.Name
+		kubeDeployment.Spec.Template.ObjectMeta.Labels["app"] = kubeDeployment.ObjectMeta.Name
 		kubeDeployment.ObjectMeta.Name = scaleName
 		kubeDeployment.ObjectMeta.Labels["app"] = scaleName
-		kubeDeployment.Spec.Selector.MatchLabels["app"] = scaleName
-		kubeDeployment.Spec.Template.ObjectMeta.Labels["app"] = scaleName
 
 	}
 
