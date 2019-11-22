@@ -63,7 +63,8 @@ const adminSideNav: any[] = [
   {
     type: SideNavType.GroupLink, icon: { title: 'MENU.SYSTEM_STATISTICS', shape: 'image-gallery' }, text: 'MENU.SYSTEM_STATISTICS', child: [
       { a: { link: 'reportform/app', text: 'MENU.PROJECT_REPORT', options: { exact: true } } },
-      { a: { link: 'reportform/deploy', text: 'MENU.RELEASE_STATISTICS', options: { exact: true } } }
+      { a: { link: 'reportform/deploy', text: 'MENU.RELEASE_STATISTICS', options: { exact: true } } },
+      { a: { link: 'reportform/chartdeploy', text: 'MENU.RELEASE_CHART', options: { exact: true } } }
     ]
   },
   {

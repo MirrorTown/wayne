@@ -36,6 +36,7 @@ func Register(name string, registry DeployToK8s) {
 func (c *PublishController) URLMapping() {
 	c.Mapping("List", c.List)
 	c.Mapping("RollBack", c.RollBack)
+	c.Mapping("Chart", c.Chart)
 }
 
 func (c *PublishController) Prepare() {
@@ -64,6 +65,45 @@ func (c *PublishController) Statistics() {
 	}
 
 	result, err := models.PublishHistoryModel.GetDeployCountByDay(startTime, endTime)
+	if err != nil {
+		logs.Error("get publishhistory by day (%s)(%s) error. %v", startTime, endTimeStr, err)
+		c.HandleError(err)
+		return
+	}
+
+	c.Success(result)
+}
+
+// @Title kubernetes deploy chart
+// @Description kubernetes chart
+// @Param	start_time	query 	string	false		"the chart start time"
+// @Param	end_time	query 	string	false		"the chart end time"
+// @Param	resource_name	query 	string	false		"the chart resource name"
+// @Param	cluster	query 	string	false		"the chart cluster"
+// @Param	user	query 	string	false		"the chart user"
+// @Param	resource_type	query 	int	false		"the chart resource_type"
+// @Success 200 {object} node.NodeStatistics success
+// @router /chart/:type [get]
+func (c *PublishController) Chart() {
+	startTimeStr := c.Input().Get("start_time")
+	startTime, err := time.Parse(time.RFC3339, startTimeStr)
+	if err != nil {
+		logs.Info("request start time (%s) error.", startTimeStr, err)
+		c.AbortBadRequestFormat("start_time")
+	}
+	endTimeStr := c.Input().Get("end_time")
+	endTime, err := time.Parse(time.RFC3339, endTimeStr)
+	if err != nil {
+		logs.Info("request end time (%s) error.", endTimeStr, err)
+		c.AbortBadRequestFormat("end_time")
+	}
+
+	resource_name := c.Input().Get("resource_name")
+	cluster := c.Input().Get("cluster")
+	user := c.Input().Get("user")
+	resource_type := c.GetIntParamFromURL(":type")
+
+	result, err := models.PublishHistoryModel.GetDeployChart(startTime, endTime, resource_name, cluster, user, resource_type)
 	if err != nil {
 		logs.Error("get publishhistory by day (%s)(%s) error. %v", startTime, endTimeStr, err)
 		c.HandleError(err)

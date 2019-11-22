@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/Qihoo360/wayne/src/backend/util/logs"
@@ -27,7 +28,7 @@ type PublishHistory struct {
 	Status       ReleaseStatus `orm:"type(integer)" json:"status,omitempty"`
 	Message      string        `orm:"type(text)" json:"message,omitempty"`
 	User         string        `orm:"size(128)" json:"user,omitempty"`
-	Image		 string		   `orm:"size(128)" json:"image,omitempty"`
+	Image        string        `orm:"size(128)" json:"image,omitempty"`
 	CreateTime   *time.Time    `orm:"auto_now_add;type(datetime)" json:"createTime,omitempty"`
 }
 
@@ -40,6 +41,11 @@ type DeployCount struct {
 	Count int       `json:"count"`
 }
 
+type ChartDeploy struct {
+	X time.Time `json:"x,omitempty"`
+	Y int       `json:"y"`
+}
+
 func (*publishHistoryModel) Add(m *PublishHistory) (id int64, err error) {
 	m.CreateTime = nil
 	id, err = Ormer().Insert(m)
@@ -47,6 +53,27 @@ func (*publishHistoryModel) Add(m *PublishHistory) (id int64, err error) {
 		logs.Error("publish publishStatus (%v) to db error.%v", m, err)
 	}
 	return
+}
+
+func (*publishHistoryModel) GetDeployChart(startTime time.Time, endTime time.Time, resourceName string, cluster string, user string, resourceType int64) (*[]ChartDeploy, error) {
+	sql := `SELECT DATE_FORMAT( create_time, "%Y-%m-%d" ) as x, COUNT( * ) as y FROM publish_history where create_time >= ? and  create_time <= ? `
+	if resourceName != "undefined" {
+		sql = fmt.Sprintf("%s and resource_name = '%s' ", sql, resourceName)
+	}
+	if cluster != "undefined" {
+		sql = fmt.Sprintf("%s and cluster = '%s' ", sql, cluster)
+	}
+	if user != "undefined" {
+		sql = fmt.Sprintf("%s and user = '%s' ", sql, user)
+	}
+	if resourceType != -1 {
+		sql = fmt.Sprintf("%s and type = %d", sql, resourceType)
+	}
+	sql = sql + ` GROUP BY DATE_FORMAT( create_time, "%Y-%m-%d" ) order by create_time;`
+	result := &[]ChartDeploy{}
+	_, err := Ormer().Raw(sql, startTime, endTime).QueryRows(result)
+
+	return result, err
 }
 
 func (*publishHistoryModel) GetDeployCountByDay(startTime time.Time, endTime time.Time) (*[]DeployCount, error) {

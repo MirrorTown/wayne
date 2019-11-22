@@ -8,6 +8,7 @@ import { PublishService } from '../../shared/client/v1/publish.service';
 import { NodeClient } from '../../shared/client/v1/kubernetes/node';
 import { PodClient } from '../../shared/client/v1/kubernetes/pod';
 import { UserService } from '../../shared/client/v1/user.service';
+import { ChartDeployComponent } from './chart/chart-deploy.component';
 
 @NgModule({
   imports: [
@@ -20,8 +21,8 @@ import { UserService } from '../../shared/client/v1/user.service';
     PodClient,
     UserService
   ],
-  exports: [AppReportFormComponent, OverviewComponent, DeployComponent],
-  declarations: [AppReportFormComponent, OverviewComponent, DeployComponent]
+  exports: [AppReportFormComponent, OverviewComponent, DeployComponent, ChartDeployComponent],
+  declarations: [AppReportFormComponent, OverviewComponent, DeployComponent, ChartDeployComponent]
 })
 
 export class ReportFormModule {

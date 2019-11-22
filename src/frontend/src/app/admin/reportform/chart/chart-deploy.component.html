@@ -1,0 +1,25 @@
+<div class="clr-row">
+  <div class="clr-col-lg-12 clr-col-md-12 clr-col-sm-12 clr-col-xs-12">
+    <div class="clr-row flex-items-xs-between flex-items-xs-top" style="padding-left: 15px; padding-right: 15px;">
+      <h2 class="header-title">发布图表</h2>
+    </div>
+    <div class="clr-row flex-items-xs-between" style="margin-left: 5px">
+      <label for="resourceName" class="time-label">项目名称：</label><input type="text" id="resourceName" name="resourceName" [defaultValue]="all" placeholder="默认查询所有项目" [(ngModel)]="resourceName" style="border:0;border-bottom:1px solid #0298e3;">
+      <label for="cluster" class="time-label">集群：</label><input type="text" id="cluster" name="cluster" [defaultValue]="all" placeholder="默认查询所有集群" [(ngModel)]="cluster" style="border:0;border-bottom:1px solid #0298e3;">
+      <label for="user" class="time-label">发布者：</label><input type="text" id="user" name="user" [defaultValue]="all" placeholder="默认查询所有发布者" [(ngModel)]="user" style="border:0;border-bottom:1px solid #0298e3;">
+      <label for="resourceType" class="time-label">发布类型：</label>
+      <input type="text" id="rType" name="rType" placeholder="默认查询所有类型" list="resourceType" [defaultValue]="all" [(ngModel)]="rtype" style="border:0;border-bottom:1px solid #0298e3;">
+      <datalist id="resourceType">
+        <option *ngFor="let type of resourceType" [value]="">{{type.name}}</option>
+      </datalist>
+    </div>
+    <div class="clr-row flex-items-xs-between" style="margin-left: 5px">
+      <label for="startTime" class="time-label">{{'TITLE.START_TIME' | translate}}：</label><input type="date" id="startTime" name="startTime" [(ngModel)]="startTime" clrDate>
+      <label for="endTime" class="time-label">{{'TITLE.FINISH_TIME' | translate}}：</label><input type="date" id="endTime" name="endTime" [(ngModel)]="endTime" clrDate>
+      <button class="btn" (click)="search()">查询</button>
+    </div>
+    <div>
+      <canvas id="deployChart" width="400" height="400"></canvas>
+    </div>
+  </div>
+</div>

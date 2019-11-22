@@ -74,6 +74,17 @@ export class PublishService {
       .catch(error => throwError(error));
   }
 
+  getDeployChart(startTime: string, endTime: string, resourceName: string, cluster: string, user: string, resourceType: number): Observable<any> {
+    let params = new HttpParams();
+    params = params.set('start_time', startTime);
+    params = params.set('end_time', endTime);
+    params = params.set('resource_name', resourceName);
+    params = params.set('cluster', cluster);
+    params = params.set('user', user);
+    return this.http
+      .get(`/api/v1/publish/chart/${resourceType}`, {params: params})
+  }
+
   rollback(image: string, cluster: string, tplId: number, nsId: number, template?: any): Observable<any> {
     let params = new HttpParams();
     params = params.set('image', image);

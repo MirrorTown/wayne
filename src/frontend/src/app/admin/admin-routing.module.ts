@@ -92,6 +92,7 @@ import { HarborComponent } from './harbor/harbor.component';
 import { RoadmapComponent } from './roadmap/roadmap.component';
 import { CustomlinkComponent } from './customlink/customlink.component';
 import { EventClusterComponent } from './cluster/event-cluster/event-cluster.component';
+import { ChartDeployComponent } from './reportform/chart/chart-deploy.component';
 
 const routes: Routes = [
   {
@@ -106,6 +107,7 @@ const routes: Routes = [
         redirectTo: 'reportform/overview'
       },
       {path: 'reportform/deploy', component: DeployComponent},
+      {path: 'reportform/chartdeploy', component: ChartDeployComponent},
       {path: 'reportform/overview', component: OverviewComponent},
       {path: 'reportform/app', component: AppReportFormComponent},
       {path: 'auditlog', component: AuditLogComponent},
