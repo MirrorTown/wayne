@@ -74,6 +74,7 @@ export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit 
   orderCache: Array<OrderItem>;
   leave = false;
   active: number;
+  originActive: number;
   processStatus: string;
 
   constructor(private deploymentService: DeploymentService,
@@ -406,6 +407,7 @@ export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit 
     this.workstepService.getById(this.cacheService.namespaceId, this.appId, this.deploymentId).subscribe(
       result => {
         console.log(result.data);
+        this.originActive = result.data;
         if (result.data >= 0) {
           console.log("Bigger than zero");
           this.active = result.data + 1;
@@ -456,6 +458,7 @@ export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit 
     if (!deploymentTpls) {
       return deploymentTpls;
     }
+    console.log(deploymentTpls)
     const tplStatusMap = {};
     if (status && status.length > 0) {
       for (const state of status) {

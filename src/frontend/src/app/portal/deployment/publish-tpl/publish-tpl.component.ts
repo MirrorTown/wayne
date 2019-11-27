@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import { forkJoin } from 'rxjs';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
@@ -25,6 +25,8 @@ import { AuthService } from '../../../shared/auth/auth.service';
 })
 export class PublishDeploymentTplComponent implements OnInit {
   @Output() published = new EventEmitter<boolean>();
+  @Input() originActive: number;
+  inflow: boolean;
   modalOpened = false;
   publishForm: NgForm;
   @ViewChild('publishForm', { static: true })
@@ -105,6 +107,13 @@ export class PublishDeploymentTplComponent implements OnInit {
   }
 
   newPublishTpl(deployment: Deployment, deploymentTpl: DeploymentTpl, actionType: ResourcesActionType) {
+    console.log(this.originActive);
+    this.inflow = false;
+    //上次发布结束才可以继续发布本次发布
+    if (this.originActive < 0 || this.originActive === 3) {
+      this.inflow = true;
+    }
+    console.log(this.inflow);
     const replicas = this.getReplicas(deployment);
     this.actionType = actionType;
     this.forceOffline = false;
@@ -351,6 +360,7 @@ export class PublishDeploymentTplComponent implements OnInit {
         }
         // 灰度发布策略
         if (this.actionType === ResourcesActionType.GRAYPUBLISH) {
+          kubeDeployment.spec.template.metadata.labels["work-app"] = kubeDeployment.spec.template.metadata.labels["app"] + "-grayscale";
           kubeDeployment.spec.replicas = 1;
           observablesGray.push(this.deploymentClient.graydeploy(
             this.appId,
@@ -359,6 +369,7 @@ export class PublishDeploymentTplComponent implements OnInit {
             this.deploymentTpl.id,
             kubeDeployment));
         } else {
+          kubeDeployment.spec.template.metadata.labels["work-app"] = kubeDeployment.spec.template.metadata.labels["app"];
           observables.push(this.deploymentClient.deploy(
             this.appId,
             cluster,
@@ -408,7 +419,7 @@ export class PublishDeploymentTplComponent implements OnInit {
       this.currentForm.valid &&
       !this.isSubmitOnGoing &&
       (this.offlineGray || this.offlineProd || (this.containerImage && this.tag)) &&
-      this.isClusterReplicaValid();
+      this.isClusterReplicaValid() && this.inflow;
   }
 
   getImagePrefixReg() {

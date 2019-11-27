@@ -56,7 +56,7 @@
     </div>
   </div>
   <br>
-  <list-deployment [deploymentTpls]="changedDeploymentTpls" [active]= "active" [processStatus]="processStatus" (paginate)="retrieve($event)"
+  <list-deployment [deploymentTpls]="changedDeploymentTpls" [active]= "active" [originActive]="originActive" [processStatus]="processStatus" (paginate)="retrieve($event)"
                    (edit)="editDeployment()" (createTpl)="createDeploymentTpl()" [showState]="showState"
                    (cloneTpl)="cloneDeploymentTpl($event)" [appId]="appId" [page]="pageState.page">
   </list-deployment>

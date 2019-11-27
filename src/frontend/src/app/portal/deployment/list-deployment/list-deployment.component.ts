@@ -40,6 +40,7 @@ export class ListDeploymentComponent implements OnInit, OnDestroy {
   @Input() deploymentTpls: DeploymentTpl[];
   @Input() page: Page;
   @Input() active: number;
+  @Input() originActive: number;
   @Input() processStatus: string;
   @Input() appId: number;
   @Output() paginate = new EventEmitter<ClrDatagridStateInterface>();

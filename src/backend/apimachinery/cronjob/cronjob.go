@@ -38,7 +38,7 @@ func (c *CronJob) StartDeployStatuJob() (err error) {
 					for _, podSpec := range podlist {
 						//当容器状态非Ready时处理方法,并剔除被终止的deployment影响
 						if podSpec.ObjectMeta.DeletionTimestamp.IsZero() && podSpec.Status.ContainerStatuses[0].Ready == false &&
-							podSpec.ObjectMeta.Labels["app"] == sub.Name {
+							podSpec.ObjectMeta.Labels["work-app"] == sub.ResourceName {
 							//容器重启或则超出超市时间，将强制发布失败
 							if podSpec.Status.ContainerStatuses[0].RestartCount > 0 || sub.UpdateTime.Add(mm).Unix() < time.Now().Unix() {
 								//发送发布失败信息
