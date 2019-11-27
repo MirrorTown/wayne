@@ -9,6 +9,7 @@ import (
 	"github.com/Qihoo360/wayne/src/backend/controllers/hongmao"
 	"github.com/Qihoo360/wayne/src/backend/controllers/hostAlias"
 	"github.com/Qihoo360/wayne/src/backend/controllers/review"
+	"github.com/Qihoo360/wayne/src/backend/controllers/workstep"
 	"net/http"
 	"path"
 
@@ -482,9 +483,17 @@ func init() {
 	)
 
 	nsWithHostAliase := beego.NewNamespace("/api/v1",
-		beego.NSNamespace("hostalias",
+		beego.NSNamespace("/hostalias",
 			beego.NSInclude(
 				&hostAlias.HostAliasController{},
+			),
+		),
+	)
+
+	nsWithWorkStep := beego.NewNamespace("/api/v1",
+		beego.NSNamespace("/workstep",
+			beego.NSInclude(
+				&workstep.WorkStepController{},
 			),
 		),
 	)
@@ -510,4 +519,6 @@ func init() {
 	beego.AddNamespace(nsWithHongmao)
 
 	beego.AddNamespace(nsWithHostAliase)
+
+	beego.AddNamespace(nsWithWorkStep)
 }

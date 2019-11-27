@@ -9,10 +9,12 @@ import { NodeClient } from '../../shared/client/v1/kubernetes/node';
 import { PodClient } from '../../shared/client/v1/kubernetes/pod';
 import { UserService } from '../../shared/client/v1/user.service';
 import { ChartDeployComponent } from './chart/chart-deploy.component';
+import { ElModule } from 'element-angular';
 
 @NgModule({
   imports: [
     SharedModule,
+    ElModule,
   ],
   providers: [
     AppService,

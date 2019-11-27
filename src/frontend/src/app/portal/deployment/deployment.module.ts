@@ -14,11 +14,16 @@ import { ClusterService } from '../../shared/client/v1/cluster.service';
 import { PublicService } from '../../shared/client/v1/public.service';
 import { PublishStatusService } from '../../shared/client/v1/publishstatus.service';
 import { LogClient } from '../../shared/client/v1/kubernetes/log';
+import { ElModule } from 'element-angular';
+import { ReviewModule } from '../review/review.module';
+import { WorkstepService } from '../../shared/client/v1/workstep.service';
 
 @NgModule({
   imports: [
     SharedModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ReviewModule,
+    ElModule
   ],
   providers: [
     DeploymentService,
@@ -28,7 +33,8 @@ import { LogClient } from '../../shared/client/v1/kubernetes/log';
     PublicService,
     PodClient,
     PublishStatusService,
-    LogClient
+    LogClient,
+    WorkstepService
   ],
   exports: [
     DeploymentComponent

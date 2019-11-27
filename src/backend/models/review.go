@@ -90,6 +90,13 @@ func (*reviewModel) GetByName(name string) (v *Review, err error) {
 	return nil, err
 }
 
+func (*reviewModel) GetLatestByName(name string) (ReviewStatus, error) {
+	v := &Review{Name: name}
+	qs := Ormer().QueryTable(new(Review))
+	err := qs.Filter("name", name).OrderBy("-publish_time").One(v)
+	return v.Status, err
+}
+
 // GetById retrieves Review by Id. Returns error if
 // Id doesn't exist
 func (*reviewModel) GetById(id int64) (v *Review, err error) {

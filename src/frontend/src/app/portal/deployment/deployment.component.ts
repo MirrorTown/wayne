@@ -35,6 +35,7 @@ import { PageState } from '../../shared/page/page-state';
 import { TabDragService } from '../../shared/client/v1/tab-drag.service';
 import { OrderItem } from '../../shared/model/v1/order';
 import { TranslateService } from '@ngx-translate/core';
+import {WorkstepService} from "../../shared/client/v1/workstep.service";
 
 const showState = {
   'create_time': {hidden: false},
@@ -72,6 +73,8 @@ export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit 
   tabScription: Subscription;
   orderCache: Array<OrderItem>;
   leave = false;
+  active: number;
+  processStatus: string;
 
   constructor(private deploymentService: DeploymentService,
               private publishHistoryService: PublishHistoryService,
@@ -84,6 +87,7 @@ export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit 
               public cacheService: CacheService,
               public authService: AuthService,
               private cdr: ChangeDetectorRef,
+              private workstepService: WorkstepService,
               private appService: AppService,
               private deletionDialogService: ConfirmationDialogService,
               private clusterService: ClusterService,
@@ -399,6 +403,25 @@ export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit 
     if (!this.deploymentId) {
       return;
     }
+    this.workstepService.getById(this.cacheService.namespaceId, this.appId, this.deploymentId).subscribe(
+      result => {
+        console.log(result.data);
+        if (result.data >= 0) {
+          console.log("Bigger than zero");
+          this.active = result.data + 1;
+          this.processStatus = 'process';
+        }else if (result.data != -999){
+          console.log("Less than zero");
+          this.active = Math.abs(result.data);
+          this.processStatus = 'error';
+        } else {
+          this.active = result.data;
+        }
+      },
+      error => {
+        this.messageHandlerService.handleError(error);
+      }
+    );
     if (state) {
       this.pageState = PageState.fromState(state, {
         totalPage: this.pageState.page.totalPage,

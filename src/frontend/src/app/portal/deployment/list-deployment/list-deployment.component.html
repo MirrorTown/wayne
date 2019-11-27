@@ -1,3 +1,9 @@
+<el-steps space="150px" [active]="active" [align-center]="true" [finish-status]="'success'" [process-status]="processStatus">
+  <el-step title="开始"></el-step>
+  <el-step title="审核"></el-step>
+  <el-step title="发布中"></el-step>
+  <el-step title="结束"></el-step>
+</el-steps>
 <clr-datagrid (clrDgRefresh)="refresh($event)" [(clrDgSelected)]="selected" class="wayne-clr-datagrid">
   <clr-dg-placeholder>{{'MESSAGE.NO_MESSAGE' | translate}}</clr-dg-placeholder>
   <clr-dg-column [clrDgField]="'id'" class="col-id">

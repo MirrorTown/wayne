@@ -26,6 +26,8 @@ import { AceEditorService } from '../../../shared/ace-editor/ace-editor.service'
 import { AceEditorMsg } from '../../../shared/ace-editor/ace-editor';
 import { TranslateService } from '@ngx-translate/core';
 import { DiffService } from '../../../shared/diff/diff.service';
+import { WorkstepService } from '../../../shared/client/v1/workstep.service';
+import {CacheService} from "../../../shared/auth/cache.service";
 
 @Component({
   selector: 'list-deployment',
@@ -37,6 +39,8 @@ export class ListDeploymentComponent implements OnInit, OnDestroy {
   @Input() showState: object;
   @Input() deploymentTpls: DeploymentTpl[];
   @Input() page: Page;
+  @Input() active: number;
+  @Input() processStatus: string;
   @Input() appId: number;
   @Output() paginate = new EventEmitter<ClrDatagridStateInterface>();
   @Output() edit = new EventEmitter<boolean>();
@@ -137,6 +141,14 @@ export class ListDeploymentComponent implements OnInit, OnDestroy {
     this.tplDetailService.openModal(tpl.description);
   }
 
+  activeStepOne(success: boolean) {
+    console.log(success);
+    if (success) {
+      this.active = 1;
+      this.processStatus = 'process';
+    }
+  }
+
   versionDetail(version: string) {
     this.tplDetailService.openModal(version, '版本');
   }
@@ -187,6 +199,7 @@ export class ListDeploymentComponent implements OnInit, OnDestroy {
 
   published(success: boolean) {
     if (success) {
+      this.activeStepOne(success);
       this.refresh();
     }
   }

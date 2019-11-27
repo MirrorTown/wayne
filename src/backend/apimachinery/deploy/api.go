@@ -5,7 +5,7 @@ import (
 	"github.com/Qihoo360/wayne/src/backend/util/logs"
 )
 
-func (d *deploy) GetDeployStatus() string {
+func (d *deploy) GetDeployStatus() models.Deploy {
 	m := models.Deploy{
 		Name:   d.publishName,
 		Status: d.publishStatus,
@@ -30,6 +30,12 @@ func (d *deploy) UpdateDeployStatus(status string, notify int) string {
 		Notify:       notify,
 	}
 
+	//发布成功或异常 可设定发布流程结束
+	if status == models.DeploySuc || status == models.DeployFail {
+		m.Stepflow = 2
+	} else if status == models.Deploying {
+		m.Stepflow = 1
+	}
 	err := m.UpdatePublishStatus(&m)
 	if err != nil {
 		logs.Error("update deploy status failed, ", err)

@@ -65,6 +65,14 @@ func (*deploymentTplModel) GetById(id int64) (v *DeploymentTemplate, err error) 
 	return nil, err
 }
 
+func (*deploymentTplModel) GetOneById(id int64) (string, error) {
+	v := &DeploymentTemplate{}
+	qs := Ormer().QueryTable(new(DeploymentTemplate))
+	err := qs.Filter("deployment_id", id).One(v)
+
+	return v.Name, err
+}
+
 func (*deploymentTplModel) DeleteById(id int64, logical bool) (err error) {
 	v := DeploymentTemplate{Id: id}
 	// ascertain id exists in the database

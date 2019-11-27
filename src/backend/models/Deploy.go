@@ -19,6 +19,7 @@ type Deploy struct {
 	ResourceType string     `orm:"size(200)" json:"resourcetype,omitempty"`
 	Status       string     `orm:"index;size(200)" json:"status,omitempty"`
 	Notify       int        `orm:"index;default(0)" json:"notify"`
+	Stepflow     int        `orm:"index;default(0)" json:"stepflow"`
 	CreateTime   *time.Time `orm:"auto_now_add;type(datetime)" json:"createTime,omitempty"`
 	UpdateTime   *time.Time `orm:"auto_now;type(datetime)" json:"updateTime,omitempty"`
 }
@@ -27,12 +28,11 @@ func (*Deploy) TableName() string {
 	return TableNameDeploy
 }
 
-func (d *Deploy) GetPublishStatusByName() (status string, err error) {
-	v := Deploy{Name: d.Name}
+func (d *Deploy) GetPublishStatusByName() (v Deploy, err error) {
+	v = Deploy{Name: d.Name}
 	// ascertain publishName exists in the database
 	if err := Ormer().Read(&v, "name"); err == nil {
-		status := v.Status
-		return status, nil
+		return v, nil
 	}
 
 	return
@@ -43,13 +43,23 @@ func (*Deploy) UpdatePublishStatus(m *Deploy) (err error) {
 	if err := Ormer().Read(v, "name"); err == nil {
 		//Ormer update data is dependied by Id(pk)
 		m.Id = v.Id
-		_, err = Ormer().Update(m, "user", "name", "status", "notify", "resource_name", "resource_type", "namespace", "cluster", "update_time")
+		_, err = Ormer().Update(m, "user", "name", "status", "notify", "resource_name", "resource_type", "namespace", "cluster", "update_time", "stepflow")
 		return err
 	} else if err == orm.ErrNoRows {
 		_, err = Ormer().Insert(m)
 		return err
 	}
 	return
+}
+
+func (d *Deploy) UpdatePublishStepflow(m *Deploy) error {
+	v := &Deploy{Name: m.Name}
+	if err := Ormer().Read(v, "name"); err == nil {
+		m.Id = v.Id
+		_, err = Ormer().Update(m, "name", "status", "cluster", "stepflow")
+		return err
+	}
+	return nil
 }
 
 func (d *Deploy) GetDeploys(filters map[string]interface{}) ([]Deploy, error) {

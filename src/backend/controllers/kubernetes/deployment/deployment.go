@@ -203,7 +203,7 @@ func (c *KubeDeploymentController) Create() {
 
 	//记录发布状态信息并发送订订讯息
 	var recode apimachinery.ClientSet
-	recode.Name = kubeDeployment.Spec.Template.Spec.Containers[0].Name
+	recode.Name = kubeDeployment.ObjectMeta.Name
 	recode.User = c.LoggedInController.User.Display
 	recode.Cluster = cluster
 	recode.Namespace = kubeDeployment.ObjectMeta.Namespace

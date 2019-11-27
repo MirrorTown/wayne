@@ -1,9 +1,11 @@
 package publish
 
 import (
+	"fmt"
 	"github.com/Qihoo360/wayne/src/backend/resources/deployment"
 	"io/ioutil"
 	"k8s.io/apimachinery/pkg/util/json"
+	"strconv"
 
 	//"k8s.io/apimachinery/pkg/util/json"
 	"time"
@@ -101,7 +103,14 @@ func (c *PublishController) Chart() {
 	resource_name := c.Input().Get("resource_name")
 	cluster := c.Input().Get("cluster")
 	user := c.Input().Get("user")
-	resource_type := c.GetIntParamFromURL(":type")
+	paramStr := c.Ctx.Input.Param(":type")
+	var resource_type int64 = -1
+	if paramStr != "undefined" {
+		resource_type, err = strconv.ParseInt(paramStr, 10, 64)
+		if err != nil || resource_type < 0 {
+			c.AbortBadRequest(fmt.Sprintf("Invalid %s in URL", paramStr))
+		}
+	}
 
 	result, err := models.PublishHistoryModel.GetDeployChart(startTime, endTime, resource_name, cluster, user, resource_type)
 	if err != nil {

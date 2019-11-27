@@ -128,6 +128,17 @@ func (c *ReviewController) Create() {
 		c.HandleError(err)
 		return
 	}
+	//发布流程开始更新
+	deploy := &models.Deploy{
+		Name:     review.Name,
+		Cluster:  review.Cluster,
+		Status:   models.DeployWait,
+		Stepflow: 1,
+	}
+	err = deploy.UpdatePublishStepflow(deploy)
+	if err != nil {
+		logs.Error("更新工作流失败: ", err)
+	}
 	c.Success(objectid)
 }
 
@@ -157,6 +168,17 @@ func (c *ReviewController) Update() {
 	if status == 1 {
 		c.Deploytok8s(review)
 	} else {
+		//审核拒绝，发布流程结束更新
+		deploy := &models.Deploy{
+			Name:     review.Name,
+			Cluster:  review.Cluster,
+			Status:   models.DeployReject,
+			Stepflow: 2,
+		}
+		err := deploy.UpdatePublishStepflow(deploy)
+		if err != nil {
+			logs.Error("更新工作流失败: ", err)
+		}
 		c.Success(review)
 	}
 
@@ -228,9 +250,12 @@ func (c *ReviewController) Deploytok8s(review *models.Review) {
 		return
 	}
 
+	//记录发布状态信息并发送订订讯息
+	var recode apimachinery.ClientSet
 	// 灰度发布新增grayscale字段
 	if review.GrayPublish == "True" {
 		scaleName := kubeDeployment.ObjectMeta.Name + "-grayscale"
+		recode.Name = kubeDeployment.ObjectMeta.Name
 		kubeDeployment.Spec.Selector.MatchLabels["app"] = kubeDeployment.ObjectMeta.Name
 		kubeDeployment.Spec.Template.ObjectMeta.Labels["app"] = kubeDeployment.ObjectMeta.Name
 		kubeDeployment.ObjectMeta.Name = scaleName
@@ -274,9 +299,6 @@ func (c *ReviewController) Deploytok8s(review *models.Review) {
 		logs.Error("更新发布模板失败, ", err)
 	}
 
-	//记录发布状态信息并发送订订讯息
-	var recode apimachinery.ClientSet
-	recode.Name = kubeDeployment.Spec.Template.Spec.Containers[0].Name
 	recode.User = review.Announcer
 	recode.Cluster = review.Cluster
 	recode.Namespace = kubeDeployment.ObjectMeta.Namespace
