@@ -1,5 +1,5 @@
 ## Local copies of dependencies that should stay on developers' local machines
-#node_modules/
+node_modules/
 bower_components/
 *.tmp
 ## Build and test artifacts
