@@ -14,4 +14,12 @@ func init() {
 			AllowHTTPMethods: []string{"get"},
 			MethodParams:     param.Make(),
 			Params:           nil})
+
+	beego.GlobalControllerRouter["github.com/Qihoo360/wayne/src/backend/controllers/workstep:WorkStepController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/wayne/src/backend/controllers/workstep:WorkStepController"],
+		beego.ControllerComments{
+			Method:           "Update",
+			Router:           `/namespace/:nsId/apps/:appId/deployment/:depId`,
+			AllowHTTPMethods: []string{"post"},
+			MethodParams:     param.Make(),
+			Params:           nil})
 }

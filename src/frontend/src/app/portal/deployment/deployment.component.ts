@@ -454,6 +454,18 @@ export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit 
     );
   }
 
+  cancelPublic() {
+    const appId = parseInt(this.route.parent.snapshot.params['id'], 10);
+    const namespaceId = this.cacheService.namespaceId;
+    const deploymentId = parseInt(this.route.snapshot.params['deploymentId'], 10);
+    this.workstepService.updateById(namespaceId, appId, deploymentId).subscribe(
+      response => {
+        console.log(response.data);
+      },
+      error => this.messageHandlerService.handleError(error)
+    )
+  }
+
   buildTplList(deploymentTpls: DeploymentTpl[], status: PublishStatus[]): DeploymentTpl[] {
     if (!deploymentTpls) {
       return deploymentTpls;

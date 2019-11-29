@@ -43,6 +43,7 @@
     "DELETE_PERMANENTLY": "彻底删除",
     "DETAIL": "详情",
     "COMPARE_TEMPLATES": "对比模板",
+    "CANCEL_PUBLISH": "强制取消发布",
     "DROP": "下线",
     "EDIT": "编辑",
     "HISTORY": "发布历史",

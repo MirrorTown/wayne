@@ -56,7 +56,7 @@ func (d *Deploy) UpdatePublishStepflow(m *Deploy) (err error) {
 	v := &Deploy{Name: m.Name}
 	if err := Ormer().Read(v, "name"); err == nil {
 		m.Id = v.Id
-		_, err = Ormer().Update(m, "name", "status", "cluster", "stepflow")
+		_, err = Ormer().Update(m, "name", "status", "stepflow")
 		return err
 	} else if err == orm.ErrNoRows {
 		_, err = Ormer().Insert(m)

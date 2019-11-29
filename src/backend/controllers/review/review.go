@@ -131,7 +131,6 @@ func (c *ReviewController) Create() {
 	//发布流程开始更新
 	deploy := &models.Deploy{
 		Name:     review.Name,
-		Cluster:  review.Cluster,
 		Status:   models.DeployWait,
 		Stepflow: 1,
 	}
@@ -171,7 +170,6 @@ func (c *ReviewController) Update() {
 		//审核拒绝，发布流程结束更新
 		deploy := &models.Deploy{
 			Name:     review.Name,
-			Cluster:  review.Cluster,
 			Status:   models.DeployReject,
 			Stepflow: 2,
 		}

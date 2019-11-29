@@ -16,4 +16,11 @@ export class WorkstepService {
 
       .catch(error => throwError(error));
   }
+
+  updateById(nsId: number, appId: number, depId: number): Observable<any> {
+    return this.http
+      .post(`/api/v1/workstep/namespace/${nsId}/apps/${appId}/deployment/${depId}`, this.options)
+
+      .catch(error => throwError(error));
+  }
 }
