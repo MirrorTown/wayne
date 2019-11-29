@@ -1,1 +1,0 @@
-{"version":3,"sources":["../../../src/shared/directives/index.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,gBAAA,EAAiB,MAAA,mBAAA,CAAA;AAE1B,OAAO,EACL,gBAAgB,GACjB,CAAC","file":"index.js","sourceRoot":"","sourcesContent":["import { ElClassDirective } from './class.directive';\n\nexport {\n  ElClassDirective,\n};\n"]}
