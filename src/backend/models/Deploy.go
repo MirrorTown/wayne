@@ -52,14 +52,17 @@ func (*Deploy) UpdatePublishStatus(m *Deploy) (err error) {
 	return
 }
 
-func (d *Deploy) UpdatePublishStepflow(m *Deploy) error {
+func (d *Deploy) UpdatePublishStepflow(m *Deploy) (err error) {
 	v := &Deploy{Name: m.Name}
 	if err := Ormer().Read(v, "name"); err == nil {
 		m.Id = v.Id
 		_, err = Ormer().Update(m, "name", "status", "cluster", "stepflow")
 		return err
+	} else if err == orm.ErrNoRows {
+		_, err = Ormer().Insert(m)
+		return err
 	}
-	return nil
+	return
 }
 
 func (d *Deploy) GetDeploys(filters map[string]interface{}) ([]Deploy, error) {

@@ -291,6 +291,9 @@ func (c *KubeDeploymentController) Get() {
 	} else if err != nil && errGray == nil {
 		result = resultGray
 	}
+	if len(result.Pods.Warnings) == 0 && errGray == nil && len(resultGray.Pods.Warnings) != 0 {
+		result.Pods.Warnings = resultGray.Pods.Warnings
+	}
 	c.Success(result)
 }
 

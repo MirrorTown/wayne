@@ -4,7 +4,7 @@ import "github.com/Qihoo360/wayne/src/backend/models"
 
 type DeployInterface interface {
 	GetDeploys() []models.Deploy
-	GetDeployStatus() models.Deploy
+	GetDeployStatus() (models.Deploy, error)
 	UpdateDeployStatus(status string, notify int) string
 }
 

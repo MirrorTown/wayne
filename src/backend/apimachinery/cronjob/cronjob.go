@@ -24,6 +24,12 @@ func (c *CronJob) StartDeployStatuJob() (err error) {
 	mm, _ := time.ParseDuration("5m")
 
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				fmt.Println(err)
+				logs.Error(err)
+			}
+		}()
 		for range time.Tick(time.Second * 10) {
 			//获取发布列表
 			deploylist := cli.DeployServer().GetDeploys()

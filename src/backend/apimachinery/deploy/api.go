@@ -5,17 +5,14 @@ import (
 	"github.com/Qihoo360/wayne/src/backend/util/logs"
 )
 
-func (d *deploy) GetDeployStatus() models.Deploy {
+func (d *deploy) GetDeployStatus() (models.Deploy, error) {
 	m := models.Deploy{
 		Name:   d.publishName,
 		Status: d.publishStatus,
 	}
 
 	publishStatus, err := m.GetPublishStatusByName()
-	if err != nil {
-		panic(err)
-	}
-	return publishStatus
+	return publishStatus, err
 }
 
 func (d *deploy) UpdateDeployStatus(status string, notify int) string {
