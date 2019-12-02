@@ -73,7 +73,6 @@ export class HarborComponent implements OnInit, OnDestroy {
           this.pageState.page.totalPage = data.totalPage;
           this.pageState.page.totalCount = data.totalCount;
           this.harbors = data.list;
-          console.log(data.list);
         },
         error => this.messageHandlerService.handleError(error)
       );

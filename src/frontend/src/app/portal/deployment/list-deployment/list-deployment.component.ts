@@ -19,6 +19,7 @@ import { DeploymentStatus, DeploymentTpl, Event } from '../../../shared/model/v1
 import { DeploymentService } from '../../../shared/client/v1/deployment.service';
 import { DeploymentTplService } from '../../../shared/client/v1/deploymenttpl.service';
 import { TplDetailService } from '../../../shared/tpl-detail/tpl-detail.service';
+import { TplDeployLogservice } from '../../../shared/tpl-deploy-log/tpl-deploy-log.service';
 import { AuthService } from '../../../shared/auth/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Page } from '../../../shared/page/page-state';
@@ -67,6 +68,7 @@ export class ListDeploymentComponent implements OnInit, OnDestroy {
               private router: Router,
               public authService: AuthService,
               private tplDetailService: TplDetailService,
+              private tplDeployLogservice: TplDeployLogservice,
               private translate: TranslateService,
               private diffService: DiffService,
               private messageHandlerService: MessageHandlerService) {
@@ -140,6 +142,11 @@ export class ListDeploymentComponent implements OnInit, OnDestroy {
 
   tplDetail(tpl: DeploymentTpl) {
     this.tplDetailService.openModal(tpl.description);
+  }
+
+  logDeployment(tpl: DeploymentTpl) {
+    console.log(tpl);
+    this.tplDeployLogservice.openModal(tpl.name, tpl.name + " 发布日志");
   }
 
   activeStepOne(success: boolean) {

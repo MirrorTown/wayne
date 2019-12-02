@@ -16,6 +16,7 @@ import { PublishHistoryService } from './common/publish-history/publish-history.
 import { AppUserModule } from './app-user/app-user.module';
 import { NamespaceUserModule } from './namespace-user/namespace-user.module';
 import { TplDetailService } from '../shared/tpl-detail/tpl-detail.service';
+import { TplDeployLogservice } from '../shared/tpl-deploy-log/tpl-deploy-log.service';
 import { PersistentVolumeClaimModule } from './persistentvolumeclaim/persistentvolumeclaim.module';
 import { NamespaceApiKeyModule } from './namespace-apikey/apikey.module';
 import { AppApiKeyModule } from './app-apikey/apikey.module';
@@ -29,6 +30,7 @@ import { NamespaceReportModule } from './namespace-report/namespace-report.modul
 import { BaseAppModule } from './base/base-app.module';
 import { PublishHistoryModule } from './common/publish-history/publish-history.module';
 import { TplDetailModule } from '../shared/tpl-detail/tpl-detail.module';
+import { TplDeployLogModule } from '../shared/tpl-deploy-log/tpl-deploy-log.module'
 import { MarkdownModule } from 'ngx-markdown';
 import { LibraryPortalModule } from '../../../lib/portal/library-portal.module';
 import { AutoscaleModule } from './autoscale/autoscale.module';
@@ -60,6 +62,7 @@ import { HostAliasModule } from './hostalias/hostalias.module';
     NamespaceReportModule,
     BaseAppModule,
     TplDetailModule,
+    TplDeployLogModule,
     PublishHistoryModule,
     LibraryPortalModule,
     IngressModule,
@@ -71,7 +74,8 @@ import { HostAliasModule } from './hostalias/hostalias.module';
     AuthService,
     CacheService,
     PublishHistoryService,
-    TplDetailService
+    TplDetailService,
+    TplDeployLogservice
   ],
   declarations: [
     NavComponent,
