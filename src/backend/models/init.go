@@ -17,6 +17,7 @@ var (
 	NamespaceUserModel            *namespaceUserModel
 	ClusterModel                  *clusterModel
 	HarborModel                   *harborModel
+	TektonModel                   *tektonModel
 	HongmaoUserModel              *hongmaoUserModel
 	HostAliasModel                *hostAliasModel
 	ReviewModel                   *reviewModel
@@ -58,6 +59,7 @@ var (
 func init() {
 	// init orm tables
 	orm.RegisterModel(
+		new(Tekton),
 		new(Harbor),
 		new(HostAlias),
 		new(Deploy),
@@ -106,6 +108,7 @@ func init() {
 
 	// init models
 	HarborModel = &harborModel{}
+	TektonModel = &tektonModel{}
 	UserModel = &userModel{}
 	AppModel = &appModel{}
 	AppUserModel = &appUserModel{}

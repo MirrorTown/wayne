@@ -60,6 +60,15 @@
     <clr-icon clrVerticalNavIcon shape="world"></clr-icon>
     监控
   </a>
+  <a
+    clrVerticalNavLink
+    [title]="'构建日志' | translate"
+    *ngIf="authService.currentNamespacePermission.review.read || authService.currentUser.admin"
+    routerLink="/portal/logs"
+    routerLinkActive="active">
+    <clr-icon clrVerticalNavIcon shape="world"></clr-icon>
+    构建日志
+  </a>
   <a href="javascript:;" style="flex: 1;"></a>
   <wayne-footer></wayne-footer>
 </clr-vertical-nav>

@@ -37,6 +37,7 @@ import { AutoscaleModule } from './autoscale/autoscale.module';
 import { ReviewModule } from './review/review.module';
 import {PodMonitorComponent} from "./pod-monitor/pod-monitor.component";
 import { HostAliasModule } from './hostalias/hostalias.module';
+import { PodLogsComponent } from './tekton-logs/tekton-logs.component';
 
 @NgModule({
   imports: [
@@ -82,6 +83,7 @@ import { HostAliasModule } from './hostalias/hostalias.module';
     PortalComponent,
     PodLoggingComponent,
     PodMonitorComponent,
+    PodLogsComponent,
   ]
 })
 export class PortalModule {

@@ -41,6 +41,7 @@ import { CreateEditAutoscaletplComponent } from './autoscale/create-edit-autosca
 import { ReviewComponent } from'./review/review.component';
 import {PodMonitorComponent} from "./pod-monitor/pod-monitor.component";
 import {HostAliaseComponent} from "./hostalias/hostalias.component";
+import {PodLogsComponent} from "./tekton-logs/tekton-logs.component";
 
 const routes: Routes = [
   {
@@ -120,6 +121,14 @@ const routes: Routes = [
   {
     path: 'portal/logging/namespace/:nid/app/:id/:resourceType/:resourceName/pod/:podName/container/:container/:cluster/:namespace',
     component: PodLoggingComponent
+  },
+  {
+    path: 'portal/logs',
+    component: PodLogsComponent
+    /*children: [
+      {path: '/pod/:podName', component: },
+      // {path: '/history/pod/:podName', component: }
+    ]*/
   }
 ];
 

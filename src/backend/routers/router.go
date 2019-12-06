@@ -443,6 +443,11 @@ func init() {
 				&kcrd.KubeCustomCRDController{},
 			),
 		),
+		beego.NSNamespace("/tekton/_proxy/clusters/:cluster/apis/:group/:version/namespaces/:namespace/:kind",
+			beego.NSInclude(
+				&kcrd.KubeTektonCRDController{},
+			),
+		),
 		beego.NSNamespace("/apps/:appid([0-9]+)/_proxy/clusters/:cluster/apis/:group/:version/:kind",
 			beego.NSInclude(
 				&kcrd.KubeCustomCRDController{},
