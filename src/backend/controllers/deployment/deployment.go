@@ -84,25 +84,27 @@ func (c *DeploymentController) GetNames() {
 func (c *DeploymentController) List() {
 	param := c.BuildQueryParam()
 	name := c.Input().Get("name")
-	operator := c.GetBoolParamFromQuery("operator")
 	if name != "" {
 		param.Query["name__contains"] = name
 	}
 
 	//非Admin用户和非项目负责人仅可操作授权于虹猫相关项目权限的应用
-	if !c.User.Admin && !operator {
-		app, err := models.AppModel.GetById(c.AppId)
-		if err != nil {
-			logs.Error("查询数据库表App失败, ", err)
-			return
+	if !c.User.Admin {
+		operator := c.GetBoolParamFromQuery("operator")
+		if !operator {
+			app, err := models.AppModel.GetById(c.AppId)
+			if err != nil {
+				logs.Error("查询数据库表App失败, ", err)
+				return
+			}
+			var items = make([]string, 0)
+			url := fmt.Sprintf("https://hongmao.souche-inc.com/aliyun/userApp/getapp?email=%s&access_token=", c.User.Email)
+			itemsMap := GetApplication(&hongmao.HongMaoController{}).GetApplication(url)
+			for item := range itemsMap {
+				items = append(items, app.Name+"-"+itemsMap[item]["applicationName"].(string))
+			}
+			param.Query["Name__in"] = items
 		}
-		var items = make([]string, 0)
-		url := fmt.Sprintf("https://hongmao.souche-inc.com/aliyun/userApp/getapp?email=%s&access_token=", c.User.Email)
-		itemsMap := GetApplication(&hongmao.HongMaoController{}).GetApplication(url)
-		for item := range itemsMap {
-			items = append(items, app.Name+"-"+itemsMap[item]["applicationName"].(string))
-		}
-		param.Query["Name__in"] = items
 	}
 
 	deployment := []models.Deployment{}
