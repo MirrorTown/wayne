@@ -1,10 +1,15 @@
 package cronjob
 
 import (
+	"encoding/json"
 	"fmt"
+	meta_v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
 	"github.com/Qihoo360/wayne/src/backend/apimachinery"
+	"github.com/Qihoo360/wayne/src/backend/client"
 	"github.com/Qihoo360/wayne/src/backend/models"
 	"github.com/Qihoo360/wayne/src/backend/resources/crd"
+	"github.com/Qihoo360/wayne/src/backend/resources/proxy"
 	"github.com/Qihoo360/wayne/src/backend/util/logs"
 	"time"
 )
@@ -24,22 +29,73 @@ func (t *Tekton) StartTektonCron() (err error) {
 			}
 		}()
 
-		for range time.Tick(time.Second * 3) {
-			tektonList, err := models.TektonModel.GetAllNeedCheck()
+		for range time.Tick(time.Second * 10) {
+			//tektonList, err := models.TektonModel.GetAllNeedCheck()
+			clusterList, err := models.ClusterModel.GetAllNormal()
 			if err != nil {
 				logs.Error(err)
 			}
-			for _, sub := range tektonList {
-				cli := cli.Manager(sub.Cluster).Client
-				result, err := crd.GetCustomCRD(cli, sub.Group, sub.Version, sub.Kind, sub.Namespace, sub.Name)
+			for _, cluster := range clusterList {
+				client := cli.Manager(cluster.Name)
+				namespace := "wireless-ci"
+				kind := "pods"
+				result, err := proxy.GetTekton(client.KubeClient, kind, namespace)
 				if err != nil {
 					logs.Error(err)
 				}
-				fmt.Println(result)
+				t.HandlerTekton(client, namespace, cluster.Name, result)
+
 			}
 
 		}
 	}()
 
 	return nil
+}
+
+func (t *Tekton) HandlerTekton(client *client.ClusterManager, ns string, cluster string, result []proxy.PodCell) {
+	for _, pod := range result {
+		if pod.Status.Phase == "Succeeded" || pod.Status.Phase == "Failed" {
+			lableMap := t.GetPodLableMap(pod)
+			name := lableMap["tekton.dev/pipelineRun"]
+			if name == "" {
+				continue
+			}
+			crd, err := crd.GetCustomCRD(client.Client, "tekton.dev", "v1alpha1", "pipelineruns", ns, name)
+			newMetaData, err := json.Marshal(&crd)
+			if err != nil {
+				logs.Error("deployment metadata marshal error.%v", err)
+				return
+			}
+			tekton := &models.Tekton{
+				Name:      name,
+				Group:     "tekton.dev",
+				Version:   "v1alpha1",
+				Kind:      "pipelineruns",
+				Cluster:   cluster,
+				Namespace: ns,
+				MetaData:  string(newMetaData),
+			}
+			err = models.TektonModel.AddOrUpdate(tekton)
+			if err != nil {
+				logs.Error(err)
+			}
+
+			defaultPropagationPolicy := meta_v1.DeletePropagationBackground
+			defaultDeleteOptions := meta_v1.DeleteOptions{
+				PropagationPolicy: &defaultPropagationPolicy,
+			}
+			err = client.KubeClient.Delete("pods", ns, pod.ObjectMeta.Name, &defaultDeleteOptions)
+			if err != nil {
+				logs.Error(err)
+			}
+			fmt.Println(pod.Status.Phase, pod)
+		}
+	}
+}
+
+func (t *Tekton) GetPodLableMap(pod proxy.PodCell) map[string]string {
+	lableMap := make(map[string]string)
+	lableMap = pod.Labels
+	return lableMap
 }

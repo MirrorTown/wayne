@@ -47,7 +47,7 @@ export class DeploymentService {
       .catch(error => throwError(error));
   }
 
-    list(pageState: PageState, deleted?: string, appId?: string): Observable<any> {
+    list(pageState: PageState, deleted?: string, appId?: string, operator?: string): Observable<any> {
     let params = new HttpParams();
     params = params.set('pageNo', pageState.page.pageNo + '');
     params = params.set('pageSize', pageState.page.pageSize + '');
@@ -55,6 +55,7 @@ export class DeploymentService {
     params = params.set('relate', 'all');
     params = params.set('appId', appId + '');
     params = params.set('sortby', '-id');
+    params = params.set('operator', operator);
     Object.getOwnPropertyNames(pageState.params).map(key => {
       const value = pageState.params[key];
       if (isNotEmpty(value)) {

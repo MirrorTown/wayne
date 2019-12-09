@@ -75,25 +75,6 @@ func (c *KubeTektonCRDController) Get() {
 		_ = json.Unmarshal(hack.Slice(btekton.MetaData), &result)
 		c.Success(result)
 		return
-	} else if err == nil {
-		newMetaData, err := json.Marshal(&result)
-		if err != nil {
-			logs.Error("deployment metadata marshal error.%v", err)
-			return
-		}
-		tekton := &models.Tekton{
-			Name:      c.name,
-			Group:     c.group,
-			Version:   c.version,
-			Kind:      c.kind,
-			Cluster:   c.cluster,
-			Namespace: c.namespace,
-			MetaData:  string(newMetaData),
-		}
-		err = models.TektonModel.AddOrUpdate(tekton)
-		if err != nil {
-			logs.Error(err)
-		}
 	}
 	c.Success(result)
 }

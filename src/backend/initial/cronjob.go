@@ -8,8 +8,8 @@ func InitCronJob() {
 
 	job.StartDeployStatuJob()
 
-	/*tektonJob := cronjob.Tekton{}
+	tektonJob := cronjob.Tekton{}
 	tektonJob.Name = "tekton定时任务"
 
-	tektonJob.StartTektonCron()*/
+	tektonJob.StartTektonCron()
 }

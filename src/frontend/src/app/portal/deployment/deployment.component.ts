@@ -262,7 +262,7 @@ export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit 
     this.deploymentId = parseInt(this.route.snapshot.params['deploymentId'], 10);
     combineLatest(
       [this.clusterService.getNames(),
-      this.deploymentService.list(PageState.fromState({sort: {by: 'id', reverse: false}}, {pageSize: 2000}), 'false', this.appId + ''),
+      this.deploymentService.list(PageState.fromState({sort: {by: 'id', reverse: false}}, {pageSize: 2000}), 'false', this.appId + '', this.authService.currentAppPermission.project.read + ''),
       this.appService.getById(this.appId, namespaceId)]
     ).subscribe(
       response => {
@@ -509,7 +509,7 @@ export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit 
         by: 'id',
         reverse: false
       }
-    }, {pageSize: 1000}), 'false', this.appId + '').subscribe(
+    }, {pageSize: 1000}), 'false', this.appId + '', this.authService.currentAppPermission.project.read + '').subscribe(
       response => {
         this.deployments = response.data.list.sort((a, b) => a.order - b.order);
         this.initOrder(this.deployments);

@@ -1,6 +1,7 @@
 package proxy
 
 import (
+	v1 "k8s.io/api/core/v1"
 	"sort"
 
 	"k8s.io/apimachinery/pkg/util/json"
@@ -30,6 +31,27 @@ func GetPage(kubeClient client.ResourceHandler, kind string, namespace string, q
 	})
 
 	return dataselector.DataSelectPage(commonObjs, q), nil
+}
+
+func GetTekton(kubeClient client.ResourceHandler, kind string, namespace string) ([]PodCell, error) {
+	objs, err := kubeClient.List(kind, namespace, "")
+	if err != nil {
+		return nil, err
+	}
+	commonObjs := make([]PodCell, 0)
+	for _, obj := range objs {
+		objCell := PodCell(*obj.(*v1.Pod))
+		if err != nil {
+			return nil, err
+		}
+		commonObjs = append(commonObjs, objCell)
+	}
+
+	sort.Slice(commonObjs, func(i, j int) bool {
+		return commonObjs[j].GetProperty(dataselector.NameProperty).Compare(commonObjs[i].GetProperty(dataselector.NameProperty)) == 1
+	})
+
+	return commonObjs, nil
 }
 
 func GetNames(kubeClient client.ResourceHandler, kind string, namespace string) ([]response.NamesObject, error) {

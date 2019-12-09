@@ -12,7 +12,15 @@ export class ActionPermission {
   delete = false;
 }
 
+export class ProjectPermisson {
+  read = false;
+  create = false;
+  update = false;
+  delete = false;
+}
+
 export class TypePermission {
+  project = new ProjectPermisson();
   review = new ActionPermission();
   app = new ActionPermission();
   appUser = new ActionPermission();
