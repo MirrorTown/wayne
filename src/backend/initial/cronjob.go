@@ -1,6 +1,9 @@
 package initial
 
-import "github.com/Qihoo360/wayne/src/backend/apimachinery/cronjob"
+import (
+	"github.com/Qihoo360/wayne/src/backend/apimachinery/cronjob"
+	"github.com/Qihoo360/wayne/src/backend/apimachinery/evnetListenter"
+)
 
 func InitCronJob() {
 	job := cronjob.CronJob{}
@@ -12,4 +15,7 @@ func InitCronJob() {
 	tektonJob.Name = "tekton定时任务"
 
 	tektonJob.StartTektonCron()
+
+	podevent := evnetListenter.PodeEvent{}
+	podevent.ListenPod()
 }
