@@ -5,7 +5,8 @@ import (
 )
 
 const (
-	TektonStatusDone  = 1
+	TektonStatusFail  = -1
+	TektonStatusSuc   = 1
 	TektonStatusCheck = 0
 	TableNameTekton   = "tekton"
 )
@@ -22,6 +23,7 @@ type Tekton struct {
 	Namespace  string     `orm:"index;size(128)" json:"namespace,omitempty"`
 	MetaData   string     `orm:"type(text)" json:"metaData,omitempty"`
 	Status     int32      `orm:"index;default(0)" json:"status"`
+	Git        string     `orm:"index;size(128)" json:"git,omitempty"`
 	CreateTime *time.Time `orm:"auto_now_add;type(datetime)" json:"createTime,omitempty"`
 	UpdateTime *time.Time `orm:"auto_now;type(datetime)" json:"updateTime,omitempty"`
 }
@@ -81,7 +83,7 @@ func (*tektonModel) AddOrUpdate(m *Tekton) (err error) {
 	if err = Ormer().Read(v, "Name"); err == nil {
 		m.UpdateTime = nil
 		m.Id = v.Id
-		_, err = Ormer().Update(m, "MetaData")
+		_, err = Ormer().Update(m, "MetaData", "Status", "Git")
 		return
 	}
 	m.CreateTime = nil

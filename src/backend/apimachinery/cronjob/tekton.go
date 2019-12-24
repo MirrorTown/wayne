@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	meta_v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"regexp"
 
 	"github.com/Qihoo360/wayne/src/backend/apimachinery"
 	"github.com/Qihoo360/wayne/src/backend/client"
@@ -56,17 +57,28 @@ func (t *Tekton) StartTektonCron() (err error) {
 func (t *Tekton) HandlerTekton(client *client.ClusterManager, ns string, cluster string, result []proxy.PodCell) {
 	for _, pod := range result {
 		if pod.Status.Phase == "Succeeded" || pod.Status.Phase == "Failed" {
+			var status int32 = models.TektonStatusCheck
+			if pod.Status.Phase == "Succeeded" {
+				status = models.TektonStatusSuc
+			} else {
+				status = models.TektonStatusFail
+			}
 			lableMap := t.GetPodLableMap(pod)
 			name := lableMap["tekton.dev/pipelineRun"]
 			if name == "" {
 				continue
 			}
-			crd, err := crd.GetCustomCRD(client.Client, "tekton.dev", "v1alpha1", "pipelineruns", ns, name)
-			newMetaData, err := json.Marshal(&crd)
+			crdData, err := crd.GetCustomCRD(client.Client, "tekton.dev", "v1alpha1", "pipelineruns", ns, name)
+			newMetaData, err := json.Marshal(&crdData)
 			if err != nil {
 				logs.Error("deployment metadata marshal error.%v", err)
 				return
 			}
+
+			gitRegexp := regexp.MustCompile(`git@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w]).*\.git?`)
+			gitParam := gitRegexp.FindString(string(newMetaData))
+			fmt.Println(gitParam)
+
 			tekton := &models.Tekton{
 				Name:      name,
 				Group:     "tekton.dev",
@@ -74,7 +86,9 @@ func (t *Tekton) HandlerTekton(client *client.ClusterManager, ns string, cluster
 				Kind:      "pipelineruns",
 				Cluster:   cluster,
 				Namespace: ns,
+				Git:       gitParam,
 				MetaData:  string(newMetaData),
+				Status:    status,
 			}
 			err = models.TektonModel.AddOrUpdate(tekton)
 			if err != nil {
@@ -89,7 +103,6 @@ func (t *Tekton) HandlerTekton(client *client.ClusterManager, ns string, cluster
 			if err != nil {
 				logs.Error(err)
 			}
-			fmt.Println(pod.Status.Phase, pod)
 		}
 	}
 }

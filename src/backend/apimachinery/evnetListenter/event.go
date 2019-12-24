@@ -40,7 +40,7 @@ func (p *PodeEvent) ListenPod() {
 				},
 				UpdateFunc: func(oldObj, newObj interface{}) {
 					//监听短暂性任务结果
-					if newObj.(*v1.Pod).Status.Phase == "Succeeded" || newObj.(*v1.Pod).Status.Phase == "Failed" {
+					if (newObj.(*v1.Pod).Status.Phase == "Succeeded" && oldObj.(*v1.Pod).Status.Phase == "Succeeded") || (newObj.(*v1.Pod).Status.Phase == "Failed" && oldObj.(*v1.Pod).Status.Phase == "Failed") {
 						fmt.Printf("old:%s %s, new:%s %s \n", oldObj.(*v1.Pod).Name, oldObj.(*v1.Pod).Status.Phase, newObj.(*v1.Pod).Name, newObj.(*v1.Pod).Status.Phase)
 					}
 				},
