@@ -124,6 +124,15 @@ func init() {
 
 	beego.GlobalControllerRouter["github.com/Qihoo360/wayne/src/backend/controllers/kubernetes/crd:KubeTektonCRDController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/wayne/src/backend/controllers/kubernetes/crd:KubeTektonCRDController"],
 		beego.ControllerComments{
+			Method:           "GetStatus",
+			Router:           `/:name/status`,
+			AllowHTTPMethods: []string{"get"},
+			MethodParams:     param.Make(),
+			Filters:          nil,
+			Params:           nil})
+
+	beego.GlobalControllerRouter["github.com/Qihoo360/wayne/src/backend/controllers/kubernetes/crd:KubeTektonCRDController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/wayne/src/backend/controllers/kubernetes/crd:KubeTektonCRDController"],
+		beego.ControllerComments{
 			Method:           "Update",
 			Router:           `/:name`,
 			AllowHTTPMethods: []string{"put"},

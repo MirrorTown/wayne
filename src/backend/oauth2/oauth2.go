@@ -39,6 +39,8 @@ type OAuth2Info struct {
 	AuthUrl      string
 	TokenUrl     string
 	ApiUrl       string // get user info
+	AttrUrl      string // get user attr
+	AttrToken    string // get attr token
 	Enabled      bool
 	ApiMapping   map[string]string
 }
@@ -78,6 +80,8 @@ func NewOAuth2Service() {
 			AuthUrl:      section["auth_url"],
 			TokenUrl:     section["token_url"],
 			ApiUrl:       section["api_url"],
+			AttrUrl:      section["attr_url"],
+			AttrToken:    section["attr_token"],
 			Enabled:      enabled,
 		}
 		info.ApiMapping = make(map[string]string)
@@ -105,6 +109,8 @@ func NewOAuth2Service() {
 			OAutherMap[OAuth2TypeDefault] = &OAuth2Default{
 				Config:     &config,
 				ApiUrl:     info.ApiUrl,
+				AttrUrl:    info.AttrUrl,
+				AttrToken:  info.AttrToken,
 				ApiMapping: info.ApiMapping,
 			}
 		}

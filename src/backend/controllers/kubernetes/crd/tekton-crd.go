@@ -26,6 +26,7 @@ type KubeTektonCRDController struct {
 func (c *KubeTektonCRDController) URLMapping() {
 	c.Mapping("List", c.List)
 	c.Mapping("Get", c.Get)
+	c.Mapping("GetStatus", c.GetStatus)
 	c.Mapping("Create", c.Create)
 	c.Mapping("Update", c.Update)
 	c.Mapping("Delete", c.Delete)
@@ -77,6 +78,21 @@ func (c *KubeTektonCRDController) Get() {
 		return
 	}
 	c.Success(result)
+}
+
+// @Title get CRD
+// @Description find CRD by cluster
+// @Param	name		path 	string	true		"the resource name"
+// @router /:name/status [get]
+func (c *KubeTektonCRDController) GetStatus() {
+
+	btekton, err := models.TektonModel.GetByName(c.name)
+	if err != nil {
+		logs.Error("get CRD by cluster (%s) name(%s) error.%v", c.cluster, c.name, err)
+		c.HandleError(err)
+		return
+	}
+	c.Success(btekton.Status)
 }
 
 // @Title Create
