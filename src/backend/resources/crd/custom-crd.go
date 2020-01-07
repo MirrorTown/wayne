@@ -3,6 +3,7 @@ package crd
 import (
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/kubernetes"
@@ -103,6 +104,93 @@ func GetCustomCRDPage(cli *kubernetes.Clientset, group, version, kind, namespace
 		return nil, err
 	}
 	return dataselector.DataSelectPage(toCustomCRDCells(crdList.Items), q), nil
+}
+
+func CleanCustomCRDDelList(cli *kubernetes.Clientset, group, version, namespace string) error {
+	now := time.Now()
+	fmt.Println("now: ", now)
+	//PipelineRun
+	resultPipeline, err := getCRDResult(cli, group, version, "pipelineruns", namespace)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("pipelineList")
+	pipelineList := &CustomCRDPipelineRunList{}
+	err = json.Unmarshal(resultPipeline, pipelineList)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	for _, v := range pipelineList.Items {
+		if now.Sub(v.ObjectMeta.CreationTimestamp.Time).Hours()/24 > 30.0 {
+			fmt.Println(v.Name)
+			err := DeleteCustomCRD(cli, group, version, "pipelineruns", namespace, v.Name)
+			if err != nil {
+				logs.Error("Del pipelineruns err: ", err)
+			}
+		}
+	}
+
+	//pipelineresources
+	resultResource, err := getCRDResult(cli, group, version, "pipelineresources", namespace)
+	if err != nil {
+		return err
+	}
+	fmt.Println("pipelineresources")
+	resourceList := &CustomCRDPipelineResourceList{}
+	err = json.Unmarshal(resultResource, resourceList)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	for _, v := range resourceList.Items {
+		if now.Sub(v.ObjectMeta.CreationTimestamp.Time).Hours()/24 > 30.0 {
+			fmt.Println(v.Name)
+			err := DeleteCustomCRD(cli, group, version, "pipelineresources", namespace, v.Name)
+			if err != nil {
+				logs.Error("Del pipelineresources err: ", err)
+			}
+		}
+	}
+
+	//taskruns
+	resultTasks, err := getCRDResult(cli, group, version, "taskruns", namespace)
+	if err != nil {
+		return err
+	}
+	fmt.Println("taskList")
+	taskList := &CustomCRDTaskRunList{}
+	err = json.Unmarshal(resultTasks, taskList)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	for _, v := range taskList.Items {
+		if now.Sub(v.ObjectMeta.CreationTimestamp.Time).Hours()/24 > 30.0 {
+			fmt.Println(v.Name)
+			err := DeleteCustomCRD(cli, group, version, "taskruns", namespace, v.Name)
+			if err != nil {
+				logs.Error("Del taskruns err: ", err)
+			}
+		}
+	}
+
+	return nil
+}
+
+func getCRDResult(cli *kubernetes.Clientset, group, version, kind, namespace string) ([]byte, error) {
+	req := cli.RESTClient().Verb("GET").RequestURI(
+		fmt.Sprintf("/apis/%s/%s/namespaces/%s/%s",
+			group,
+			version,
+			namespace,
+			kind))
+	result, err := req.Do().Raw()
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
 }
 
 func toCustomCRDCells(deploy []CustomCRD) []dataselector.DataCell {

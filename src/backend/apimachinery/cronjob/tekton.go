@@ -12,6 +12,7 @@ import (
 	"github.com/Qihoo360/wayne/src/backend/resources/crd"
 	"github.com/Qihoo360/wayne/src/backend/resources/proxy"
 	"github.com/Qihoo360/wayne/src/backend/util/logs"
+	"github.com/robfig/cron"
 	"time"
 )
 
@@ -52,6 +53,28 @@ func (t *Tekton) StartTektonCron() (err error) {
 	}()
 
 	return nil
+}
+
+//这边调用tekton启动pipeline行为是创建Run非重复使用Run，所以需要清理太久的无用元信息
+func (t *Tekton) CleanTektonCRD() {
+	var cli apimachinery.ClientSet
+
+	c := cron.New()
+	c.AddFunc("@daily", func() {
+		clusterList, err := models.ClusterModel.GetAllNormal()
+		if err != nil {
+			logs.Error(err)
+		}
+		for _, cluster := range clusterList {
+			client := cli.Manager(cluster.Name)
+			err := crd.CleanCustomCRDDelList(client.Client, "tekton.dev", "v1alpha1", "wireless-ci")
+			if err != nil {
+				logs.Error(err)
+			}
+		}
+	})
+
+	c.Start()
 }
 
 func (t *Tekton) HandlerTekton(client *client.ClusterManager, ns string, cluster string, result []proxy.PodCell) {

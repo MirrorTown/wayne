@@ -1,6 +1,7 @@
 package crd
 
 import (
+	"github.com/tektoncd/pipeline/pkg/apis/pipeline/v1alpha1"
 	apiextensions "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
@@ -56,4 +57,25 @@ type CustomCRDList struct {
 	metav1.ListMeta `json:"metadata"`
 
 	Items []CustomCRD `json:"items"`
+}
+
+type CustomCRDPipelineRunList struct {
+	metav1.TypeMeta `json:",inline"`
+	metav1.ListMeta `json:"metadata"`
+
+	Items []v1alpha1.PipelineRun `json:"items"`
+}
+
+type CustomCRDPipelineResourceList struct {
+	metav1.TypeMeta `json:",inline"`
+	metav1.ListMeta `json:"metadata"`
+
+	Items []v1alpha1.PipelineResource `json:"items"`
+}
+
+type CustomCRDTaskRunList struct {
+	metav1.TypeMeta `json:",inline"`
+	metav1.ListMeta `json:"metadata"`
+
+	Items []v1alpha1.TaskRun `json:"items"`
 }

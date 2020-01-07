@@ -2,7 +2,6 @@ package initial
 
 import (
 	"github.com/Qihoo360/wayne/src/backend/apimachinery/cronjob"
-	"github.com/Qihoo360/wayne/src/backend/apimachinery/evnetListenter"
 )
 
 func InitCronJob() {
@@ -16,6 +15,9 @@ func InitCronJob() {
 
 	tektonJob.StartTektonCron()
 
-	podevent := evnetListenter.PodeEvent{}
-	podevent.ListenPod()
+	//清理过期的CRD信息
+	tektonJob.CleanTektonCRD()
+
+	/*podevent := evnetListenter.PodeEvent{}
+	podevent.ListenPod()*/
 }

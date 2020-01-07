@@ -30,6 +30,7 @@ func (c *KubeTektonCRDController) URLMapping() {
 	c.Mapping("Create", c.Create)
 	c.Mapping("Update", c.Update)
 	c.Mapping("Delete", c.Delete)
+	c.Mapping("CleanCrd", c.CleanCrd)
 }
 
 func (c *KubeTektonCRDController) Prepare() {
@@ -145,4 +146,16 @@ func (c *KubeTektonCRDController) Delete() {
 	}
 	c.Success("ok!")
 
+}
+
+func (c *KubeTektonCRDController) CleanCrd() {
+	cli := c.Client(c.cluster)
+	err := crd.CleanCustomCRDDelList(cli, "tekton.dev", "v1alpha1", "wireless-ci")
+
+	if err != nil {
+		logs.Error("Clean CRD error.%v", err)
+		c.HandleError(err)
+		return
+	}
+	c.Success("Clean done")
 }

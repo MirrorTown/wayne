@@ -5,6 +5,7 @@ import (
 	"github.com/Qihoo360/wayne/src/backend/apimachinery"
 	"time"
 
+	//kubeinformers "k8s.io/client-go/informers"
 	"k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/fields"
 	"k8s.io/client-go/tools/cache"
@@ -25,7 +26,8 @@ func (p *PodeEvent) ListenPod() {
 
 		clientset := cli.Manager("aliyun-k8s-c2").Client
 
-		watchlist := cache.NewListWatchFromClient(clientset.CoreV1().RESTClient(), "pods", "wireless-ci",
+		//kubeinformers.NewSharedInformerFactory(clientset, time.Second*30).Core().V1().Events().Informer().AddEventHandler()
+		watchlist := cache.NewListWatchFromClient(clientset.CoreV1().RESTClient(), string(v1.ResourcePods), "wireless-ci",
 			fields.Everything())
 		_, controller := cache.NewInformer(
 			watchlist,
