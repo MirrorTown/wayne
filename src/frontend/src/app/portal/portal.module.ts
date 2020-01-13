@@ -38,6 +38,12 @@ import { ReviewModule } from './review/review.module';
 import {PodMonitorComponent} from "./pod-monitor/pod-monitor.component";
 import { HostAliasModule } from './hostalias/hostalias.module';
 import { PodLogsComponent } from './tekton-logs/tekton-logs.component';
+import { CmdbModule } from './cmdb/cmdb.module';
+import {CmdbComponent} from "./cmdb/cmdb.component";
+import {ElTreeModule} from "element-angular/release/tree/module";
+import {ElButtonsModule} from "element-angular/release/button/module";
+import {Cmdb02Module} from "./cmdb/cmdb02.module";
+import {Cmdb02Component} from "./cmdb/cmdb02.component";
 
 @NgModule({
   imports: [
@@ -50,6 +56,8 @@ import { PodLogsComponent } from './tekton-logs/tekton-logs.component';
     IndexModule,
     AppModule,
     DeploymentModule,
+    CmdbModule,
+    Cmdb02Module,
     ConfigMapModule,
     CronjobModule,
     SecretModule,
@@ -69,6 +77,8 @@ import { PodLogsComponent } from './tekton-logs/tekton-logs.component';
     IngressModule,
     AutoscaleModule,
     MarkdownModule.forRoot(),
+    ElTreeModule,
+    ElButtonsModule,
   ],
   providers: [
     AuthCheckGuard,
@@ -84,6 +94,8 @@ import { PodLogsComponent } from './tekton-logs/tekton-logs.component';
     PodLoggingComponent,
     PodMonitorComponent,
     PodLogsComponent,
+    CmdbComponent,
+    Cmdb02Component,
   ]
 })
 export class PortalModule {

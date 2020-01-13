@@ -12,7 +12,7 @@
     <ng-container *clrDgHideableColumn="showState['create_time']">{{'TITLE.CREATE_TIME' | translate}}</ng-container>
   </clr-dg-column>
   <clr-dg-column>
-    <ng-container *clrDgHideableColumn="showState['expire_time']">{{'TITLE.EXPIRE_TIME' | translate}}(s)</ng-container>
+    <ng-container *clrDgHideableColumn="showState['expire_time']">{{'TITLE.EXPIRE_TIME' | translate}}</ng-container>
   </clr-dg-column>
   <clr-dg-column class="col-user">
     <ng-container *clrDgHideableColumn="showState['create_user']">{{'TITLE.CREATE_USER' | translate}}</ng-container>
@@ -29,7 +29,7 @@
     <clr-dg-cell class="copy">{{apiKey.name}}</clr-dg-cell>
     <clr-dg-cell class="copy">{{apiKey.group?.name}}</clr-dg-cell>
     <clr-dg-cell class="col-time">{{apiKey.createTime | date:'yyyy-MM-dd HH:mm:ss'}}</clr-dg-cell>
-    <clr-dg-cell>{{apiKey.expireIn === 0 ? "permanent valid" : apiKey.expireIn}}</clr-dg-cell>
+    <clr-dg-cell class="col-time">{{getDate(apiKey.createTime, apiKey.expireIn) | date:'yyyy-MM-dd HH:mm:ss'}}</clr-dg-cell>
     <clr-dg-cell class="col-user">{{apiKey.user}}</clr-dg-cell>
     <clr-dg-cell>{{apiKey.description}}</clr-dg-cell>
     <clr-dg-cell class="col-operate">

@@ -89,8 +89,7 @@ func (c *KubeTektonCRDController) GetStatus() {
 
 	btekton, err := models.TektonModel.GetByName(c.name)
 	if err != nil {
-		logs.Error("get CRD by cluster (%s) name(%s) error.%v", c.cluster, c.name, err)
-		c.HandleError(err)
+		logs.Info("get CRD by cluster (%s) name(%s) error.%v", c.cluster, c.name, err)
 		return
 	}
 	c.Success(btekton.Status)

@@ -363,7 +363,7 @@
     "DICT_VALUE": "字典 value",
     "ENGLISH_NAME": "英文小写",
     "ENVIRONMENT": "为所有环境变量添加相同的前缀，可为空",
-    "EXPIRE_TIME": "单位秒，0代表永久有效",
+    "EXPIRE_TIME": "单位天，0代表永久有效",
     "NAME": "名称",
     "PRODUCT": "点击输入筛选过滤项目",
     "SECOND": "单位秒",
@@ -647,7 +647,7 @@
   "UNIT": {
     "CORE": "核",
     "CPU": "单位个",
-    "MEMORY": "单位 G",
+    "MEMORY": "单位 Mi",
     "PIECE": "份",
     "PRICE": "元/月",
     "SECOND": "秒"

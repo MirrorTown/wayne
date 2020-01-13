@@ -67,7 +67,7 @@ export class CreateEditDeploymentTplComponent extends ContainerTpl implements On
   deployment: Deployment;
 
   cpuUnitPrice = 30;
-  memoryUnitPrice = 10;
+  memoryUnitPrice = 0.01;
   top: number;
   box: HTMLElement;
   eventList: any[] = Array();
@@ -148,7 +148,7 @@ export class CreateEditDeploymentTplComponent extends ContainerTpl implements On
   }
 
   checkMemory(memory: string): boolean {
-    return memory === '' ? true : parseFloat(memory) <= this.memoryLimit && parseFloat(memory) > 0;
+    return memory === '' ? true : parseFloat(memory)/1024 <= this.memoryLimit && parseFloat(memory) > 0;
   }
 
   checkCpu(cpu: string): boolean {
@@ -676,8 +676,8 @@ export class CreateEditDeploymentTplComponent extends ContainerTpl implements On
         container.resources.requests = {};
       }
       if (memoryLimit) {
-        container.resources.limits['memory'] = memoryLimit + 'Gi';
-        container.resources.requests['memory'] = parseFloat(memoryLimit) * memoryRequestLimitPercent + 'Gi';
+        container.resources.limits['memory'] = memoryLimit + 'Mi';
+        container.resources.requests['memory'] = parseFloat(memoryLimit) * memoryRequestLimitPercent + 'Mi';
       }
       if (cpuLimit) {
         container.resources.limits['cpu'] = cpuLimit.toString();
@@ -794,10 +794,10 @@ export class CreateEditDeploymentTplComponent extends ContainerTpl implements On
           container.resources = ResourceRequirements.emptyObject();
         }
         if (!container.resources.limits) {
-          container.resources.limits = {'cpu': '0', 'memory': '0Gi'};
+          container.resources.limits = {'cpu': '0', 'memory': '0Mi'};
         }
         container.resources.limits['cpu'] = ResourceUnitConvertor.cpuCoreValue(container.resources.limits['cpu']);
-        container.resources.limits['memory'] = ResourceUnitConvertor.memoryGiValue(container.resources.limits['memory']);
+        container.resources.limits['memory'] = ResourceUnitConvertor.memoryMiValue(container.resources.limits['memory']);
       }
     }
   }

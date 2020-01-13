@@ -8,6 +8,7 @@ import (
 	"github.com/Qihoo360/wayne/src/backend/controllers/harbor"
 	"github.com/Qihoo360/wayne/src/backend/controllers/hongmao"
 	"github.com/Qihoo360/wayne/src/backend/controllers/hostAlias"
+	"github.com/Qihoo360/wayne/src/backend/controllers/multienv"
 	"github.com/Qihoo360/wayne/src/backend/controllers/review"
 	"github.com/Qihoo360/wayne/src/backend/controllers/workstep"
 	"net/http"
@@ -487,6 +488,14 @@ func init() {
 		),
 	)
 
+	nsWithMultienv := beego.NewNamespace("/api/v1",
+		beego.NSNamespace("/multienv",
+			beego.NSInclude(
+				&multienv.MultienvController{},
+			),
+		),
+	)
+
 	nsWithHostAliase := beego.NewNamespace("/api/v1",
 		beego.NSNamespace("/hostalias",
 			beego.NSInclude(
@@ -520,6 +529,8 @@ func init() {
 	beego.AddNamespace(nsWithHarbor)
 
 	beego.AddNamespace(nsWithReview)
+
+	beego.AddNamespace(nsWithMultienv)
 
 	beego.AddNamespace(nsWithHongmao)
 

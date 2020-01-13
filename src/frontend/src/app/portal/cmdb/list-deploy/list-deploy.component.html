@@ -1,0 +1,33 @@
+<div el-row gutter="0">
+  <h2>Pod Resource</h2>
+  <div el-col [span]="10">
+<ul class="heroes">
+  <li *ngFor="let hero of heroes"
+      [class.selected]="hero === selectedHero"
+      (click)="onSelect(hero)">
+    <span class="badge">{{hero.id}}</span> {{hero.name}}
+  </li>
+</ul>
+  </div>
+
+  <div el-col [span]="10">
+<div *ngIf="selectedPod">
+
+  <el-menu [model]="0" (modelChange)="handle($event)" class="el-menu-demo" mode="horizontal">
+    <el-menu-item index="1">基础信息</el-menu-item>
+    <el-menu-item index="2">机器列表</el-menu-item>
+  </el-menu>
+
+  <div>
+    <el-table [model]="tableData" [stripe]="true">
+      <el-table-column model-key="name" label="姓名" width="140">
+      </el-table-column>
+      <el-table-column model-key="date" label="日期" width="140">
+      </el-table-column>
+      <el-table-column model-key="address" label="地址">
+      </el-table-column>
+    </el-table>
+  </div>
+</div>
+  </div>
+</div>

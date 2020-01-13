@@ -115,6 +115,26 @@ export class ResourceUnitConvertor {
     return parseFloat(memory);
   }
 
+  static memoryMiValue(memory: string): number {
+    if (!memory) {
+      return 0;
+    }
+    if (memory.toString().indexOf('Mi') > -1) {
+      return parseFloat(memory);
+    }
+    if (memory.toString().indexOf('Gi') > -1) {
+      return parseFloat(memory) * 1024;
+    }
+    if (memory.toString().indexOf('Ki') > -1) {
+      return parseFloat(memory) / (1024);
+    }
+    if (memory.toString().indexOf('m') > -1) {
+      return parseFloat(memory) / (1024 * 1024 * 1000);
+    }
+
+    return parseFloat(memory);
+  }
+
 }
 
 export class KubePodUtil {

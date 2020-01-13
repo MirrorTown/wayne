@@ -99,3 +99,15 @@ func (*deploymentTplModel) GetLatestDeptplByName(ns, app, deployment string) (v 
 	}
 	return nil, err
 }
+
+func (*deploymentTplModel) GetDeptplByName(deployment string) (*DeploymentTemplate, error) {
+	v := &DeploymentTemplate{}
+	// use orm
+	qs := Ormer().QueryTable(new(DeploymentTemplate))
+	err := qs.Filter("Name", deployment).Filter("Deleted", 0).OrderBy("-id").One(v)
+	if err == nil {
+		v.DeploymentId = v.Deployment.Id
+		return v, nil
+	}
+	return nil, err
+}

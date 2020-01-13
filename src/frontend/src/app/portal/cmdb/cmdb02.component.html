@@ -1,0 +1,57 @@
+<div class="deploy">
+  <header>
+    <span [ngModel]="envName">测试环境</span>
+  </header>
+  <section class="context">
+    <div class="left-context">
+      <div class="deploy-munu">
+        <div class="line line-padding">
+          <span class="title">应用列表</span>
+          <div class="pull-right">
+            <button class="btn btn-info" (click)="createDeploy()" miria-res=2  [disabled]="canCreateDeploy<1">创建部署</button>
+          </div>
+        </div>
+        <div class="line bottom-line line-padding">
+          <span ng-repeat="cloud in mv.cloudList" class="tag" ng-class="{active:mv.cloudIndex==$index}" ng-disabled="cloud.appNum==0" ng-click="mv.selectCloud($index)" ng-bind="cloud.name"></span>
+        </div>
+        <div class="line bottom-line line-padding">
+          <span class="title">应用名称</span>
+          <span class="appName"><input type="text" class="form-control" [(ngModel)]="appName" placeholder="按应用名检索"/></span>
+          <!--  <span class="pull-right"><a ui-sref="app.appList">去关注应用</a></span>-->
+        </div>
+      </div>
+      <div class="hr bottom-line"></div>
+      <div class="deploy-list">
+        <ul>
+          <li *ngFor="let deploy of deployList">
+            <div class="bottom-line" (click)="selectDeploy(deploy.id)">
+              <div class="icon-span pull-left">
+                <img src="assets/images/doker.png">
+              </div>
+              <div class="deploy-info">
+                <div class="line line-padding">
+                  <span>{{deploy.name}}</span>
+                  <span class="pull-right"><span class="cash">{{deploy.dockerNum}}</span>台机器</span>
+                </div>
+                <div class="line line-padding">
+                  <span><span>{{deploy.cpu}}</span>核</span>
+                  <span><span>{{deploy.ram}}</span>GB</span>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="right-context">
+      <div class="console">
+        <div class="console-inner" [ngClass]="{open:open}">
+          <div ng-if="!!mv.isPrd">
+            <cmdb-resource [selectedDeploy]="selectedDeploy"></cmdb-resource>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+

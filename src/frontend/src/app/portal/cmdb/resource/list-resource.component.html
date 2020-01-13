@@ -1,0 +1,61 @@
+<div>
+  <div class="console-mume">
+    <div class="line bottom-line line-padding">
+      <span class="title" ng-bind="mv.info.appName"></span>
+      <span class="pull-right"><i class="glyphicon glyphicon-remove close" ng-click="mv.close()"></i></span>
+    </div>
+    <div class="line line-padding">
+      <div class="pull-right">
+        <button class="btn btn-info" ng-click="mv.createPrdPublish()">
+          <span class="glyphicon glyphicon-send"></span>
+          <span>发布</span>
+        </button>
+        <button class="btn btn-info" ng-click="mv.loadDokerList()">刷新</button>
+        <button class="btn btn-danger" miria-res=2 ng-click="mv.destroy()">销毁</button>
+        <button class="btn btn-info" miria-res=2 ng-click="mv.editDeployConfig()">部署配置</button>
+        <button class="btn btn-info" miria-res=1 ng-click="mv.editVMConfig()">VM发布单</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="console-context" style="padding:90px 10px 0;">
+    <table class="table" style="margin-bottom:10px;">
+      <thead>
+      <tr>
+        <th>系统ower</th>
+        <th>机器数目</th>
+        <th>CPU最大核心数</th>
+        <th>CPU实际分配核心数</th>
+        <th>内存大小</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="cash">
+        <td ng-bind="mv.info.ower"></td>
+        <td ng-bind="mv.info.dokerNum"></td>
+        <td ng-bind="mv.info.cpu"></td>
+        <td ng-bind="mv.info.leastCpu"></td>
+        <td ng-bind="mv.info.ram"></td>
+      </tr>
+      </tbody>
+    </table>
+
+
+    <div class="console-context" style="padding-top:190px">
+      <div class="line bottom-line line-padding" style="height:50px;">
+        <span class="tag" ng-class="{active:mv.tagIndex==1}" style="cursor: pointer" ng-click="mv.selectTagIndex(1)">机器列表</span>
+        <span class="tag" ng-class="{active:mv.tagIndex==2}" style="cursor: pointer" ng-click="mv.selectTagIndex(2)">发布历史</span>
+        <span class="tag" ng-class="{active:mv.tagIndex==3}" style="cursor: pointer" (click)="selectTagIndex(3)">基础信息</span>
+      </div>
+
+      <div ng-if="mv.tagIndex==1" ng-include="'/html/deploy/prdPublishList.html'"></div>
+      <div ng-if="mv.tagIndex==2" ng-include="'/html/deploy/deployHository.html'"></div>
+      <div *ngIf="tagIndex==3">
+
+      </div>
+    </div>
+  </div>
+</div>
+<style>
+
+</style>

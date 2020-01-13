@@ -1,0 +1,35 @@
+<div el-row gutter="20">
+  <div el-col [span]="4">
+    <h2>K8S集群</h2>
+      <ul class="heroes">
+        <li *ngFor="let hero of heroes"
+          [class.selected]="hero === selectedHero"
+          (click)="onSelect(hero)">
+        <span class="badge">{{hero.id}}</span> {{hero.name}}
+      </li>
+    </ul>
+  </div>
+
+  <div el-col [span]="4">
+    <div *ngIf="selectedHero">
+      <div style='width:1px;border:1px solid red;float:left;height:700px;'><!--这个div模拟一条红色的垂直分割线--></div>
+      <cmdb-ns [selectedCluster]="selectedHero" (selectedNS)="selectPod($event)"></cmdb-ns>
+
+    </div>
+  </div>
+
+  <div el-col [span]="16">
+    <div *ngIf="selectedNS">
+      <div style='width:1px;border:1px solid red;float:left;height:700px;'><!--这个div模拟一条红色的垂直分割线--></div>
+      <cmdb-deploy [selectedNS]="selectedNS"></cmdb-deploy>
+      <!--<h2>{{selectedHero.name | uppercase}} Details</h2>
+      <div><span>id: </span>{{selectedHero.id}}</div>
+      <div>
+        <label>name:
+          <input [(ngModel)]="selectedHero.name" placeholder="name"/>
+        </label>
+      </div>-->
+
+    </div>
+  </div>
+</div>

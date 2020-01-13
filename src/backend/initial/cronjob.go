@@ -16,7 +16,7 @@ func InitCronJob() {
 	tektonJob.StartTektonCron()
 
 	//清理过期的CRD信息
-	tektonJob.CleanTektonCRD()
+	//tektonJob.CleanTektonCRD()
 
 	/*podevent := evnetListenter.PodeEvent{}
 	podevent.ListenPod()*/

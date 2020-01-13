@@ -154,7 +154,7 @@ func CleanCustomCRDDelList(cli *kubernetes.Clientset, group, version, namespace 
 		}
 	}
 
-	//taskruns
+	/*//taskruns 删除pipelineRuns会自动删除taskRun
 	resultTasks, err := getCRDResult(cli, group, version, "taskruns", namespace)
 	if err != nil {
 		return err
@@ -174,7 +174,7 @@ func CleanCustomCRDDelList(cli *kubernetes.Clientset, group, version, namespace 
 				logs.Error("Del taskruns err: ", err)
 			}
 		}
-	}
+	}*/
 
 	return nil
 }

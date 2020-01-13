@@ -42,6 +42,8 @@ import { ReviewComponent } from'./review/review.component';
 import {PodMonitorComponent} from "./pod-monitor/pod-monitor.component";
 import {HostAliaseComponent} from "./hostalias/hostalias.component";
 import {PodLogsComponent} from "./tekton-logs/tekton-logs.component";
+import {CmdbComponent} from "./cmdb/cmdb.component";
+import {Cmdb02Component} from "./cmdb/cmdb02.component";
 
 const routes: Routes = [
   {
@@ -125,6 +127,22 @@ const routes: Routes = [
   {
     path: 'portal/logs',
     component: PodLogsComponent
+    /*children: [
+      {path: '/pod/:podName', component: },
+      // {path: '/history/pod/:podName', component: }
+    ]*/
+  },
+  {
+    path: 'portal/cmdb',
+    component: CmdbComponent
+    /*children: [
+      {path: '/pod/:podName', component: },
+      // {path: '/history/pod/:podName', component: }
+    ]*/
+  },
+  {
+    path: 'portal/cmdb02',
+    component: Cmdb02Component
     /*children: [
       {path: '/pod/:podName', component: },
       // {path: '/history/pod/:podName', component: }

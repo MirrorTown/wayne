@@ -69,6 +69,15 @@
     <clr-icon clrVerticalNavIcon shape="world"></clr-icon>
     构建日志
   </a>
+  <a
+    clrVerticalNavLink
+    [title]="'CMDB'"
+    *ngIf="authService.currentNamespacePermission.namespaceUser.read || authService.currentUser.admin"
+    routerLink="/portal/cmdb"
+    routerLinkActive="active">
+    <clr-icon clrVerticalNavIcon shape="user"></clr-icon>
+    {{'CMDB'}}
+  </a>
   <a href="javascript:;" style="flex: 1;"></a>
   <wayne-footer></wayne-footer>
 </clr-vertical-nav>

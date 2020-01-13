@@ -166,8 +166,8 @@ func (c *ApiKeyController) Create() {
 		"iss": "wayne",
 		// 签发时间
 		"iat": apiKey.CreateTime.Unix(),
-		"exp": apiKey.CreateTime.Add(time.Duration(apiKey.ExpireIn) * time.Second).Unix(),
-		"aud": apiKey.Id,
+		"exp": apiKey.CreateTime.Add(time.Duration(apiKey.ExpireIn*86400) * time.Second).Unix(),
+		"aud": apiKey.User,
 	})
 
 	apiToken, err := token.SignedString(rsakey.RsaPrivateKey)

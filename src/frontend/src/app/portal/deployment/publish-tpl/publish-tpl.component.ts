@@ -208,8 +208,7 @@ export class PublishDeploymentTplComponent implements OnInit {
     this.taglist = [];
     var imageCrList = [];
     const observables = Array(
-      this.deploymentService.listTags(h.containerImage),
-      this.deploymentService.listAliyunCrTags(h.containerImage)
+      this.deploymentService.listTags(h.containerImage)
     );
      combineLatest(observables).subscribe(value => {
        if (value[0] != null) {
@@ -217,13 +216,23 @@ export class PublishDeploymentTplComponent implements OnInit {
            this.taglist.push({Name: tag.name});
          }
        }
-       if (value[1] != null) {
+       /*if (value[1] != null) {
          for (const tag of value[1].data) {
            if (tag.tag != null) {
              this.taglist.push({Name: tag.tag});
            }
          }
-       }
+       }*/
+    });
+
+    this.deploymentService.listAliyunCrTags(h.containerImage).subscribe( value => {
+      if (value != null) {
+        for (const tag of value.data) {
+          if (tag.tag != null) {
+            this.taglist.push({Name: tag.tag});
+          }
+        }
+      }
     });
   }
 
@@ -234,8 +243,7 @@ export class PublishDeploymentTplComponent implements OnInit {
   ngOnInit(): void {
     const namespaceId = this.cacheService.namespaceId;
     const observables = Array(
-      this.deploymentService.listImages(new PageState({pageSize: 1000}), namespaceId),
-      this.deploymentService.listAliyunCrImages(0, this.cacheService.namespaceId)
+      this.deploymentService.listImages(new PageState({pageSize: 1000}), namespaceId)
     );
     combineLatest(observables).subscribe(value => {
       if (value[0] != null) {
@@ -243,12 +251,20 @@ export class PublishDeploymentTplComponent implements OnInit {
           this.imagelist.push({Name: image['name']});
         }
       }
-      if (value[1] != null) {
+      /*if (value[1] != null) {
         for (const image of value[1].data) {
           this.imagelist.push({Name: image.repoDomainList["vpc"] + "/" + image["repoNamespace"] + "/" + image['repoName']});
         }
-      }
+      }*/
     });
+
+    this.deploymentService.listAliyunCrImages(0, this.cacheService.namespaceId).subscribe(value => {
+      for (const image of value.data) {
+        this.imagelist.push({Name: image.repoDomainList["vpc"] + "/" + image["repoNamespace"] + "/" + image['repoName']});
+      }
+    },
+      error => console.log("Have no aliyun cr found")
+    );
   }
 
   onCancel() {

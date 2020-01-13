@@ -5,6 +5,7 @@ import { ApiKey } from '../../../shared/model/v1/apikey';
 import { TokenDetailComponent } from '../token-detail/token-detail';
 import { AuthService } from '../../../shared/auth/auth.service';
 import { TranslateService } from '@ngx-translate/core';
+import {type} from "os";
 
 @Component({
   selector: 'list-apikey',
@@ -59,5 +60,9 @@ export class ListApiKeyComponent implements OnInit {
     this.tokenDetailComponent.viewToken(apiKey.token);
   }
 
-
+  getDate(createTime: Date, seconds: number): Date {
+    createTime = new Date(createTime);
+    var newTime = new Date(createTime.setSeconds(createTime.getSeconds() + seconds * 86400));
+    return newTime
+}
 }
