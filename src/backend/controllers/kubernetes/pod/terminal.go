@@ -12,11 +12,11 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/360yun/sockjs-go/sockjs"
 	"github.com/Qihoo360/wayne/src/backend/client"
 	"github.com/Qihoo360/wayne/src/backend/util/hack"
 	"github.com/Qihoo360/wayne/src/backend/util/logs"
 	"github.com/astaxie/beego"
-	"github.com/360yun/sockjs-go/sockjs"
 	"k8s.io/api/core/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/kubernetes/scheme"

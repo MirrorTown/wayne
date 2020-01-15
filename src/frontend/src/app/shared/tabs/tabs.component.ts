@@ -77,6 +77,14 @@ export class TabsComponent implements AfterViewInit, OnDestroy {
       this.showViewPager = false;
       this.resetFoldState(true);
     } else {
+
+      this._tabs.forEach((item, i) => {
+        const el = item.el.nativeElement;
+        if (i >= 100 && !el.classList.contains('hide')) {
+          console.log("add hide after 100");
+          el.classList.add('hide');
+        }
+      });
       this.allowShowAll = false;
       setTimeout(() => {
         if (this.tabsContent.clientWidth < this.tabsList.scrollWidth) {
@@ -121,11 +129,15 @@ export class TabsComponent implements AfterViewInit, OnDestroy {
   }
 
   filtertabs() {
-    this._tabs.forEach(item => {
+    this._tabs.forEach((item, i) => {
       const el = item.el.nativeElement;
-      if (el.innerText.indexOf(this.searchContent) >= 0) {
+      if (el.innerText.indexOf(this.searchContent) >= 0 && this.searchContent != "") {
         el.classList.remove('hide');
-      }else {
+        this.allowShowAll = true;
+      } else if (this.searchContent == "" && i < 100) {
+        el.classList.remove('hide');
+        this.allowShowAll = false;
+      } else if (!el.classList.contains('hide')) {
         el.classList.add('hide');
       }
       /*el.classList.remove('hide');
@@ -133,7 +145,8 @@ export class TabsComponent implements AfterViewInit, OnDestroy {
         el.classList.add('hide');
       }*/
       this.boxResize();
-    });
+    }) ;
+
   }
 
   ngOnDestroy() {

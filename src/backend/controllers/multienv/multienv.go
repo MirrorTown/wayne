@@ -16,10 +16,12 @@ import (
 	"github.com/Qihoo360/wayne/src/backend/util"
 	"github.com/Qihoo360/wayne/src/backend/util/logs"
 	"github.com/Qihoo360/wayne/src/backend/workers/webhook"
+	"github.com/astaxie/beego/orm"
 	"k8s.io/api/apps/v1beta1"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/labels"
 	"net/http"
+	"strings"
 )
 
 type MultienvController struct {
@@ -89,8 +91,18 @@ func (m *MultienvController) Create() {
 
 	//params: multienv.Szone + "-" + appName => souche-appName
 	deployTpl, err := models.DeploymentTplModel.GetLatestDeptplByName(ns, multienv.Szone, multienv.Szone+"-"+appName)
-	fmt.Println(deployTpl)
-	if err != nil {
+	if err == orm.ErrNoRows {
+		err := cloneWayneTemplate(multienv.Szone, appName)
+		if err != nil {
+			logs.Error(err)
+			m.AbortInternalServerError("clone from db err")
+		}
+		deployTpl, err = models.DeploymentTplModel.GetLatestDeptplByName(ns, multienv.Szone, multienv.Szone+"-"+appName)
+		if err != nil {
+			logs.Error(err)
+			m.AbortInternalServerError("cat not get deploymentTmp from db")
+		}
+	} else if err != nil {
 		logs.Error(err)
 		m.AbortInternalServerError("cat not get deploymentTmp from db")
 	}
@@ -248,6 +260,29 @@ func (m *MultienvController) Create() {
 	status := recode.DeployServer().UpdateDeployStatus(models.Deploying, models.ToBeNotify)
 
 	m.Success(status)
+}
+
+func cloneWayneTemplate(szone, appName string) error {
+	wayneTpl, err := models.DeploymentTplModel.GetDeptplByName(szone + "-wayne-template")
+	if err != nil {
+		logs.Error(err)
+		return err
+	}
+	appDeployment, _ := models.DeploymentModel.GetByName(szone + "-" + appName)
+	appTpl := &models.DeploymentTemplate{
+		Name:         szone + "-" + appName,
+		Template:     strings.ReplaceAll(wayneTpl.Template, "wayne-template", appName),
+		Description:  szone + "-" + appName + "模板",
+		User:         "Robot",
+		Deleted:      false,
+		DeploymentId: appDeployment.Id,
+	}
+
+	_, err = models.DeploymentTplModel.Add(appTpl)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func copyTemplateData(str []byte, image string) (string, error) {

@@ -262,7 +262,7 @@ export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit 
     this.deploymentId = parseInt(this.route.snapshot.params['deploymentId'], 10);
     combineLatest(
       [this.clusterService.getNames(),
-      this.deploymentService.list(PageState.fromState({sort: {by: 'id', reverse: false}}, {pageSize: 2000}), 'false', this.appId + '', this.authService.currentAppPermission.project.read + ''),
+      this.deploymentService.list(PageState.fromState({sort: {by: 'id', reverse: false}}, {pageSize: 4000}), 'false', this.appId + '', this.authService.currentAppPermission.project.read + ''),
       this.appService.getById(this.appId, namespaceId)]
     ).subscribe(
       response => {
@@ -470,7 +470,6 @@ export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit 
     if (!deploymentTpls) {
       return deploymentTpls;
     }
-    console.log(deploymentTpls)
     const tplStatusMap = {};
     if (status && status.length > 0) {
       for (const state of status) {
