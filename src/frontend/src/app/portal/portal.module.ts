@@ -44,6 +44,7 @@ import {ElTreeModule} from "element-angular/release/tree/module";
 import {ElButtonsModule} from "element-angular/release/button/module";
 import {Cmdb02Module} from "./cmdb/cmdb02.module";
 import {Cmdb02Component} from "./cmdb/cmdb02.component";
+import {TektonModule} from "./tekton/tekton.module";
 
 @NgModule({
   imports: [
@@ -56,6 +57,7 @@ import {Cmdb02Component} from "./cmdb/cmdb02.component";
     IndexModule,
     AppModule,
     DeploymentModule,
+    TektonModule,
     CmdbModule,
     Cmdb02Module,
     ConfigMapModule,

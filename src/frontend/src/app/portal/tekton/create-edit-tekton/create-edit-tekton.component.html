@@ -1,0 +1,91 @@
+<clr-modal [(clrModalOpen)]="modalOpened" [clrModalSize]="'lg'">
+  <h3 class="modal-title">{{title}}</h3>
+  <div class="modal-body">
+    <form #ngForm="ngForm" clrForm clrLayout="horizontal">
+      <section class="form-block">
+        <div class="clr-form-control clr-row">
+          <label class="clr-control-label required">
+            {{'TITLE.NAME' | translate}}
+          </label>
+          <div class="clr-control-container clr-col-md-10 clr-col-12"
+            [class.clr-error]="name.invalid && (name.dirty || name.touched)">
+            <div class="clr-input-wrapper">
+              <span *ngIf="app && actionType==0 && nameGenerateRuleConfig=='join'">{{app.name}}-</span>
+              <input type="text" class="clr-input" id="name" [(ngModel)]="resource.name" name="name" required [readonly]="actionType==1" [placeholder]="'PLACEHOLDER.APP_NAME' | translate" pattern="[a-z]([-a-z0-9]*[a-z0-9])?" maxlength="64" (keyup)='checkNameValid()' #name="ngModel">
+            </div>
+            <span *ngIf="name.invalid && (name.dirty || name.touched)"
+              class="clr-subtext">{{'RULE.REGEXT' | translate}}[a-z]([-a-z0-9]*[a-z0-9])?</span>
+          </div>
+        </div>
+        <div class="clr-form-control clr-row">
+          <label class="clr-control-label required">{{'TITLE.CLUSTER' | translate}}</label>
+          <span class="warning-text" *ngIf="!clusters || clusters && clusters.length === 0">{{'DEPLOYMENT.CREATE_EDIT.CLUSTER_MESSAGE' | translate}}</span>
+          <div class="clr-control-container">
+            <div *ngFor="let cluster of clusters">
+              <div class="clr-input-wrapper">
+                <label class="clr-checkbox-wrapper">
+                  <input class="clr-checkbox" [(ngModel)]="clusterMetas[cluster.name].checked" type="checkbox"
+                    id="{{cluster.name}}-check" name="{{cluster.name}}-check">
+                  <label for="{{cluster.name}}-check">{{cluster.name}}</label>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="clr-form-control clr-row">
+          <label class="clr-control-label required">存储卷</label>
+          <div class="clr-control-container">
+<!--            <div *ngFor="let cluster of clusters">-->
+              <div class="clr-input-wrapper">
+                <label class="clr-toggle-wrapper">
+                  <input class="clr-toggle" [(ngModel)]="volumnMetas['volumn'].checked" type="checkbox"
+                         id="volumn-cheeck" name="volumn-cheeck">
+                  <label for="volumn-cheeck">持久化存储</label>
+                  <input *ngIf="volumnMetas['volumn'].checked" class="clr-input" style="margin-left: 20px;" placeholder="名称"
+                         [(ngModel)]="volumnMetas['volumn'].name" id="vname" name="vname"
+                         type="text">
+                  <input *ngIf="volumnMetas['volumn'].checked" class="clr-input" style="margin-left: 20px;" placeholder="pvc名称"
+                         [(ngModel)]="volumnMetas['volumn'].pvc" id="pvcname" name="pvcname"
+                         type="text">
+                </label>
+              </div>
+<!--            </div>-->
+          </div>
+        </div>
+        <div class="clr-form-control clr-row">
+          <label class="clr-control-label required">serviceAccount</label>
+          <div class="clr-control-container">
+            <div class="clr-input-wrapper">
+              <input type="text" class="clr-input" id="serviceAccount" [(ngModel)]="resource.sa" name="saname" required placeholder="ServiceAccount" maxlength="64">
+            </div>
+          </div>
+        </div>
+        <clr-textarea-container>
+          <label>{{'TITLE.DESCRIPTION' | translate}}</label>
+          <textarea clrTextarea id="deployment_description" [(ngModel)]="resource.description" name="deployment_description" rows="3"></textarea>
+        </clr-textarea-container>
+
+        <div class="container-box">
+          <label class="label-level2" [id]="'tekton参数'">tekton参数
+            <button (click)="onAddTektonArgs()" style="margin-left: 10px;" class="wayne-button primary">
+              <clr-icon shape="add-text"></clr-icon>
+              添加参数
+            </button>
+          </label>
+          <div *ngFor="let param of resource.params; let l = index; trackBy:trackByFn">
+            <span>变量: </span>
+            <input style="margin-top: 10px" [readonly]="l < 2" type="text" size="60" name="args_{{l}}" [(ngModel)]="resource.params[l]"
+                   class="clr-input" placeholder="参数变量">
+            <clr-icon *ngIf="l > 1" style="margin-top: 5px;margin-left: 5px;" (click)="onDeleteTektonArg(l)" shape="trash" class="is-solid"></clr-icon>
+          </div>
+        </div>
+      </section>
+    </form>
+  </div>
+  <div class="modal-footer" style="padding-right: 5%">
+    <button type="button" class="btn btn-outline" (click)="onCancel()">{{'BUTTON.CANCEL' | translate}}</button>
+    <button type="button" class="btn btn-primary" [disabled]="!isValid"
+            (click)="onSubmit()">{{'BUTTON.CONFIRM' | translate}}</button>
+  </div>
+</clr-modal>
+

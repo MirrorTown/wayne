@@ -13,11 +13,11 @@ import (
 	"github.com/Qihoo360/wayne/src/backend/util/logs"
 )
 
-func GetCustomCRD(cli *kubernetes.Clientset, group, version, kind, namespace, name string) (runtime.Object, error) {
+func GetTektonCRD(cli *kubernetes.Clientset, kind, namespace, name string) (runtime.Object, error) {
 	req := cli.RESTClient().Verb("GET").RequestURI(
 		fmt.Sprintf("/apis/%s/%s/namespaces/%s/%s/%s",
-			group,
-			version,
+			"tekton.dev",
+			"v1alpha1",
 			namespace,
 			kind,
 			name))
@@ -33,11 +33,11 @@ func GetCustomCRD(cli *kubernetes.Clientset, group, version, kind, namespace, na
 	return result, nil
 }
 
-func CreatCustomCRD(cli *kubernetes.Clientset, group, version, kind, namespace string, body interface{}) (runtime.Object, error) {
+func CreatTektonCRD(cli *kubernetes.Clientset, kind, namespace string, body interface{}) (runtime.Object, error) {
 	req := cli.RESTClient().Verb("POST").RequestURI(
 		fmt.Sprintf("/apis/%s/%s/namespaces/%s/%s",
-			group,
-			version,
+			"tekton.dev",
+			"v1alpha1",
 			namespace,
 			kind)).Body(body)
 	raw, err := req.Do().Raw()
@@ -52,15 +52,15 @@ func CreatCustomCRD(cli *kubernetes.Clientset, group, version, kind, namespace s
 	return result, nil
 }
 
-func UpdateCustomCRD(cli *kubernetes.Clientset, group, version, kind, namespace, name string, object *runtime.Unknown) (runtime.Object, error) {
+func UpdateTektonCRD(cli *kubernetes.Clientset, kind, namespace, name string, body interface{}) (runtime.Object, error) {
 	req := cli.RESTClient().Verb("PUT").RequestURI(
 		fmt.Sprintf("/apis/%s/%s/namespaces/%s/%s/%s",
-			group,
-			version,
+			"tekton.dev",
+			"v1alpha1",
 			namespace,
 			kind,
 			name)).
-		Body([]byte(object.Raw)).
+		Body(body).
 		SetHeader("Content-Type", "application/json")
 	raw, err := req.Do().Raw()
 	if err != nil {
@@ -75,18 +75,19 @@ func UpdateCustomCRD(cli *kubernetes.Clientset, group, version, kind, namespace,
 	return result, nil
 }
 
-func DeleteCustomCRD(cli *kubernetes.Clientset, group, version, kind, namespace, name string) error {
+func DeleteTektonCRD(cli *kubernetes.Clientset, kind, namespace, name string) error {
 	req := cli.RESTClient().Verb("DELETE").RequestURI(
 		fmt.Sprintf("/apis/%s/%s/namespaces/%s/%s/%s",
-			group,
-			version,
+			"tekton.dev",
+			"v1alpha1",
 			namespace,
 			kind,
 			name))
-	return req.Do().Error()
+	_, err := req.Do().Raw()
+	return err
 }
 
-func GetCustomCRDPage(cli *kubernetes.Clientset, group, version, kind, namespace string, q *common.QueryParam) (*common.Page, error) {
+func GetTektonCRDPage(cli *kubernetes.Clientset, group, version, kind, namespace string, q *common.QueryParam) (*common.Page, error) {
 	req := cli.RESTClient().Verb("GET").RequestURI(
 		fmt.Sprintf("/apis/%s/%s/namespaces/%s/%s",
 			group,
@@ -106,9 +107,9 @@ func GetCustomCRDPage(cli *kubernetes.Clientset, group, version, kind, namespace
 	return dataselector.DataSelectPage(toCustomCRDCells(crdList.Items), q), nil
 }
 
-func CleanCustomCRDDelList(cli *kubernetes.Clientset, group, version, namespace string) error {
+func CleanTektonCRDDelList(cli *kubernetes.Clientset, group, version, namespace string) error {
 	now := time.Now()
-	fmt.Println("now: ", now, namespace)
+	fmt.Println("now: ", now)
 	//PipelineRun
 	resultPipeline, err := getCRDResult(cli, group, version, "pipelineruns", namespace)
 	if err != nil {
@@ -123,7 +124,7 @@ func CleanCustomCRDDelList(cli *kubernetes.Clientset, group, version, namespace 
 		return err
 	}
 	for _, v := range pipelineList.Items {
-		if now.Sub(v.ObjectMeta.CreationTimestamp.Time).Hours()/24 > 15.0 {
+		if now.Sub(v.ObjectMeta.CreationTimestamp.Time).Hours()/24 > 30.0 {
 			fmt.Println(v.Name)
 			err := DeleteCustomCRD(cli, group, version, "pipelineruns", namespace, v.Name)
 			if err != nil {
@@ -145,7 +146,7 @@ func CleanCustomCRDDelList(cli *kubernetes.Clientset, group, version, namespace 
 		return err
 	}
 	for _, v := range resourceList.Items {
-		if now.Sub(v.ObjectMeta.CreationTimestamp.Time).Hours()/24 > 15.0 {
+		if now.Sub(v.ObjectMeta.CreationTimestamp.Time).Hours()/24 > 30.0 {
 			fmt.Println(v.Name)
 			err := DeleteCustomCRD(cli, group, version, "pipelineresources", namespace, v.Name)
 			if err != nil {
@@ -179,7 +180,7 @@ func CleanCustomCRDDelList(cli *kubernetes.Clientset, group, version, namespace 
 	return nil
 }
 
-func getCRDResult(cli *kubernetes.Clientset, group, version, kind, namespace string) ([]byte, error) {
+func getTektonCRDResult(cli *kubernetes.Clientset, group, version, kind, namespace string) ([]byte, error) {
 	req := cli.RESTClient().Verb("GET").RequestURI(
 		fmt.Sprintf("/apis/%s/%s/namespaces/%s/%s",
 			group,
@@ -193,7 +194,7 @@ func getCRDResult(cli *kubernetes.Clientset, group, version, kind, namespace str
 	return result, nil
 }
 
-func toCustomCRDCells(deploy []CustomCRD) []dataselector.DataCell {
+func toTektonCRDCells(deploy []CustomCRD) []dataselector.DataCell {
 	cells := make([]dataselector.DataCell, len(deploy))
 	for i := range deploy {
 		cells[i] = CustomCRDCell(deploy[i])

@@ -46,6 +46,38 @@ export const containerDom = {
   ]
 };
 
+export const TektonContainerDom = {
+  id: 'container-config',
+  text: 'TEMPLATE.CONTAINER_CONFIG',
+  child: [
+    {
+      id: 'image-config',
+      text: 'TEMPLATE.IMAGE_CONFIG'
+    },
+    {
+      id: 'environment-var',
+      text: 'TEMPLATE.ENVIRONMENT_VAR'
+    }
+  ]
+};
+
+export const TektonTaskDom = [
+  {
+    id: 'create-tekton',
+    text: 'TEMPLATE.CREATE_TEKTON',
+    child: [
+      {
+        id: 'release-message',
+        text: 'TEMPLATE.RELEASE_MESSAGE'
+      },
+      {
+        id: 'input-params',
+        text: 'TEMPLATE.INPUT_PARAMS'
+      }
+    ]
+  }
+];
+
 export const CronjobTemplateDom = [
   {
     id: 'create-tmp',

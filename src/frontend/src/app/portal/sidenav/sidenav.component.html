@@ -11,6 +11,15 @@
   <div class="nav-divider"></div>
   <a
     clrVerticalNavLink
+    [title]="'Tekton任务'"
+    routerLink="tekton"
+    routerLinkActive="active"
+    *ngIf="authService.currentAppPermission.service.read || authService.currentUser.admin">
+    <clr-icon clrVerticalNavIcon shape="event"></clr-icon>
+    Tekton
+  </a>
+  <a
+    clrVerticalNavLink
     [title]="'MENU.DEPLOYMENT' | translate"
     routerLink="deployment"
     routerLinkActive="active"

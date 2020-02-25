@@ -1,0 +1,59 @@
+<button (click)="createTekton()" class="wayne-button primary"
+        *ngIf="authService.currentAppPermission.deployment.create || authService.currentUser.admin">
+  {{'TEKTON.CREATE' | translate}}
+</button>
+<create-edit-tekton (create)="create($event)"></create-edit-tekton>
+<div *ngIf="tektonId && tektons?.length>0">
+  <wayne-tabs>
+    <wayne-tab (click)="tabClick(tekton.id)"
+               [id]="tekton.id"
+               *ngFor="let tekton of tektons"
+               [active]="tekton.id==tektonId"
+               [description]="tekton.description"
+    >
+      {{tekton.name}}
+    </wayne-tab>
+  </wayne-tabs>
+  <div class="table-search">
+    <div class="table-search-left">
+      <button class="wayne-button normal" (click)="createTektonTask()"
+              *ngIf="authService.currentUser.admin">
+        {{'TEKTON.CREATE_TMP' | translate}}
+      </button>
+      <button class="wayne-button normal" (click)="editTekton()"
+              *ngIf="authService.currentUser.admin">
+        {{'TEKTON.EDIT' | translate}}
+      </button>
+      <button class="wayne-button normal" (click)="retrieve()"
+              *ngIf="authService.currentUser.admin">
+        {{'BUTTON.REFRESH' | translate}}
+      </button>
+      <button class="wayne-button normal" (click)="deleteTekton()"
+              *ngIf="authService.currentUser.admin">
+        {{'TEKTON.DELETE' | translate}}
+      </button>
+      <button class="wayne-button normal" (click)="diffTpl()">对比Task</button>
+      <wayne-filter-box (confirm)="confirmEvent()" (cancel)="cancelEvent()">
+        <wayne-checkbox-group [(ngModel)]="showList">
+          <wayne-checkbox value="create_time">{{'TITLE.CREATE_TIME' | translate}}</wayne-checkbox>
+          <wayne-checkbox value="version">{{'TITLE.VERSION' | translate}}</wayne-checkbox>
+          <wayne-checkbox value="online_cluster">{{'TITLE.ONLINE_POD' | translate}}</wayne-checkbox>
+          <wayne-checkbox value="release_explain">{{'TITLE.RELEASE_EXPLAIN' | translate}}</wayne-checkbox>
+          <wayne-checkbox value="create_user">{{'TITLE.CREATE_USER' | translate}}</wayne-checkbox>
+          <wayne-checkbox value="action">{{'TITLE.ACTION' | translate}}</wayne-checkbox>
+        </wayne-checkbox-group>
+      </wayne-filter-box>
+    </div>
+    <div class="table-search-right">
+      <div class="clr-toggle-wrapper">
+        <input type="checkbox" id="search-online" [(ngModel)]="isOnline" name="toggle-basic" class="clr-toggle"  (change)="onlineChange()">
+        <label for="search-online">{{'MESSAGE.ONLY_ONLINE_TEMPLATE' | translate}}</label>
+      </div>
+    </div>
+  </div>
+  <br>
+  <list-tekton [tektonTasks]="changedTektonTasks" [active]= "active" [originActive]="originActive" [processStatus]="processStatus" (paginate)="retrieve($event)"
+                   (edit)="editDeployment()" (createTpl)="createDeploymentTpl()" [showState]="showState"
+                   (cloneTpl)="cloneDeploymentTpl($event)" [appId]="appId" [page]="pageState.page">
+  </list-tekton>
+</div>

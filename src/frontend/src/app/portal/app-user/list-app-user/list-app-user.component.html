@@ -38,7 +38,7 @@
   </clr-dg-column>
   <clr-dg-row *ngFor="let appUser of appUsers" [clrDgItem]="appUser">
     <clr-dg-cell>{{appUser.id}}</clr-dg-cell>
-    <clr-dg-cell *ngIf="listType === 'app'" class="copy">{{appUser.user.name}}</clr-dg-cell>
+    <clr-dg-cell *ngIf="listType === 'app'" class="copy">{{appUser.user.display}}</clr-dg-cell>
     <clr-dg-cell *ngIf="listType === 'user'" class="copy">{{appUser.app.name}}</clr-dg-cell>
     <clr-dg-cell>{{appUser.groupsName}}</clr-dg-cell>
     <clr-dg-cell>{{appUser.createTime | date:'yyyy-MM-dd HH:mm'}}</clr-dg-cell>

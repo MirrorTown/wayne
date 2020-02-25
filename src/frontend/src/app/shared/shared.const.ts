@@ -111,7 +111,7 @@ export const ApiKeyType = [
 ];
 
 export const enum PublishType {
-  DEPLOYMENT, SERVICE, CONFIGMAP, SECRET, PERSISTENT_VOLUME_CLAIM, CRONJOB, STATEFULSET, DAEMONSET, INGRESS, AUTOSCALE,
+  DEPLOYMENT, SERVICE, CONFIGMAP, SECRET, PERSISTENT_VOLUME_CLAIM, CRONJOB, STATEFULSET, DAEMONSET, INGRESS, AUTOSCALE, TEKTON
 }
 
 export const enum ConfirmationState {
@@ -193,7 +193,9 @@ export const enum ConfirmationTargets {
   HPA,
   ENDPOINT,
   HARBOR,
-  HOSTALIASE
+  HOSTALIASE,
+  TEKTON,
+  TEKTON_TASK
 }
 
 export const enum ActionType {

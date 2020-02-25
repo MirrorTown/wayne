@@ -17,6 +17,7 @@ const (
 	PublishTypeDaemonSet
 	PublishTypeIngress
 	PublishTypeHPA
+	PublishTypeTekton
 
 	TableNamePublishStatus = "publish_status"
 )

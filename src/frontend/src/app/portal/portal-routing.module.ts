@@ -44,6 +44,8 @@ import {HostAliaseComponent} from "./hostalias/hostalias.component";
 import {PodLogsComponent} from "./tekton-logs/tekton-logs.component";
 import {CmdbComponent} from "./cmdb/cmdb.component";
 import {Cmdb02Component} from "./cmdb/cmdb02.component";
+import {TektonComponent} from "./tekton/tekton.component";
+import {CreateEditTaskComponent} from "./tekton/create-edit-task/create-edit-task.component";
 
 const routes: Routes = [
   {
@@ -68,6 +70,12 @@ const routes: Routes = [
           {path: 'deployment/:deploymentId', component: DeploymentComponent},
           {path: 'deployment/:deploymentId/tpl', component: CreateEditDeploymentTplComponent},
           {path: 'deployment/:deploymentId/tpl/:tplId', component: CreateEditDeploymentTplComponent},
+
+          {path: 'tekton', component: TektonComponent},
+          {path: 'tekton/:tektonId', component: TektonComponent},
+          {path: 'tekton/:tektonId/task', component: CreateEditTaskComponent},
+          {path: 'tekton/:tektonId/task/:taskId', component: CreateEditTaskComponent},
+
           {path: 'hostalias', component: HostAliaseComponent},
           {path: 'configmap', component: ConfigMapComponent},
           {path: 'configmap/:configMapId', component: ConfigMapComponent},

@@ -79,6 +79,11 @@
                  [checked]="kubeResource.spec.template.spec.volumes[v].secret != null" (change)="volumeTypeChange(v, 'secret')">
           <label for="statefulSetVolumeType2_{{v}}">{{'TEMPLATE.SECRET' | translate}}</label>
         </clr-radio-wrapper>
+        <clr-radio-wrapper>
+          <input type="radio" clrRadio name="statefulSetVolumeType_{{v}}" id="statefulSetVolumeType3_{{v}}"
+                 [checked]="kubeResource.spec.template.spec.volumes[v].configMap != null" (change)="volumeTypeChange(v, 'configmap')">
+          <label for="statefulSetVolumeType3_{{v}}">{{'TEMPLATE.CONFIGMAP' | translate}}</label>
+        </clr-radio-wrapper>
       </clr-radio-container>
         <clr-icon style="float: right;" (click)="onDelPodVolume(v)" shape="trash" class="is-solid"></clr-icon>
 
@@ -142,6 +147,62 @@
           <clr-control-error>{{'RULE.DEFAULTMODE' | translate}}</clr-control-error>
         </clr-input-container>
       </div>
+        <div class="form-inline" *ngIf="kubeResource.spec.template.spec.volumes[v].configMap != null">
+          <clr-input-container>
+            <label>
+              {{'TEMPLATE.CONFIGMAP_NAME' | translate}}
+              <a role="tooltip" aria-haspopup="true" class="tooltip tooltip-lg">
+                <clr-icon shape="info-circle" size="24"></clr-icon>
+                <span class="tooltip-content">{{'RULE.CONFIGMAP_NAME' | translate}}</span>
+              </a>
+            </label>
+            <input type="text" clrInput required name="configMap_name_{{v}}"
+                   [(ngModel)]="kubeResource.spec.template.spec.volumes[v].configMap.name" [placeholder]="'RULE.CONFIGMAP_NAME' | translate">
+            <clr-control-error>{{'RULE.CONFIGMAP_NAME' | translate}}</clr-control-error>
+          </clr-input-container>
+          <button (click)="onAddConfigMapItem(v)" style="margin-left: 10px;" class="wayne-button primary">
+            <clr-icon shape="add-text"></clr-icon>
+            添加item
+          </button>
+          <div *ngFor="let volume of kubeResource.spec.template.spec.volumes[v].configMap.items; let w = index; trackBy:trackByFn">
+            <clr-input-container>
+              <label>
+                {{'TEMPLATE.CONFIGMAP_KEY' | translate}}
+                <a role="tooltip" aria-haspopup="true" class="tooltip tooltip-lg">
+                  <clr-icon shape="info-circle" size="24"></clr-icon>
+                  <span class="tooltip-content">{{'RULE.CONFIGMAP_KEY' | translate}}</span>
+                </a>
+              </label>
+              <input type="text" clrInput required name="configmap_item_key_{{v}}"
+                     [(ngModel)]="kubeResource.spec.template.spec.volumes[v].configMap.items[w].key" placeholder="key">
+              <clr-control-error>{{'RULE.CONFIGMAP_KEY' | translate}}</clr-control-error>
+            </clr-input-container>
+            <clr-input-container>
+              <label>
+                {{'TEMPLATE.CONFIGMAP_PATH' | translate}}
+                <a role="tooltip" aria-haspopup="true" class="tooltip tooltip-lg">
+                  <clr-icon shape="info-circle" size="24"></clr-icon>
+                  <span class="tooltip-content">{{'RULE.CONFIGMAP_PATH' | translate}}</span>
+                </a>
+              </label>
+              <input type="text" clrInput required name="configmap_item_path_{{v}}"
+                     [(ngModel)]="kubeResource.spec.template.spec.volumes[v].configMap.items[w].path" placeholder="path">
+              <clr-control-error>{{'RULE.CONFIGMAP_PATH' | translate}}</clr-control-error>
+            </clr-input-container>
+            <clr-input-container>
+              <label>
+                {{'TEMPLATE.CONFIGMAP_MODE' | translate}}
+                <a role="tooltip" aria-haspopup="true" class="tooltip tooltip-lg">
+                  <clr-icon shape="info-circle" size="24"></clr-icon>
+                  <span class="tooltip-content">{{'RULE.CONFIGMAP_MODE' | translate}}</span>
+                </a>
+              </label>
+              <input type="number" clrInput required name="configmap_item_mode_{{v}}" pattern="([0-9]).*?"
+                     [(ngModel)]="kubeResource.spec.template.spec.volumes[v].configMap.items[w].mode" placeholder="mode">
+              <clr-control-error>{{'RULE.CONFIGMAP_MODE' | translate}}</clr-control-error>
+            </clr-input-container>
+          </div>
+        </div>
       </div>
     </wayne-collapse>
 

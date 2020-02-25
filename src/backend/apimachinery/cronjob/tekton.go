@@ -37,18 +37,20 @@ func (t *Tekton) StartTektonCron() (err error) {
 			if err != nil {
 				logs.Error(err)
 			}
+			var namespaces = []string{"wireless-ci", "souche-volvo-ci"}
 			for _, cluster := range clusterList {
-				client := cli.Manager(cluster.Name)
-				namespace := "wireless-ci"
-				kind := "pods"
-				result, err := proxy.GetTekton(client.KubeClient, kind, namespace)
-				if err != nil {
-					logs.Error(err)
+				for _, ns := range namespaces {
+					client := cli.Manager(cluster.Name)
+					//namespace := "wireless-ci"
+					kind := "pods"
+					result, err := proxy.GetTekton(client.KubeClient, kind, ns)
+					if err != nil {
+						logs.Error(err)
+					}
+					t.HandlerTekton(client, ns, cluster.Name, result)
+
 				}
-				t.HandlerTekton(client, namespace, cluster.Name, result)
-
 			}
-
 		}
 	}()
 
@@ -65,11 +67,14 @@ func (t *Tekton) CleanTektonCRD() {
 		if err != nil {
 			logs.Error(err)
 		}
+		var namespaces = []string{"wireless-ci", "souche-volvo-ci"}
 		for _, cluster := range clusterList {
-			client := cli.Manager(cluster.Name)
-			err := crd.CleanCustomCRDDelList(client.Client, "tekton.dev", "v1alpha1", "wireless-ci")
-			if err != nil {
-				logs.Error(err)
+			for _, ns := range namespaces {
+				client := cli.Manager(cluster.Name)
+				err := crd.CleanCustomCRDDelList(client.Client, "tekton.dev", "v1alpha1", ns)
+				if err != nil {
+					logs.Error(err)
+				}
 			}
 		}
 	})
@@ -100,7 +105,7 @@ func (t *Tekton) HandlerTekton(client *client.ClusterManager, ns string, cluster
 
 			gitRegexp := regexp.MustCompile(`git@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w]).*\.git?`)
 			gitParam := gitRegexp.FindString(string(newMetaData))
-			fmt.Println(gitParam)
+			fmt.Println("git: " + gitParam)
 
 			tekton := &models.Tekton{
 				Name:      name,

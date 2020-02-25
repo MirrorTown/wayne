@@ -90,8 +90,10 @@ func (c *DeploymentController) List() {
 
 	//非Admin用户和非项目负责人仅可操作授权于虹猫相关项目权限的应用
 	if !c.User.Admin {
-		operator := c.GetBoolParamFromQuery("operator")
-		if !operator {
+		result, _ := models.AppUserModel.GetPermission("PROJECT_READ", c.AppId, c.User.Id)
+		if len(result) == 0 {
+			//operator := c.GetBoolParamFromQuery("operator")
+			//if !operator {
 			app, err := models.AppModel.GetById(c.AppId)
 			if err != nil {
 				logs.Error("查询数据库表App失败, ", err)
@@ -103,7 +105,9 @@ func (c *DeploymentController) List() {
 			for item := range itemsMap {
 				items = append(items, app.Name+"-"+itemsMap[item]["applicationName"].(string))
 			}
-			param.Query["Name__in"] = items
+			if len(items) != 0 {
+				param.Query["Name__in"] = items
+			}
 		}
 	}
 

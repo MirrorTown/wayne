@@ -102,7 +102,8 @@ func (c *HarborImageController) List() {
 		// list repo
 		_, repo, err := cli.ListReposByProjectName(context.Background(), harbor.Project)
 		if err != nil {
-			panic(err)
+			logs.Error(err)
+			c.AbortInternalServerError("获取harbor镜像失败")
 		}
 
 		repositories := copyRepo(repo, cli, harbor.Url)

@@ -43,6 +43,11 @@ func (c *CronJob) StartDeployStatuJob() (err error) {
 				if sub.Status == models.Deploying && len(podlist) > 0 {
 					for _, podSpec := range podlist {
 						//当容器状态非Ready时处理方法,并剔除被终止的deployment影响
+						if sub.UpdateTime.Add(mm).Unix() < time.Now().Unix() && (podSpec.Status.ContainerStatuses == nil || len(podSpec.Status.ContainerStatuses) == 0) {
+							logs.Error("k8s资源不足，请检查!")
+							_ = cli.NotifyToDingding("k8s资源不足，请检查!", "18768129565")
+							continue
+						}
 						if podSpec.ObjectMeta.DeletionTimestamp.IsZero() && podSpec.Status.ContainerStatuses[0].Ready == false &&
 							podSpec.ObjectMeta.Labels["work-app"] == sub.ResourceName {
 							//容器重启或则超出超市时间，将强制发布失败

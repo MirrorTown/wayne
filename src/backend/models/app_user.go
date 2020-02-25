@@ -121,6 +121,19 @@ func (m *appUserModel) GetAllPermission(aid int64, uid int64) (permissions []Per
 	return
 }
 
+func (m *appUserModel) GetPermission(p string, aid int64, uid int64) (permissions []Permission, err error) {
+	qs := Ormer().QueryTable(new(Permission)).
+		Filter("Groups__Group__Type__exact", AppGroupType).
+		Filter("Groups__Group__AppUsers__App__Id__exact", aid).
+		Filter("Groups__Group__AppUsers__User__Id__exact", uid).
+		Filter("Name__exact", p)
+	permissions = []Permission{}
+	if _, err = qs.All(&permissions); err != nil {
+		return
+	}
+	return
+}
+
 func (m *appUserModel) GetOneByPermission(appId int64, userId int64, perName string) (appUser AppUser, err error) {
 	err = Ormer().QueryTable(TableNameAppUser).
 		Filter("App__Id__exact", appId).

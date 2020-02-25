@@ -197,6 +197,16 @@
     "EDIT": "编辑部署",
     "NUM": "部署份数"
   },
+  "TEKTON": {
+    "CREATE": "创建Trigger",
+    "CREATE_EDIT": {
+      "CLUSTER_MESSAGE": "需要先在后台配置 Namespace 可用集群才可以创建部署"
+    },
+    "CREATE_TMP": "创建Task",
+    "DELETE": "删除Trigger",
+    "EDIT": "编辑Trigger",
+    "NUM": "部署份数"
+  },
   "HOSTALIASE": {
     "IP": "ip",
     "HOSTNAME": "hostname",
@@ -428,6 +438,10 @@
     "HOST_PATH": "pod挂载路径",
     "HOST_TYPE": "类型",
     "SECRET_NAME": "SECRET名称",
+    "CONFIGMAP_NAME": "CONFIGMAP名称",
+    "CONFIGMAP_KEY": "KEY",
+    "CONFIGMAP_PATH": "PATH",
+    "CONFIGMAP_MODE": "MODE",
     "DEFAULTMODE": "默认模式",
     "URL": "Url 不符合格式要求"
   },
@@ -577,11 +591,15 @@
     "CHECK_DELAY_MESSAGE": "单位秒，启动多久之后开始存活探测，适用于启动时间较长的服务",
     "CONFIGMAP_KEY": "配置集 key",
     "CONFIGMAP_NAME": "配置集名称",
+    "CONFIGMAP_KEY": "KEY",
+    "CONFIGMAP_PATH": "PATH",
+    "CONFIGMAP_MODE": "MODE",
     "CONTAINER": "容器",
     "CONTAINER_CONFIG": "容器配置",
     "CONTAINER_NAME": "容器名称",
     "CORE_NUM": "CPU 核数",
     "CREATE_TMP": "创建模板",
+    "CREATE_TEKTON": "创建Tekton",
     "DELETE_CONTAINER": "删除容器",
     "DELETE_ENVIRONMENT": "删除环境变量",
     "DELETE_UPDATE": "仅删除时更新",
@@ -624,11 +642,14 @@
     "SCROLL_UPDATE": "滚动更新",
     "HOSTPATH": "本地数据卷",
     "SECRET": "信息数据卷",
+    "CONFIGMAP": "配置字典",
     "SECRET_KEY": "加密字典 key",
     "SECRET_NAME": "加密字典名称",
+    "CONFIGMAP_NAME": "配置字典名称",
     "SUPPORT_ENVIRONMENT_MESSAGE": "其它类型的环境变量只支持高级模式编辑",
     "TCP_PORT": "TCP 端口",
     "UPDATE_STRATEGY": "更新策略",
+    "INPUT_PARAMS": "输入参数",
     "VOLUME_STRATEGY": "挂载策略",
     "UPDATE_WAY": "更新方式",
     "VOLUME_WAY": "挂载方式",

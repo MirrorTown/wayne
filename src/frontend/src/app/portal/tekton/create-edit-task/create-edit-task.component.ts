@@ -7,7 +7,7 @@ import { EventManager } from '@angular/platform-browser';
 import { MessageHandlerService } from '../../../shared/message-handler/message-handler.service';
 import {
   ConfigMapEnvSource,
-  ConfigMapKeySelector, ConfigMapVolumeSource,
+  ConfigMapKeySelector,
   Container,
   DeploymentStrategy,
   EnvFromSource,
@@ -15,7 +15,7 @@ import {
   EnvVarSource,
   ExecAction,
   Handler, HostPathVolumeSource,
-  HTTPGetAction, KeyToPath,
+  HTTPGetAction,
   KubeDeployment,
   Lifecycle,
   ObjectMeta,
@@ -42,29 +42,41 @@ import { AuthService } from '../../../shared/auth/auth.service';
 import { AceEditorService } from '../../../shared/ace-editor/ace-editor.service';
 import { AceEditorMsg } from '../../../shared/ace-editor/ace-editor';
 import { defaultDeployment } from '../../../shared/default-models/deployment.const';
-import { containerDom, ContainerTpl, templateDom } from '../../../shared/base/container/container-tpl';
-import { SelectData } from './SelectData';
+import {
+  containerDom,
+  ContainerTpl,
+  TektonContainerDom,
+  TektonTaskDom,
+  templateDom
+} from '../../../shared/base/container/container-tpl';
 import { HarborService } from '../../../shared/client/v1/harbor.service';
 import { PageState } from '../../../shared/page/page-state';
+import {TektonTask} from "../../../shared/model/v1/tektontask";
+import {TektonTaskService} from "../../../shared/client/v1/tektontask.service";
+import {Tekton} from "../../../shared/model/v1/tekton";
+import {TektonService} from "../../../shared/client/v1/tekton.service";
+import {defaultTektonTask} from "../../../shared/default-models/tektonTask.const";
+import {ClusterMeta} from "../../../shared/model/v1/cluster";
 
 
 
 @Component({
-  selector: 'create-edit-deploymenttpl',
-  templateUrl: 'create-edit-deploymenttpl.component.html',
-  styleUrls: ['create-edit-deploymenttpl.scss']
+  selector: 'create-edit-task',
+  templateUrl: 'create-edit-task.component.html',
+  styleUrls: ['create-edit-task.scss']
 })
 
-export class CreateEditDeploymentTplComponent extends ContainerTpl implements OnInit, AfterViewInit, OnDestroy {
+export class CreateEditTaskComponent extends ContainerTpl implements OnInit, AfterViewInit, OnDestroy {
   ngForm: NgForm;
   @ViewChild('ngForm', { static: true })
   currentForm: NgForm;
 
   actionType: ActionType;
-  deploymentTpl: DeploymentTpl = new DeploymentTpl();
+  tektonTask: TektonTask = new TektonTask();
   isSubmitOnGoing = false;
   app: App;
-  deployment: Deployment;
+  tekton: Tekton;
+  workingDir: string;
 
   cpuUnitPrice = 30;
   memoryUnitPrice = 0.01;
@@ -73,17 +85,19 @@ export class CreateEditDeploymentTplComponent extends ContainerTpl implements On
   eventList: any[] = Array();
   defaultSafeExecCommand = 'sleep\n30';
 
+  containers: Container[];
   imagelist = [];
   tag = '';
   taglist = [];
   volumeType = new Map();
+  resource: any;
 
-  constructor(private deploymentTplService: DeploymentTplService,
+  constructor(private tektonTaskService: TektonTaskService,
               private aceEditorService: AceEditorService,
               private fb: FormBuilder,
               private router: Router,
               private location: Location,
-              private deploymentService: DeploymentService,
+              private tektonService: TektonService,
               private appService: AppService,
               public authService: AuthService,
               public cacheService: CacheService,
@@ -92,7 +106,7 @@ export class CreateEditDeploymentTplComponent extends ContainerTpl implements On
               private messageHandlerService: MessageHandlerService,
               @Inject(DOCUMENT) private document: any,
               private eventManager: EventManager) {
-    super(templateDom, containerDom);
+    super(TektonTaskDom, TektonContainerDom);
   }
 
   formValid(field: string): boolean {
@@ -136,6 +150,30 @@ export class CreateEditDeploymentTplComponent extends ContainerTpl implements On
     }
   }
 
+  setMetaData() {
+    this.resource.metaData = this.resource.metaData ? this.resource.metaData : '{}';
+    const metaData = JSON.parse(this.resource.metaData);
+    this.resource.params = metaData['params'];
+    for (let i = 0, len = this.resource.params.length; i < len; i++) {
+      this.resource.params[i] = "inputs.params." + this.resource.params[i];
+    }
+    console.log(this.resource)
+    // this.resourceLimitComponent.setValue(metaData['resources']);
+  }
+
+  setResource() {
+    const tektonId = parseInt(this.route.snapshot.params['tektonId'], 10);;
+    const appId = parseInt(this.route.parent.snapshot.params['id'], 10);
+    this.tektonService.getById(tektonId, appId).subscribe(
+      status => {
+        this.resource = status.data;
+        this.setMetaData();
+      },
+      error => {
+        this.messageHandlerService.handleError(error);
+      });
+  }
+
   containerIsInvalid(index: number, field: string): boolean {
     if (!this.currentForm) {
       return false;
@@ -157,8 +195,8 @@ export class CreateEditDeploymentTplComponent extends ContainerTpl implements On
 
   get memoryLimit(): number {
     let memoryLimit = defaultResources.memoryLimit;
-    if (this.deployment && this.deployment.metaData) {
-      const metaData = JSON.parse(this.deployment.metaData);
+    if (this.tekton && this.tekton.metaData) {
+      const metaData = JSON.parse(this.tekton.metaData);
       if (metaData.resources &&
         metaData.resources.memoryLimit) {
         memoryLimit = parseInt(metaData.resources.memoryLimit, 10);
@@ -169,8 +207,8 @@ export class CreateEditDeploymentTplComponent extends ContainerTpl implements On
 
   get cpuLimit(): number {
     let cpuLimit = defaultResources.cpuLimit;
-    if (this.deployment && this.deployment.metaData) {
-      const metaData = JSON.parse(this.deployment.metaData);
+    if (this.tekton && this.tekton.metaData) {
+      const metaData = JSON.parse(this.tekton.metaData);
       if (metaData.resources &&
         metaData.resources.cpuLimit) {
         cpuLimit = parseInt(metaData.resources.cpuLimit, 10);
@@ -191,37 +229,29 @@ export class CreateEditDeploymentTplComponent extends ContainerTpl implements On
     if (type === 'hostpath' && !this.kubeResource.spec.template.spec.volumes[index].hostPath) {
       console.log("hostpath null")
       this.kubeResource.spec.template.spec.volumes[index].secret = null;
-      this.kubeResource.spec.template.spec.volumes[index].configMap = null;
       this.kubeResource.spec.template.spec.volumes[index].hostPath = new HostPathVolumeSource();
       // this.kubeResource.spec.template.spec.volumes[index].hostPath.path = '/tmp';
       console.log(this.kubeResource.spec.template.spec.volumes[index].secret, this.kubeResource.spec.template.spec.volumes[index].hostPath)
     } else if (type === 'secret' && !this.kubeResource.spec.template.spec.volumes[index].secret) {
       console.log("secret null")
       this.kubeResource.spec.template.spec.volumes[index].hostPath = null;
-      this.kubeResource.spec.template.spec.volumes[index].configMap = null;
       this.kubeResource.spec.template.spec.volumes[index].secret = new SecretVolumeSource();
       // this.kubeResource.spec.template.spec.volumes[index].secret.secretName = 'default-template';
       // this.kubeResource.spec.template.spec.volumes[index].secret.defaultMode = 420;
       console.log(this.kubeResource.spec.template.spec.volumes[index].secret, this.kubeResource.spec.template.spec.volumes[index].hostPath)
-    } else if (type === 'configmap' && !this.kubeResource.spec.template.spec.volumes[index].configMap) {
-      console.log("configmap null")
-      this.kubeResource.spec.template.spec.volumes[index].hostPath = null;
-      this.kubeResource.spec.template.spec.volumes[index].secret = null;
-      this.kubeResource.spec.template.spec.volumes[index].configMap = new ConfigMapVolumeSource();
-      console.log(this.kubeResource.spec.template.spec.volumes[index].configMap, this.kubeResource.spec.template.spec.volumes[index].hostPath)
     }
   }
 
   initDefault() {
-    this.kubeResource = JSON.parse(defaultDeployment);
+    this.kubeResource = JSON.parse(defaultTektonTask);
     // this.kubeResource.spec.template.spec.volumes.push(this.defaultPodVoume());
     this.kubeResource.spec.template.spec.containers.push(this.defaultContainer());
   }
 
   defaultContainer(): Container {
     const container = new Container();
-    container.resources = new ResourceRequirements();
-    container.resources.limits = {'memory': '', 'cpu': ''};
+    // container.resources = new ResourceRequirements();
+    // container.resources.limits = {'memory': '', 'cpu': ''};
     container.env = [];
     container.envFrom = [];
     container.imagePullPolicy = 'IfNotPresent';
@@ -235,15 +265,10 @@ export class CreateEditDeploymentTplComponent extends ContainerTpl implements On
     return volume
   }
 
-  defaultConfigMapItem(): KeyToPath {
-    const item = new KeyToPath();
-    return item
-  }
-
   getRepoTag(h: any, index: number): void {
     // const value = document.getElementById('images').value;
     this.taglist = [];
-    this.deploymentService.listTags(h.kubeResource.spec.template.spec.containers[index].image).subscribe(value => {
+    this.tektonService.listTags(h.kubeResource.spec.template.spec.containers[index].image).subscribe(value => {
       for (const tag of value.data) {
         this.taglist.push({Name: tag.name});
       }
@@ -251,36 +276,40 @@ export class CreateEditDeploymentTplComponent extends ContainerTpl implements On
   }
 
   ngOnInit(): void {
+    this.workingDir = "/workspace/source-code";
+    this.setResource();
     const namespaceId = this.cacheService.namespaceId;
-    this.deploymentService.listImages(new PageState({pageSize: 1000}), namespaceId).subscribe(value => {
+    /*this.tektonService.listImages(new PageState({pageSize: 1000}), namespaceId).subscribe(value => {
       for (const image of value.data) {
         this.imagelist.push({Name: image['name']});
       }
-    });
+    });*/
     this.initDefault();
+    console.log(this.route.snapshot.params)
     const appId = parseInt(this.route.parent.snapshot.params['id'], 10);
-    const deploymentId = parseInt(this.route.snapshot.params['deploymentId'], 10);
-    const tplId = parseInt(this.route.snapshot.params['tplId'], 10);
+    const tektonId = parseInt(this.route.snapshot.params['tektonId'], 10);
+    const tektonTaskId = parseInt(this.route.snapshot.params['taskId'], 10);
     const observables = Array(
       this.appService.getById(appId, namespaceId),
-      this.deploymentService.getById(deploymentId, appId)
+      this.tektonService.getById(tektonId, appId)
     );
-    if (tplId) {
+    if (tektonTaskId) {
       this.actionType = ActionType.EDIT;
-      observables.push(this.deploymentTplService.getById(tplId, appId));
+      observables.push(this.tektonTaskService.getById(tektonTaskId, appId));
     } else {
       this.actionType = ActionType.ADD_NEW;
     }
     combineLatest(observables).subscribe(
       response => {
         this.app = response[0].data;
-        this.deployment = response[1].data;
+        this.tekton = response[1].data;
         const tpl = response[2];
+        console.log(this.app, this.tekton, tpl)
         if (tpl) {
-          this.deploymentTpl = tpl.data;
+          this.tektonTask = tpl.data;
 
-          this.deploymentTpl.description = null;
-          this.saveDeployment(JSON.parse(this.deploymentTpl.template));
+          this.tektonTask.description = null;
+          this.saveDeployment(JSON.parse(this.tektonTask.template));
         }
         this.initNavList();
       },
@@ -296,7 +325,7 @@ export class CreateEditDeploymentTplComponent extends ContainerTpl implements On
     }
     labels[this.authService.config[appLabelKey]] = this.app.name;
     labels[this.authService.config[namespaceLabelKey]] = this.cacheService.currentNamespace.name;
-    labels['app'] = this.deployment.name;
+    labels['app'] = this.tekton.name;
     return labels;
   }
 
@@ -305,12 +334,12 @@ export class CreateEditDeploymentTplComponent extends ContainerTpl implements On
       return labels;
     }
     const result = {};
-    result['app'] = this.deployment.name;
+    result['app'] = this.tekton.name;
     return result;
   }
 
   fillDeploymentLabel(kubeDeployment: KubeDeployment): KubeDeployment {
-    kubeDeployment.metadata.name = this.deployment.name;
+    kubeDeployment.metadata.name = this.tekton.name;
     kubeDeployment.metadata.labels = this.buildLabels(this.kubeResource.metadata.labels);
     kubeDeployment.spec.selector.matchLabels = this.buildSelectorLabels(this.kubeResource.spec.selector.matchLabels);
     kubeDeployment.spec.template.metadata.labels = this.buildLabels(this.kubeResource.spec.template.metadata.labels);
@@ -509,15 +538,6 @@ export class CreateEditDeploymentTplComponent extends ContainerTpl implements On
     this.kubeResource.spec.template.spec.volumes.push(this.defaultPodVoume());
   }
 
-  onAddConfigMapItem(v: number) {
-    console.log("add")
-    if (this.kubeResource.spec.template.spec.volumes[v].configMap.items == undefined) {
-      this.kubeResource.spec.template.spec.volumes[v].configMap.items = new Array<KeyToPath>();
-      console.log("item undefined, is been inited")
-    }
-    this.kubeResource.spec.template.spec.volumes[v].configMap.items.push(this.defaultConfigMapItem());
-  }
-
   onDelPodVolume(index: number) {
     this.kubeResource.spec.template.spec.volumes.splice(index,1);
   }
@@ -561,17 +581,18 @@ export class CreateEditDeploymentTplComponent extends ContainerTpl implements On
     }
     this.isSubmitOnGoing = true;
     let newState = JSON.parse(JSON.stringify(this.kubeResource));
-    newState = this.generateDeployment(newState);
-    this.deploymentTpl.deploymentId = this.deployment.id;
-    this.deploymentTpl.template = JSON.stringify(newState);
-    this.deploymentTpl.id = undefined;
-    this.deploymentTpl.name = this.deployment.name;
-    this.deploymentTpl.createTime = this.deploymentTpl.updateTime = new Date();
-    this.deploymentTplService.create(this.deploymentTpl, this.app.id).subscribe(
+    newState = this.generateTektonTask(newState);
+    this.tektonTask.tektonParamId = this.tekton.id;
+    this.tektonTask.template = JSON.stringify(newState);
+    this.tektonTask.id = undefined;
+    this.tektonTask.name = this.tekton.name;
+    this.tektonTask.createTime = this.tektonTask.updateTime = new Date();
+    console.log(this.tektonTask);
+    this.tektonTaskService.create(this.tektonTask, this.app.id).subscribe(
       status => {
         this.isSubmitOnGoing = false;
         this.messageHandlerService.showSuccess('创建模版成功！');
-        this.router.navigate([`portal/namespace/${this.cacheService.namespaceId}/app/${this.app.id}/deployment/${this.deployment.id}`]);
+        this.router.navigate([`portal/namespace/${this.cacheService.namespaceId}/app/${this.app.id}/tekton/${this.tekton.id}`]);
       },
       error => {
         this.isSubmitOnGoing = false;
@@ -582,16 +603,19 @@ export class CreateEditDeploymentTplComponent extends ContainerTpl implements On
 
   }
 
-  generateDeployment(kubeDeployment: KubeDeployment): KubeDeployment {
+  generateTektonTask(kubeDeployment: KubeDeployment): KubeDeployment {
     for (let key = 0; key < this.containersLength; key++) {
       // tslint:disable-next-line:max-line-length
       kubeDeployment.spec.template.spec.containers[key].image = kubeDeployment.spec.template.spec.containers[key].image + ':' + kubeDeployment.spec.template.spec.containers[key].tag;
+      kubeDeployment.spec.template.spec.containers[key].workingDir = "/workspace/source-code"
     }
-    kubeDeployment = this.convertRollingUpdateIntOrString(kubeDeployment);
-    kubeDeployment = this.convertVolumeStrategy(kubeDeployment);
-    kubeDeployment = this.convertProbeCommandToArray(kubeDeployment);
-    kubeDeployment = this.addResourceUnit(kubeDeployment);
-    kubeDeployment = this.fillDeploymentLabel(kubeDeployment);
+    console.log(this.tekton)
+    kubeDeployment.metadata.name = this.tekton.name + "-task";
+    // kubeDeployment = this.convertRollingUpdateIntOrString(kubeDeployment);
+    // kubeDeployment = this.convertVolumeStrategy(kubeDeployment);
+    // kubeDeployment = this.convertProbeCommandToArray(kubeDeployment);
+    // kubeDeployment = this.addResourceUnit(kubeDeployment);
+    // kubeDeployment = this.fillDeploymentLabel(kubeDeployment);
     return kubeDeployment;
   }
 
@@ -673,8 +697,8 @@ export class CreateEditDeploymentTplComponent extends ContainerTpl implements On
   addResourceUnit(kubeDeployment: KubeDeployment): KubeDeployment {
     let cpuRequestLimitPercent = 0.5;
     let memoryRequestLimitPercent = 1;
-    if (this.deployment.metaData) {
-      const metaData = JSON.parse(this.deployment.metaData);
+    if (this.tekton.metaData) {
+      const metaData = JSON.parse(this.tekton.metaData);
       if (metaData.resources && metaData.resources.cpuRequestLimitPercent) {
         if (metaData.resources.cpuRequestLimitPercent.indexOf('%') > -1) {
           cpuRequestLimitPercent = parseFloat(metaData.resources.cpuRequestLimitPercent.replace('%', '')) / 100;
@@ -737,14 +761,15 @@ export class CreateEditDeploymentTplComponent extends ContainerTpl implements On
       kubeDeployment.spec.template.spec.containers[key].tag = imagelist[1];
     }
     this.removeUnused(kubeDeployment);
-    this.fillDefault(kubeDeployment);
-    this.convertProbeCommandToText(kubeDeployment);
+    // this.fillDefault(kubeDeployment);
+    // this.convertProbeCommandToText(kubeDeployment);
     this.kubeResource = kubeDeployment;
     this.initNavList();
   }
 
   // remove unused fields, deal with user advanced mode paste yaml/json manually
   removeUnused(obj: KubeDeployment) {
+    console.log(obj)
     const metaData = new ObjectMeta();
     metaData.name = obj.metadata.name;
     metaData.namespace = obj.metadata.namespace;
@@ -828,7 +853,8 @@ export class CreateEditDeploymentTplComponent extends ContainerTpl implements On
     // let copy = Object.assign({}, myObject).
     // but this wont work for nested objects. SO an alternative would be
     let newState = JSON.parse(JSON.stringify(this.kubeResource));
-    newState = this.generateDeployment(newState);
+    console.log(newState)
+    newState = this.generateTektonTask(newState);
     this.aceEditorService.announceMessage(AceEditorMsg.Instance(newState, true));
   }
 

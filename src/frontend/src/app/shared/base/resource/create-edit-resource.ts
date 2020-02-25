@@ -7,6 +7,7 @@ import { MessageHandlerService } from '../../message-handler/message-handler.ser
 import { AuthService } from '../../auth/auth.service';
 import { ApiNameGenerateRule } from '../../utils';
 import { Resources } from '../../model/v1/resources-limit';
+import {VolumnMeta} from "../../model/v1/tekton";
 
 export class CreateEditResource {
   @ViewChild('ngForm', { static: true })
@@ -22,6 +23,7 @@ export class CreateEditResource {
   modalOpened: boolean;
   app: App;
   clusterMetas: {};
+  volumnMetas: {};
   initResource: any;
   // 限制机房数量, 用于只是机房勾选
   defaultClusterNum = 1;
@@ -68,6 +70,7 @@ export class CreateEditResource {
   }
 
   newOrEditResource(app: App, clusters: Cluster[], id?: number) {
+    console.log("enter new")
     this.modalOpened = true;
     this.app = app;
     this.isNameValid = true;
@@ -116,6 +119,7 @@ export class CreateEditResource {
       this.resource.metaData = '{}';
     }
     const metaData = JSON.parse(this.resource.metaData);
+    console.log(metaData)
     const clusters = [];
     for (const clu of this.clusters) {
       const clusterMeta = this.clusterMetas[clu.name];
@@ -128,6 +132,7 @@ export class CreateEditResource {
   }
 
   onSubmit() {
+    console.log(this.actionType, this.isSubmitOnGoing)
     if (this.isSubmitOnGoing) {
       return;
     }
@@ -139,6 +144,7 @@ export class CreateEditResource {
         this.resource.name = ApiNameGenerateRule.generateName(ApiNameGenerateRule.config(
           this.authService.config[configKeyApiNameGenerateRule], this.app.metaData),
           this.resource.name, this.app.name);
+        console.log(this.resource);
         this.resourceService.create(this.resource).subscribe(
           response => {
             this.messageHandlerService.showSuccess('创建' + this.resourceType + '成功！');
@@ -175,7 +181,7 @@ export class CreateEditResource {
     if (this.clusters) {
       for (const clu of this.clusters) {
         const clusterMeta = this.clusterMetas[clu.name];
-        if (clusterMeta && clusterMeta.checked && clusterMeta.value) {
+        if (clusterMeta && clusterMeta.checked) {
           return true;
         }
       }

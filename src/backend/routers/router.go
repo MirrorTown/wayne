@@ -10,6 +10,7 @@ import (
 	"github.com/Qihoo360/wayne/src/backend/controllers/hostAlias"
 	"github.com/Qihoo360/wayne/src/backend/controllers/multienv"
 	"github.com/Qihoo360/wayne/src/backend/controllers/review"
+	"github.com/Qihoo360/wayne/src/backend/controllers/tekton"
 	"github.com/Qihoo360/wayne/src/backend/controllers/workstep"
 	"net/http"
 	"path"
@@ -126,6 +127,16 @@ func init() {
 		beego.NSNamespace("/apps/:appid([0-9]+)/deployments",
 			beego.NSInclude(
 				&deployment.DeploymentController{},
+			),
+		),
+		beego.NSNamespace("/apps/:appid([0-9]+)/tekton",
+			beego.NSInclude(
+				&tekton.TektonController{},
+			),
+		),
+		beego.NSNamespace("/apps/:appid([0-9]+)/tekton/task",
+			beego.NSInclude(
+				&tekton.TektonTaskController{},
 			),
 		),
 		beego.NSNamespace("/apps/:appid([0-9]+)/deployments/tpls",

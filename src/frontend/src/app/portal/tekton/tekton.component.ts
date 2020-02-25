@@ -1,21 +1,19 @@
-import { AfterContentInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MessageHandlerService } from '../../shared/message-handler/message-handler.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ListDeploymentComponent } from './list-deployment/list-deployment.component';
-import { CreateEditDeploymentComponent } from './create-edit-deployment/create-edit-deployment.component';
-import { ClrDatagridStateInterface } from '@clr/angular';
-import { DeploymentClient } from '../../shared/client/v1/kubernetes/deployment';
-import { DeploymentStatus, DeploymentTpl } from '../../shared/model/v1/deploymenttpl';
-import { App } from '../../shared/model/v1/app';
-import { Cluster } from '../../shared/model/v1/cluster';
-import { Deployment } from '../../shared/model/v1/deployment';
-import { DeploymentService } from '../../shared/client/v1/deployment.service';
-import { DeploymentTplService } from '../../shared/client/v1/deploymenttpl.service';
-import { AppService } from '../../shared/client/v1/app.service';
-import { ClusterService } from '../../shared/client/v1/cluster.service';
-import { KubeDeployment } from '../../shared/model/v1/kubernetes/deployment';
-import { CacheService } from '../../shared/auth/cache.service';
-import { PublishHistoryService } from '../common/publish-history/publish-history.service';
+import {AfterContentInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {MessageHandlerService} from '../../shared/message-handler/message-handler.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {ListTektonComponent} from './list-tekton/list-tekton.component';
+import {CreateEditTektonComponent} from './create-edit-tekton/create-edit-tekton.component';
+import {ClrDatagridStateInterface} from '@clr/angular';
+import {DeploymentClient} from '../../shared/client/v1/kubernetes/deployment';
+import {DeploymentStatus, DeploymentTpl} from '../../shared/model/v1/deploymenttpl';
+import {App} from '../../shared/model/v1/app';
+import {Cluster} from '../../shared/model/v1/cluster';
+import {Deployment} from '../../shared/model/v1/deployment';
+import {AppService} from '../../shared/client/v1/app.service';
+import {ClusterService} from '../../shared/client/v1/cluster.service';
+import {KubeDeployment} from '../../shared/model/v1/kubernetes/deployment';
+import {CacheService} from '../../shared/auth/cache.service';
+import {PublishHistoryService} from '../common/publish-history/publish-history.service';
 import {
   ConfirmationButtons,
   ConfirmationState,
@@ -24,18 +22,21 @@ import {
   PublishType,
   TemplateState
 } from '../../shared/shared.const';
-import { AuthService } from '../../shared/auth/auth.service';
-import { PublishService } from '../../shared/client/v1/publish.service';
-import { PublishStatus } from '../../shared/model/v1/publish-status';
-import { ConfirmationMessage } from '../../shared/confirmation-dialog/confirmation-message';
-import { ConfirmationDialogService } from '../../shared/confirmation-dialog/confirmation-dialog.service';
-import { Subscription } from 'rxjs/Subscription';
-import { combineLatest } from 'rxjs';
-import { PageState } from '../../shared/page/page-state';
-import { TabDragService } from '../../shared/client/v1/tab-drag.service';
-import { OrderItem } from '../../shared/model/v1/order';
-import { TranslateService } from '@ngx-translate/core';
+import {AuthService} from '../../shared/auth/auth.service';
+import {PublishService} from '../../shared/client/v1/publish.service';
+import {PublishStatus} from '../../shared/model/v1/publish-status';
+import {ConfirmationMessage} from '../../shared/confirmation-dialog/confirmation-message';
+import {ConfirmationDialogService} from '../../shared/confirmation-dialog/confirmation-dialog.service';
+import {Subscription} from 'rxjs/Subscription';
+import {combineLatest} from 'rxjs';
+import {PageState} from '../../shared/page/page-state';
+import {TabDragService} from '../../shared/client/v1/tab-drag.service';
+import {OrderItem} from '../../shared/model/v1/order';
+import {TranslateService} from '@ngx-translate/core';
 import {WorkstepService} from "../../shared/client/v1/workstep.service";
+import {TektonService} from "../../shared/client/v1/tekton.service";
+import {TektonTaskService} from "../../shared/client/v1/tektontask.service";
+import {TektonTask} from "../../shared/model/v1/tektontask";
 
 const showState = {
   'create_time': {hidden: false},
@@ -47,24 +48,24 @@ const showState = {
 };
 
 @Component({
-  selector: 'wayne-deployment',
-  templateUrl: './deployment.component.html',
-  styleUrls: ['./deployment.component.scss']
+  selector: 'wayne-tekton',
+  templateUrl: './tekton.component.html',
+  styleUrls: ['./tekton.component.scss']
 })
-export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit {
-  @ViewChild(ListDeploymentComponent, { static: false })
-  listDeployment: ListDeploymentComponent;
-  @ViewChild(CreateEditDeploymentComponent, { static: false })
-  createEditDeployment: CreateEditDeploymentComponent;
+export class TektonComponent implements OnInit, OnDestroy, AfterContentInit {
+  @ViewChild(ListTektonComponent, { static: false })
+  listDeployment: ListTektonComponent;
+  @ViewChild(CreateEditTektonComponent, { static: false })
+  createEditTekton: CreateEditTektonComponent;
 
   pageState: PageState = new PageState();
-  changedDeploymentTpls: DeploymentTpl[];
+  changedTektonTasks: DeploymentTpl[];
   isOnline = false;
-  deploymentId: number;
+  tektonId: number;
   app: App;
   appId: number;
   clusters: Cluster[];
-  deployments: Deployment[];
+  tektons: Deployment[];
   private timer: any = null;
   publishStatus: PublishStatus[];
   subscription: Subscription;
@@ -77,9 +78,9 @@ export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit 
   originActive: number;
   processStatus: string;
 
-  constructor(private deploymentService: DeploymentService,
+  constructor(private tektonService: TektonService,
               private publishHistoryService: PublishHistoryService,
-              private deploymentTplService: DeploymentTplService,
+              private tektontaskService: TektonTaskService,
               private deploymentClient: DeploymentClient,
               private route: ActivatedRoute,
               public translate: TranslateService,
@@ -103,14 +104,14 @@ export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit 
     this.subscription = deletionDialogService.confirmationConfirm$.subscribe(message => {
       if (message &&
         message.state === ConfirmationState.CONFIRMED &&
-        message.source === ConfirmationTargets.DEPLOYMENT) {
-        const deploymentId = message.data;
-        this.deploymentService.deleteById(deploymentId, this.appId)
+        message.source === ConfirmationTargets.TEKTON) {
+        const tektonId = message.data;
+        this.tektonService.deleteById(tektonId, this.appId)
           .subscribe(
             response => {
               this.messageHandlerService.showSuccess('部署删除成功！');
-              this.deploymentId = null;
-              this.initDeployment(true);
+              this.tektonId = null;
+              this.initTekton(true);
             },
             error => {
               this.messageHandlerService.handleError(error);
@@ -171,7 +172,7 @@ export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit 
       };
     });
     if (this.orderCache && JSON.stringify(this.orderCache) === JSON.stringify(orderList)) { return; }
-    this.deploymentService.updateOrder(this.appId, orderList).subscribe(
+    this.tektonService.updateOrder(this.appId, orderList).subscribe(
       response => {
         if (response.data === 'ok!') {
           this.initOrder();
@@ -185,53 +186,55 @@ export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit 
   }
 
   syncStatus() {
-    if (this.changedDeploymentTpls && this.changedDeploymentTpls.length > 0) {
-      for (let i = 0; i < this.changedDeploymentTpls.length; i++) {
-        const tpl = this.changedDeploymentTpls[i];
+    if (this.changedTektonTasks && this.changedTektonTasks.length > 0) {
+      for (let i = 0; i < this.changedTektonTasks.length; i++) {
+        const tpl = this.changedTektonTasks[i];
         if (tpl.status && tpl.status.length > 0) {
           for (let j = 0; j < tpl.status.length; j++) {
-            const status = tpl.status[j];
+            this.changedTektonTasks[i].status[j].state = TemplateState.SUCCESS
+            console.log(this.changedTektonTasks)
+            /*const status = tpl.status[j];
             // 错误超过俩次时候停止请求
             if (status.errNum > 2)  { continue; }
             this.deploymentClient.getDetail(this.appId, status.cluster, this.cacheService.kubeNamespace, tpl.name).subscribe(
               next => {
                 const code = next.statusCode || next.status;
                 if (code === httpStatusCode.NoContent) {
-                  this.changedDeploymentTpls[i].status[j].state = TemplateState.NOT_FOUND;
+                  this.changedTektonTasks[i].status[j].state = TemplateState.NOT_FOUND;
                   return;
                 }
 
                 const podInfo = next.data.pods;
                 // 防止切换tab tpls数据发生变化导致报错
-                if (this.changedDeploymentTpls &&
-                  this.changedDeploymentTpls[i] &&
-                  this.changedDeploymentTpls[i].status &&
-                  this.changedDeploymentTpls[i].status[j]) {
+                if (this.changedTektonTasks &&
+                  this.changedTektonTasks[i] &&
+                  this.changedTektonTasks[i].status &&
+                  this.changedTektonTasks[i].status[j]) {
                   let state = TemplateState.FAILD;
                   if (podInfo.current === podInfo.desired) {
                     state = TemplateState.SUCCESS;
                   }
-                  this.changedDeploymentTpls[i].status[j].errNum = 0;
-                  this.changedDeploymentTpls[i].status[j].state = state;
-                  this.changedDeploymentTpls[i].status[j].current = podInfo.current;
-                  this.changedDeploymentTpls[i].status[j].desired = podInfo.desired;
-                  this.changedDeploymentTpls[i].status[j].warnings = podInfo.warnings;
+                  this.changedTektonTasks[i].status[j].errNum = 0;
+                  this.changedTektonTasks[i].status[j].state = state;
+                  this.changedTektonTasks[i].status[j].current = podInfo.current;
+                  this.changedTektonTasks[i].status[j].desired = podInfo.desired;
+                  this.changedTektonTasks[i].status[j].warnings = podInfo.warnings;
                 }
               },
               error => {
-                if (this.changedDeploymentTpls &&
-                  this.changedDeploymentTpls[i] &&
-                  this.changedDeploymentTpls[i].status &&
-                  this.changedDeploymentTpls[i].status[j]) {
-                  this.changedDeploymentTpls[i].status[j].errNum += 1;
-                  this.messageHandlerService.showError(`${status.cluster}请求错误次数 ${this.changedDeploymentTpls[i].status[j].errNum} 次`);
-                  if (this.changedDeploymentTpls[i].status[j].errNum === 3) {
+                if (this.changedTektonTasks &&
+                  this.changedTektonTasks[i] &&
+                  this.changedTektonTasks[i].status &&
+                  this.changedTektonTasks[i].status[j]) {
+                  this.changedTektonTasks[i].status[j].errNum += 1;
+                  this.messageHandlerService.showError(`${status.cluster}请求错误次数 ${this.changedTektonTasks[i].status[j].errNum} 次`);
+                  if (this.changedTektonTasks[i].status[j].errNum === 3) {
                     this.messageHandlerService.showError(`${status.cluster}的错误请求已经停止，请联系管理员解决`);
                   }
                 }
                 console.log(error);
               }
-            );
+            );*/
           }
         }
       }
@@ -246,31 +249,29 @@ export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit 
 
   tabClick(id: number) {
     if (id) {
-      this.deploymentId = id;
+      this.tektonId = id;
       this.navigateUri();
       this.retrieve();
     }
   }
 
   ngAfterContentInit() {
-    this.initDeployment();
+    this.initTekton();
   }
 
-  initDeployment(refreshTpl?: boolean) {
+  initTekton(refreshTpl?: boolean) {
     this.appId = parseInt(this.route.parent.snapshot.params['id'], 10);
-    //防止deployment页面刷新时，无法优先加载用户权限问题
-    this.authService.setAppPermissionById(this.appId);
     const namespaceId = this.cacheService.namespaceId;
-    this.deploymentId = parseInt(this.route.snapshot.params['deploymentId'], 10);
+    this.tektonId = parseInt(this.route.snapshot.params['tektonId'], 10);
     combineLatest(
       [this.clusterService.getNames(),
-      this.deploymentService.list(PageState.fromState({sort: {by: 'id', reverse: false}}, {pageSize: 4000}), 'false', this.appId + '', this.authService.currentAppPermission.project.read + ''),
+      this.tektonService.list(PageState.fromState({sort: {by: 'id', reverse: false}}, {pageSize: 4000}), 'false', this.appId + '', this.authService.currentAppPermission.project.read + ''),
       this.appService.getById(this.appId, namespaceId)]
     ).subscribe(
       response => {
         this.clusters = response[0].data;
-        this.deployments = response[1].data.list.sort((a, b) => a.order - b.order);
-        this.initOrder(this.deployments);
+        this.tektons = response[1].data.list.sort((a, b) => a.order - b.order);
+        this.initOrder(this.tektons);
         this.app = response[2].data;
         if (refreshTpl) {
           this.retrieve();
@@ -288,30 +289,30 @@ export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit 
   }
 
   navigateUri() {
-    this.router.navigate([`portal/namespace/${this.cacheService.namespaceId}/app/${this.app.id}/deployment/${this.deploymentId}`]);
+    this.router.navigate([`portal/namespace/${this.cacheService.namespaceId}/app/${this.app.id}/tekton/${this.tektonId}`]);
   }
 
   redirectUri(): boolean {
-    if (this.deployments && this.deployments.length > 0) {
-      if (!this.deploymentId) {
-        this.deploymentId = this.deployments[0].id;
+    if (this.tektons && this.tektons.length > 0) {
+      if (!this.tektonId) {
+        this.tektonId = this.tektons[0].id;
         return true;
       }
-      for (const deployment of this.deployments) {
-        if (this.deploymentId === deployment.id) {
+      for (const deployment of this.tektons) {
+        if (this.tektonId === deployment.id) {
           return false;
         }
       }
-      this.deploymentId = this.deployments[0].id;
+      this.tektonId = this.tektons[0].id;
       return true;
     } else {
       return false;
     }
   }
 
-  initOrder(deployments?: Deployment[]) {
-    if (deployments) {
-      this.orderCache = deployments.map(item => {
+  initOrder(tektons?: Deployment[]) {
+    if (tektons) {
+      this.orderCache = tektons.map(item => {
         return {
           id: item.id,
           order: item.order
@@ -327,30 +328,30 @@ export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit 
     }
   }
 
-  getDeploymentId(deploymentId: number): number {
-    if (this.deployments && this.deployments.length > 0) {
-      if (!deploymentId) {
-        return this.deployments[0].id;
+  getDeploymentId(tektonId: number): number {
+    if (this.tektons && this.tektons.length > 0) {
+      if (!tektonId) {
+        return this.tektons[0].id;
       }
-      for (const deployment of this.deployments) {
-        if (deploymentId === deployment.id) {
-          return deploymentId;
+      for (const deployment of this.tektons) {
+        if (tektonId === deployment.id) {
+          return tektonId;
         }
       }
-      return this.deployments[0].id;
+      return this.tektons[0].id;
     } else {
       return null;
     }
   }
 
   // 点击创建部署
-  createDeployment(): void {
-    this.createEditDeployment.newOrEditResource(this.app, this.filterCluster());
+  createTekton(): void {
+    this.createEditTekton.newOrEditResource(this.app, this.filterCluster());
   }
 
   // 点击编辑部署
-  editDeployment() {
-    this.createEditDeployment.newOrEditResource(this.app, this.filterCluster(), this.deploymentId);
+  editTekton() {
+    this.createEditTekton.newOrEditResource(this.app, this.filterCluster(), this.tektonId);
   }
 
   filterCluster(): Cluster[] {
@@ -361,13 +362,13 @@ export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit 
   }
 
   publishHistory() {
-    this.publishHistoryService.openModal(PublishType.DEPLOYMENT, this.deploymentId);
+    this.publishHistoryService.openModal(PublishType.DEPLOYMENT, this.tektonId);
   }
 
   // 创建部署成功
   create(id: number) {
     if (id) {
-      this.deploymentId = id;
+      this.tektonId = id;
       this.retrieveDeployments();
       this.navigateUri();
       this.retrieve();
@@ -375,27 +376,27 @@ export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit 
   }
 
   // 点击创建部署模版
-  createDeploymentTpl() {
-    this.router.navigate([`portal/namespace/${this.cacheService.namespaceId}/app/${this.app.id}/deployment/${this.deploymentId}/tpl`]);
+  createTektonTask() {
+    this.router.navigate([`portal/namespace/${this.cacheService.namespaceId}/app/${this.app.id}/tekton/${this.tektonId}/task`]);
   }
 
   // 点击克隆部署模版
-  cloneDeploymentTpl(tpl: DeploymentTpl) {
-    if (tpl) {
+  cloneDeploymentTpl(tektonTask: TektonTask) {
+    if (tektonTask) {
       this.router.navigate(
-        [`portal/namespace/${this.cacheService.namespaceId}/app/${this.app.id}/deployment/${this.deploymentId}/tpl/${tpl.id}`]);
+        [`portal/namespace/${this.cacheService.namespaceId}/app/${this.app.id}/tekton/${this.tektonId}/task/${tektonTask.id}`]);
     }
   }
 
-  deleteDeployment() {
+  deleteTekton() {
     if (this.publishStatus && this.publishStatus.length > 0) {
       this.messageHandlerService.warning('已上线部署无法删除，请先下线部署！');
     } else {
       const deletionMessage = new ConfirmationMessage(
-        '删除部署确认',
-        '是否确认删除部署',
-        this.deploymentId,
-        ConfirmationTargets.DEPLOYMENT,
+        '删除Trigger确认',
+        '是否确认删除Trigger',
+        this.tektonId,
+        ConfirmationTargets.TEKTON,
         ConfirmationButtons.DELETE_CANCEL
       );
       this.deletionDialogService.openComfirmDialog(deletionMessage);
@@ -403,29 +404,9 @@ export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit 
   }
 
   retrieve(state?: ClrDatagridStateInterface): void {
-    if (!this.deploymentId) {
+    if (!this.tektonId) {
       return;
     }
-    this.workstepService.getById(this.cacheService.namespaceId, this.appId, this.deploymentId).subscribe(
-      result => {
-        console.log(result.data);
-        this.originActive = result.data;
-        if (result.data >= 0) {
-          console.log("Bigger than zero");
-          this.active = result.data + 1;
-          this.processStatus = 'process';
-        }else if (result.data != -999){
-          console.log("Less than zero");
-          this.active = Math.abs(result.data);
-          this.processStatus = 'error';
-        } else {
-          this.active = result.data;
-        }
-      },
-      error => {
-        this.messageHandlerService.handleError(error);
-      }
-    );
     if (state) {
       this.pageState = PageState.fromState(state, {
         totalPage: this.pageState.page.totalPage,
@@ -435,8 +416,8 @@ export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit 
     this.pageState.params['deleted'] = false;
     this.pageState.params['isOnline'] = this.isOnline;
     combineLatest(
-      [this.deploymentTplService.listPage(this.pageState, this.appId, this.deploymentId.toString()),
-      this.publishService.listStatus(PublishType.DEPLOYMENT, this.deploymentId)]
+      [this.tektontaskService.listPage(this.pageState, this.appId, this.tektonId.toString()),
+      this.publishService.listStatus(PublishType.TEKTON, this.tektonId)]
     ).subscribe(
       response => {
         const status = response[1].data;
@@ -444,7 +425,7 @@ export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit 
         const tpls = response[0].data;
         this.pageState.page.totalPage = tpls.totalPage;
         this.pageState.page.totalCount = tpls.totalCount;
-        this.changedDeploymentTpls = this.buildTplList(tpls.list, status);
+        this.changedTektonTasks = this.buildTplList(tpls.list, status);
         setTimeout(() => {
           if (this.leave) {
             return;
@@ -459,8 +440,8 @@ export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit 
   cancelPublic() {
     const appId = parseInt(this.route.parent.snapshot.params['id'], 10);
     const namespaceId = this.cacheService.namespaceId;
-    const deploymentId = parseInt(this.route.snapshot.params['deploymentId'], 10);
-    this.workstepService.updateById(namespaceId, appId, deploymentId).subscribe(
+    const tektonId = parseInt(this.route.snapshot.params['tektonId'], 10);
+    this.workstepService.updateById(namespaceId, appId, tektonId).subscribe(
       response => {
         console.log(response.data);
       },
@@ -505,15 +486,15 @@ export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit 
   }
 
   retrieveDeployments() {
-    this.deploymentService.list(PageState.fromState({
+    this.tektonService.list(PageState.fromState({
       sort: {
         by: 'id',
         reverse: false
       }
     }, {pageSize: 1000}), 'false', this.appId + '', this.authService.currentAppPermission.project.read + '').subscribe(
       response => {
-        this.deployments = response.data.list.sort((a, b) => a.order - b.order);
-        this.initOrder(this.deployments);
+        this.tektons = response.data.list.sort((a, b) => a.order - b.order);
+        this.initOrder(this.tektons);
       },
       error => {
         this.messageHandlerService.handleError(error);

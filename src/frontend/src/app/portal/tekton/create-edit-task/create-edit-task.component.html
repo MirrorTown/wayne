@@ -1,0 +1,245 @@
+<div class="clr-row tpl-container" xmlns="http://www.w3.org/1999/html">
+  <div class="clr-row flex-items-xs-between flex-items-xs-top" style="padding-left: 15px; padding-right: 15px;">
+    <h3 class="header-title" id="create-tekton">
+      创建Tekton Task
+    </h3>
+  </div>
+  <form #ngForm="ngForm" clrForm clrLayout="horizontal">
+    <wayne-collapse>
+      <label class="label-level1" id="release-message">任务表述</label>
+      <clr-textarea-container>
+        <label class="required">{{'TEMPLATE.RELEASE_EXPLAIN' | translate}}</label>
+        <textarea clrTextarea name="deployment_description" [(ngModel)]="tektonTask.description" rows="3" style="width: 65%"
+          required>
+        </textarea>
+        <clr-control-error>description is required</clr-control-error>
+      </clr-textarea-container>
+    </wayne-collapse>
+
+    <wayne-collapse>
+      <label class="label-level1" id="input-params">输入参数列表</label>
+      <div class="container-box">
+        <span>可使用参数名: </span>
+        <div *ngFor="let param of resource.params; let l = index; trackBy:trackByFn">
+          <input style="margin-top: 10px" readonly type="text" size="60" name="args_{{l}}" [(ngModel)]="resource.params[l]"
+                 class="clr-input" placeholder="参数变量">
+        </div>
+      </div>
+    </wayne-collapse>
+
+    <wayne-collapse *ngFor="let container of kubeResource.spec.template.spec.containers; let i = index">
+      <label class="label-level1" [id]="i ? 'container-config' + i : 'container-config'">{{'TEMPLATE.CONTAINER_CONFIG'
+        | translate}}
+        <clr-icon (click)="onDeleteContainer(i)" shape="trash" title="删除容器" class="is-solid"></clr-icon>
+      </label>
+      <div class="container-box">
+        <label class="label-level2" [id]="i ? 'image-config' + i : 'image-config'">{{'TEMPLATE.IMAGE_CONFIG' |
+          translate}}</label>
+        <clr-input-container>
+          <label class="required">{{'TEMPLATE.CONTAINER_NAME' | translate}}</label>
+          <input type="text" clrInput size="20" required name="container.name_{{i}}" pattern="[a-z]([-a-z0-9]*[a-z0-9])?"
+            [(ngModel)]="container.name" [placeholder]="'RULE.CONTAINER' | translate" (input)="containerNameChange()"
+            (compositionend)="containerNameChange()">
+          <clr-control-error>{{'RULE.REGEXT' | translate}}[a-z]([-a-z0-9]*[a-z0-9])?</clr-control-error>
+        </clr-input-container>
+        <div class="clr-form-control clr-row">
+          <label class="container-self required">{{'TEMPLATE.IMAGE_ADDRESS' | translate}}</label>
+          <!--<select clrInput id="state" [(ngModel)]="container.image" name="city" >
+            <option *ngFor="let state of imagelist" [value]="state.id">{{state.name}}</option>
+          </select>-->
+
+          <input  type="text" (input)="getRepoTag(this, i)" size="60" name="container.image_{{i}}" list="images" required pattern="{{getImagePrefixReg()}}"
+            [(ngModel)]="container.image" [placeholder]="'TEMPLATE.IMAGE_ADDRESS' | translate">
+          <datalist id="images">
+            <option *ngFor="let image of imagelist" [value]="image.Name">{{image.Name}}</option>
+          </datalist>
+
+        </div>
+
+        <div class="clr-form-control clr-row">
+          <label class="container-self required">{{'TEMPLATE.IMAGE_TAG' | translate}}</label>
+
+          <input  type="text"  size="20" name="container.tag_{{i}}" list="tags" required
+                  [(ngModel)]="container.tag" [placeholder]="'TEMPLATE.IMAGE_TAG' | translate">
+          <datalist id="tags">
+            <option *ngFor="let tag of taglist" [value]="tag.Name">{{tag.Name}}</option>
+          </datalist>
+        </div>
+
+        <div class="clr-form-control clr-row">
+          <label class="container-self required">工作目录</label>
+          <input  type="text"  size="25" name="container.workingDir" list="tags" readonly
+                  [(ngModel)]="workingDir">
+        </div>
+      </div>
+
+      <div class="container-box">
+        <label class="label-level2" [id]="i ? '启动命令' + i : '启动命令'">启动命令
+          <button (click)="onAddContainerCommand(i)" style="margin-left: 10px;" class="wayne-button primary">
+            <clr-icon shape="add-text"></clr-icon>
+            添加命令
+          </button>
+        </label>
+        <div *ngFor="let cmd of container.command; let k = index; trackBy:trackByFn">
+          <input class="clr-input" type="text" size="60" name="command_{{i}}_{{k}}" [(ngModel)]="container.command[k]"
+            placeholder="容器 Entrypoint">
+          <clr-icon style="float: right;" (click)="onDeleteContainerCommand(i,k)" shape="trash" class="is-solid"></clr-icon>
+        </div>
+      </div>
+      <div class="container-box">
+        <label class="label-level2" [id]="i ? '启动参数' + i : '启动参数'">启动参数
+          <button (click)="onAddContainerArgs(i)" style="margin-left: 10px;" class="wayne-button primary">
+            <clr-icon shape="add-text"></clr-icon>
+            添加参数
+          </button>
+        </label>
+        <div *ngFor="let arg of container.args; let l = index; trackBy:trackByFn">
+          <textarea style="margin-top: 10px" type="text" rows="3" name="args_{{i}}_{{l}}" [(ngModel)]="container.args[l]"
+                    clrTextarea placeholder="容器 CMD"></textarea>
+          <clr-icon style="margin-top: 5px;margin-left: 5px;" (click)="onDeleteContainerArg(i,l)" shape="trash" class="is-solid"></clr-icon>
+        </div>
+      </div>
+
+      <div class="container-box">
+        <label class="label-level2" [id]="i ? '容器Volume' + i : '容器Volume'">容器Volume
+          <button (click)="onAddContainerVolume(i)" style="margin-left: 10px;" class="wayne-button primary">
+            <clr-icon shape="add-text"></clr-icon>
+            添加Volume
+          </button>
+        </label>
+        <div *ngFor="let volumeMount of container.volumeMounts; let y = index; trackBy:trackByFn">
+          <div style="float:right">
+            <clr-icon (click)="onDeleteContainerVolume(i,y)" shape="trash" class="is-solid"></clr-icon>
+          </div>
+          <div class="form-inline" style="width:80%">
+            <clr-input-container>
+              <label>
+                名称
+              </label>
+              <input type="text" clrInput required size="10" name="volumeMount_name_{{i}}_{{y}}"
+                     [(ngModel)]="container.volumeMounts[y].name" placeholder="容器 Volume名称">
+              <clr-control-error>名称不能为空</clr-control-error>
+            </clr-input-container>
+            <clr-input-container>
+              <label>
+                挂载路径
+              </label>
+              <input type="text" clrInput required size="20" name="volumeMount_path_{{i}}_{{y}}"
+                     [(ngModel)]="container.volumeMounts[y].mountPath" placeholder="容器 VolumePath">
+              <clr-control-error>挂载路径不能为空</clr-control-error>
+            </clr-input-container>
+          </div>
+        </div>
+      </div>
+
+      <wayne-collapse disabled="true" style="margin-left: -28px;margin-bottom: 0;">
+        <label for="a" class="label-level2" [id]="i ? 'environment-var' + i : 'environment-var'">{{'TEMPLATE.ENVIRONMENT_VAR'
+          | translate}}
+          <button (click)="onAddEnvFrom(i, $event)" style="margin-left: 10px;" class="wayne-button primary">
+            <clr-icon shape="add-text"></clr-icon>
+            {{'TEMPLATE.ADD_GROUP' | translate}}
+          </button>
+          <button (click)="onAddEnv(i, $event)" style="margin-left: 10px;" class="wayne-button primary">
+            <clr-icon shape="add"></clr-icon>
+            {{'TEMPLATE.ADD_ONE' | translate}}
+          </button>
+        </label>
+        <div *ngFor="let envFrom of container.envFrom; let j = index; trackBy:trackByFn">
+          <div class="form-group form-group-padding">
+            <label for="envFromType-{{i}}-{{j}}" class="clr-col-md-3 form-group-label-override required">{{'TEMPLATE.LOAD_GROUP'
+              | translate}}
+              <a role="tooltip" aria-haspopup="true" class="tooltip tooltip-md">
+                <clr-icon shape="info-circle" size="24"></clr-icon>
+                <span class="tooltip-content">{{'TEMPLATE.LOAD_GROUP_MESSAGE' | translate}}</span>
+              </a>
+            </label>
+            <div class="clr-select-wrapper">
+              <select id="envFromType-{{i}}-{{j}}" name="envFrom.type_{{i}}_{{j}}" (change)="envFromChange($event.target.value,i,j)"
+                class="clr-select">
+                <option value="1" [selected]="envFrom.configMapRef">{{'TEMPLATE.LOAD_CONFIGMAP' | translate}}</option>
+                <option value="2" [selected]="envFrom.secretRef">{{'TEMPLATE.LOAD_SECRET' | translate}}</option>
+              </select>
+            </div>
+            <clr-icon style="margin-top: 10px;margin-right: 8px" (click)="onAddEnvFrom(i, $event)" shape="plus-circle" [title]="'TEMPLATE.ADD_ENVIRONMENT' | translate"
+              class="is-solid"></clr-icon>
+            <clr-icon style="margin-top: 10px" (click)="onDeleteEnvFrom(i,j)" shape="trash" [title]="'TEMPLATE.DELETE_ENVIRONMENT' | translate"
+              class="is-solid"></clr-icon>
+          </div>
+          <clr-input-container *ngIf="envFrom">
+            <input type="text" clrInput size="40" name="envFrom.prefix_{{i}}_{{j}}" [(ngModel)]="envFrom.prefix"
+              [placeholder]="'PLACEHOLDER.ENVIRONMENT' | translate">
+          </clr-input-container>
+          <clr-input-container *ngIf="envFrom && envFrom.configMapRef">
+            <input type="text" clrInput size="40" required name="envFrom.configMapRef.name_{{i}}_{{j}}" [(ngModel)]="envFrom.configMapRef.name"
+              [placeholder]="'TEMPLATE.CONFIGMAP_NAME' | translate">
+          </clr-input-container>
+          <clr-input-container *ngIf="envFrom && envFrom.secretRef">
+            <input type="text" clrInput size="40" required name="envFrom.secretRef.name_{{i}}_{{j}}" [(ngModel)]="envFrom.secretRef.name"
+              [placeholder]="'TEMPLATE.SECRET_NAME' | translate">
+          </clr-input-container>
+        </div>
+
+        <div *ngFor="let env of container.env; let j = index; trackBy:trackByFn">
+          <div class="form-group form-group-padding">
+            <label for="envType-{{i}}-{{j}}" class="clr-col-md-3 form-group-label-override required">{{'TEMPLATE.ADD_ONE'
+              | translate}}
+              <a role="tooltip" aria-haspopup="true" class="tooltip tooltip-md">
+                <clr-icon shape="info-circle" size="24"></clr-icon>
+                <span class="tooltip-content">{{'TEMPLATE.SUPPORT_ENVIRONMENT_MESSAGE' | translate}}</span>
+              </a>
+            </label>
+            <div class="clr-select-wrapper">
+              <select id="envType-{{i}}-{{j}}" name="env.type_{{i}}_{{j}}" (change)="envChange($event.target.value,i,j)"
+                class="clr-select">
+                <option value="0" [selected]="env.value!=null">{{'TEMPLATE.LOAD_ENVIRONMENT' | translate}}</option>
+                <option value="1" [selected]="env.valueFrom?.configMapKeyRef">{{'TEMPLATE.LOAD_CONFIGMAP' | translate}}</option>
+                <option value="2" [selected]="env.valueFrom?.secretKeyRef">{{'TEMPLATE.LOAD_SECRET' | translate}}</option>
+                <option value="3" selected>{{'OTHER' | translate}}</option>
+              </select>
+            </div>
+            <clr-icon style="margin-top: 10px;margin-right: 8px" (click)="onAddEnv(i, $event)" shape="plus-circle" [title]="'TEMPLATE.ADD_ENVIRONMENT' | translate"
+              class="is-solid"></clr-icon>
+            <clr-icon style="margin-top: 10px" (click)="onDeleteEnv(i,j)" shape="trash" [title]="'TEMPLATE.DELETE_ENVIRONMENT' | translate"
+              class="is-solid"></clr-icon>
+          </div>
+          <clr-input-container>
+            <input type="text" clrInput [(ngModel)]="env.name" required name="env.name_{{i}}_{{j}}" size="40"
+              [placeholder]="'TEMPLATE.ENVIRONMENT_NAME' | translate">
+          </clr-input-container>
+          <clr-input-container *ngIf="env.value != null">
+            <input type="text" clrInput [(ngModel)]="env.value" required name="env.value_{{i}}_{{j}}" size="40"
+              [placeholder]="'TEMPLATE.ENVIRONMENT_NUM' | translate">
+          </clr-input-container>
+          <ng-container *ngIf="env.valueFrom && env.valueFrom.configMapKeyRef">
+            <clr-input-container>
+              <input type="text" clrInput size="40" required name="env.valueFrom.configMapKeyRef.name_{{i}}_{{j}}"
+                [(ngModel)]="env.valueFrom.configMapKeyRef.name" [placeholder]="'TEMPLATE.CONFIGMAP_NAME' | translate">
+            </clr-input-container>
+            <clr-input-container>
+              <input type="text" clrInput size="40" required name="env.valueFrom.configMapKeyRef.key_{{i}}_{{j}}"
+                [(ngModel)]="env.valueFrom.configMapKeyRef.key" [placeholder]="'TEMPLATE.CONFIGMAP_KEY' | translate">
+            </clr-input-container>
+          </ng-container>
+          <ng-container *ngIf="env.valueFrom && env.valueFrom.secretKeyRef">
+            <clr-input-container>
+              <input type="text" clrInput size="40" required name="env.valueFrom.secretKeyRef.name_{{i}}_{{j}}"
+                [(ngModel)]="env.valueFrom.secretKeyRef.name" [placeholder]="'TEMPLATE.SECRET_NAME' | translate">
+            </clr-input-container>
+            <clr-input-container>
+              <input type="text" clrInput size="40" required name="env.valueFrom.secretKeyRef.key_{{i}}_{{j}}"
+                [(ngModel)]="env.valueFrom.secretKeyRef.key" [placeholder]="'TEMPLATE.SECRET_KEY' | translate">
+            </clr-input-container>
+          </ng-container>
+        </div>
+      </wayne-collapse>
+    </wayne-collapse>
+  </form>
+</div>
+<div class="clr-wizard-footer-buttons tpl-bottom" [style.top.px]="top">
+  <button type="button" class="btn btn-outline" (click)="onCancel()">{{'BUTTON.CANCEL' | translate}}</button>
+  <button type="button" class="btn btn-primary" (click)="onAddContainer()">{{'BUTTON.ADD_CONTAINER' | translate}}</button>
+  <button type="button" class="btn btn-primary" (click)="openModal()">{{'BUTTON.ADVANCED_CONFIG' | translate}}</button>
+  <button type="button" class="btn btn-primary" [disabled]="!isValid" (click)="onSubmit()">{{'BUTTON.SUBMIT' |
+    translate}}</button>
+</div>
+<wayne-ace-editor (outputObj)="saveDeployment($event)"></wayne-ace-editor>
