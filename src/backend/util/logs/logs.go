@@ -87,7 +87,7 @@ func Notice(f interface{}, v ...interface{}) {
 }
 
 func Info(f interface{}, v ...interface{}) {
-	logger.Info(formatLog(f, v...))
+	logs.Info(formatLog(f, v...))
 	if sentryClient != nil && sentryLogLevel >= logs.LevelInfo {
 		sentryLog(raven.INFO, f, v...)
 	}

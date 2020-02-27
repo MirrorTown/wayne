@@ -42,6 +42,9 @@ func (t *Tekton) StartTektonCron() (err error) {
 				for _, ns := range namespaces {
 					client := cli.Manager(cluster.Name)
 					//namespace := "wireless-ci"
+					if client == nil {
+						continue
+					}
 					kind := "pods"
 					result, err := proxy.GetTekton(client.KubeClient, kind, ns)
 					if err != nil {

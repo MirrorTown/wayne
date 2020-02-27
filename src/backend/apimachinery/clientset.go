@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/Qihoo360/wayne/src/backend/apimachinery/deploy"
 	"github.com/Qihoo360/wayne/src/backend/client"
+	"github.com/Qihoo360/wayne/src/backend/util/logs"
 	"github.com/astaxie/beego"
 	"net/http"
 )
@@ -53,7 +54,7 @@ func (cs *ClientSet) NotifyToDingding(msg string, mobile string) (err error) {
 	req, err := http.NewRequest("POST", webHook, bytes.NewBuffer(jsonValue))
 	if err != nil {
 		// handle error
-		panic(err)
+		logs.Error(err)
 	}
 
 	client := &http.Client{}
@@ -66,7 +67,7 @@ func (cs *ClientSet) NotifyToDingding(msg string, mobile string) (err error) {
 
 	if err != nil {
 		// handle error
-		panic(err)
+		logs.Error(err)
 	}
 
 	return nil
@@ -75,7 +76,7 @@ func (cs *ClientSet) NotifyToDingding(msg string, mobile string) (err error) {
 func (*ClientSet) Manager(cluster string) *client.ClusterManager {
 	kubeManager, err := client.Manager(cluster)
 	if err != nil {
-		panic(err)
+		logs.Error(err)
 	}
 	return kubeManager
 }

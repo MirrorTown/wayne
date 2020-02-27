@@ -117,6 +117,7 @@ export class ListDeploymentComponent implements OnInit, OnDestroy {
   }
 
   refresh(state?: ClrDatagridStateInterface) {
+    console.log('refresh')
     this.state = state;
     this.paginate.emit(this.state);
   }

@@ -60,6 +60,7 @@ export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit 
   pageState: PageState = new PageState();
   changedDeploymentTpls: DeploymentTpl[];
   isOnline = false;
+  click = false;
   deploymentId: number;
   app: App;
   appId: number;
@@ -246,6 +247,7 @@ export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit 
 
   tabClick(id: number) {
     if (id) {
+      this.click = true;
       this.deploymentId = id;
       this.navigateUri();
       this.retrieve();

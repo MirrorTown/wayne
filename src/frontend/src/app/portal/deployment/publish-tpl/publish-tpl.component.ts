@@ -115,6 +115,10 @@ export class PublishDeploymentTplComponent implements OnInit {
     }
     console.log(this.inflow);
     const replicas = this.getReplicas(deployment);
+    const tplt = JSON.parse(deploymentTpl.template);
+    console.log(tplt.spec.template.spec.containers[0].image.split(":")[0])
+    this.containerImage = tplt.spec.template.spec.containers[0].image.split(":")[0];
+    // this.containerImage = deployment.
     this.actionType = actionType;
     this.forceOffline = false;
     if (replicas != null) {
@@ -138,6 +142,9 @@ export class PublishDeploymentTplComponent implements OnInit {
             // 后端配置的集群才会显示出来
             const clusterMeta = new ClusterMeta(false);
             clusterMeta.value = replicas[key];
+            if (replicas[key] > 0) {
+              clusterMeta.checked = true;
+            }
             this.clusterMetas[key] = clusterMeta;
             this.clusters.push(key);
           } else if ((actionType === ResourcesActionType.PUBLISH || this.getStatusByCluster(deploymentTpl.status, key) != null)
@@ -145,6 +152,9 @@ export class PublishDeploymentTplComponent implements OnInit {
             // 后端配置的集群才会显示出来
             const clusterMeta = new ClusterMeta(false);
             clusterMeta.value = replicas[key];
+            if (replicas[key] > 0) {
+              clusterMeta.checked = true;
+            }
             this.clusterMetas[key] = clusterMeta;
             this.clusters.push(key);
           }
@@ -200,7 +210,7 @@ export class PublishDeploymentTplComponent implements OnInit {
       if (h.containerImage === this.lastStr) {
         this.getRepoTag(h);
       }
-    }, 800);
+    }, 8000);
   }
 
   getRepoTag(h: any): void {
@@ -226,6 +236,39 @@ export class PublishDeploymentTplComponent implements OnInit {
     });
 
     this.deploymentService.listAliyunCrTags(h.containerImage).subscribe( value => {
+      if (value != null) {
+        for (const tag of value.data) {
+          if (tag.tag != null) {
+            this.taglist.push({Name: tag.tag});
+          }
+        }
+      }
+    });
+  }
+
+  getTag(): void {
+    // const value = document.getElementById('images').value;
+    this.taglist = [];
+    var imageCrList = [];
+    const observables = Array(
+      this.deploymentService.listTags(this.containerImage)
+    );
+    combineLatest(observables).subscribe(value => {
+      if (value[0] != null) {
+        for (const tag of value[0].data) {
+          this.taglist.push({Name: tag.name});
+        }
+      }
+      /*if (value[1] != null) {
+        for (const tag of value[1].data) {
+          if (tag.tag != null) {
+            this.taglist.push({Name: tag.tag});
+          }
+        }
+      }*/
+    });
+
+    this.deploymentService.listAliyunCrTags(this.containerImage).subscribe( value => {
       if (value != null) {
         for (const tag of value.data) {
           if (tag.tag != null) {

@@ -62,7 +62,7 @@
             <div class="clr-input-wrapper">
 
               <ng-container *ngIf="actionType==0 || actionType==5">
-                <input class="required" type="text"  size="90" name="containertag" list="tags"
+                <input class="required" type="text" (focus)="getTag()" size="90" name="containertag" list="tags"
                         [(ngModel)]="tag" [placeholder]="'TEMPLATE.IMAGE_TAG' | translate">
                 <datalist id="tags">
                   <option *ngFor="let tag of taglist" [value]="tag.Name">{{tag.Name}}</option>
