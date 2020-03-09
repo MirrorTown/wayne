@@ -17,10 +17,11 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 const packageJson = require('../../package.json');
 export function HttpLoaderFactory(httpClient: HttpClient) {
-  return new TranslateHttpLoader(httpClient, './assets/i18n/', '.json?v=' + packageJson.version);
+  return new TranslateHttpLoader(httpClient, './wayne/assets/i18n/', '.json?v=' + packageJson.version);
 }
 
 export function initUser(authService: AuthService, injector: Injector) {
+  console.log("re", injector)
   return () => authService.retrieveUser().then(() => {
   }).catch(error => {
     const router = injector.get(Router);

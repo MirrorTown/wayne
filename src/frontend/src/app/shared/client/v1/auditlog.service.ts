@@ -41,7 +41,7 @@ export class AuditLogService {
     }
 
     return this.http
-      .get('/api/v1/auditlogs', {params: params})
+      .get('/wayne/api/v1/auditlogs', {params: params})
 
       .catch(error => throwError(error));
   }

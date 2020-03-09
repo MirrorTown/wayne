@@ -12,14 +12,14 @@ export class WorkstepService {
 
   getById(nsId: number, appId: number, depId: number): Observable<any> {
     return this.http
-      .get(`/api/v1/workstep/namespace/${nsId}/apps/${appId}/deployment/${depId}`)
+      .get(`/wayne/api/v1/workstep/namespace/${nsId}/apps/${appId}/deployment/${depId}`)
 
       .catch(error => throwError(error));
   }
 
   updateById(nsId: number, appId: number, depId: number): Observable<any> {
     return this.http
-      .post(`/api/v1/workstep/namespace/${nsId}/apps/${appId}/deployment/${depId}`, this.options)
+      .post(`/wayne/api/v1/workstep/namespace/${nsId}/apps/${appId}/deployment/${depId}`, this.options)
 
       .catch(error => throwError(error));
   }

@@ -20,7 +20,7 @@ export class TektonTaskService {
 
   deploy(appId: number, cluster: string, tektonId: number, tektonTaskId: number, template: any): Observable<any> {
     return this.http
-      .post(`/api/v1/apps/${appId}/tekton/task/${tektonId}/${tektonTaskId}/clusters/${cluster}`, template)
+      .post(`/wayne/api/v1/apps/${appId}/tekton/task/${tektonId}/${tektonTaskId}/clusters/${cluster}`, template)
       .catch(error => throwError(error));
   }
 
@@ -62,21 +62,21 @@ export class TektonTaskService {
       params = params.set('sortby', sortType);
     }
     return this.http
-      .get(`/api/v1/apps/${appId}/tekton/task`, {params: params})
+      .get(`/wayne/api/v1/apps/${appId}/tekton/task`, {params: params})
 
       .catch(error => throwError(error));
   }
 
   create(tektonTask: TektonTask, appId: number): Observable<any> {
     return this.http
-      .post(`/api/v1/apps/${appId}/tekton/task`, tektonTask)
+      .post(`/wayne/api/v1/apps/${appId}/tekton/task`, tektonTask)
 
       .catch(error => throwError(error));
   }
 
   update(tpl: DeploymentTpl, appId: number): Observable<any> {
     return this.http
-      .put(`/api/v1/apps/${appId}/tekton/task/${tpl.id}`, tpl, this.options)
+      .put(`/wayne/api/v1/apps/${appId}/tekton/task/${tpl.id}`, tpl, this.options)
 
       .catch(error => throwError(error));
   }
@@ -90,7 +90,7 @@ export class TektonTaskService {
     }
 
     return this.http
-      .delete(`/api/v1/apps/${appId}/tekton/task/${id}`, options)
+      .delete(`/wayne/api/v1/apps/${appId}/tekton/task/${id}`, options)
 
       .catch(error => throwError(error));
   }
@@ -104,14 +104,14 @@ export class TektonTaskService {
     }
 
     return this.http
-      .delete(`/api/v1/apps/${appId}/tekton/task/${taskName}/clusters/${cluster}`, options)
+      .delete(`/wayne/api/v1/apps/${appId}/tekton/task/${taskName}/clusters/${cluster}`, options)
 
       .catch(error => throwError(error));
   }
 
   getById(id: number, appId: number): Observable<any> {
     return this.http
-      .get(`/api/v1/apps/${appId}/tekton/task/${id}`)
+      .get(`/wayne/api/v1/apps/${appId}/tekton/task/${id}`)
 
       .catch(error => throwError(error));
   }

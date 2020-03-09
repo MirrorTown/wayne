@@ -30,7 +30,7 @@ export class NavComponent implements OnInit {
 
   goFront() {
     if (window) {
-      window.location.href = '/';
+      window.location.href = '/wayne/';
     }
   }
 

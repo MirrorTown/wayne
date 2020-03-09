@@ -66,32 +66,32 @@ export class NamespaceUserService {
       }
     }
 
-    return this.http.get(`/api/v1/namespaces/${namespaceId}/users`, {params: params})
+    return this.http.get(`/wayne/api/v1/namespaces/${namespaceId}/users`, {params: params})
 
       .catch(error => throwError(error));
   }
 
   create(namespaceUser: NamespaceUser): Observable<any> {
-    return this.http.post(`/api/v1/namespaces/${namespaceUser.namespace.id}/users`, namespaceUser, this.options)
+    return this.http.post(`/wayne/api/v1/namespaces/${namespaceUser.namespace.id}/users`, namespaceUser, this.options)
 
       .catch(error => throwError(error));
   }
 
   update(namespaceUser: NamespaceUser): Observable<any> {
-    return this.http.put(`/api/v1/namespaces/${namespaceUser.namespace.id}/users/${namespaceUser.id}`, namespaceUser, this.options)
+    return this.http.put(`/wayne/api/v1/namespaces/${namespaceUser.namespace.id}/users/${namespaceUser.id}`, namespaceUser, this.options)
 
       .catch(error => throwError(error));
   }
 
   deleteById(id: number, namespaceId: number): Observable<any> {
     const options: any = {};
-    return this.http.delete(`/api/v1/namespaces/${namespaceId}/users/${id}`, options)
+    return this.http.delete(`/wayne/api/v1/namespaces/${namespaceId}/users/${id}`, options)
 
       .catch(error => throwError(error));
   }
 
   getById(id: number, namespaceId: string): Observable<any> {
-    return this.http.get(`/api/v1/namespaces/${namespaceId}/users/${id}`)
+    return this.http.get(`/wayne/api/v1/namespaces/${namespaceId}/users/${id}`)
 
       .catch(error => throwError(error));
   }

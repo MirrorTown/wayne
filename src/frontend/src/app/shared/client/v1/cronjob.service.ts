@@ -24,7 +24,7 @@ export class CronjobService {
       appId = 0;
     }
     return this.http
-      .get(`/api/v1/apps/${appId}/cronjobs/names`, {params: params})
+      .get(`/wayne/api/v1/apps/${appId}/cronjobs/names`, {params: params})
 
       .catch(error => throwError(error));
   }
@@ -67,28 +67,28 @@ export class CronjobService {
       appId = '0';
     }
     return this.http
-      .get(`/api/v1/apps/${appId}/cronjobs`, {params: params})
+      .get(`/wayne/api/v1/apps/${appId}/cronjobs`, {params: params})
 
       .catch(error => throwError(error));
   }
 
   create(cronjob: Cronjob): Observable<any> {
     return this.http
-      .post(`/api/v1/apps/${cronjob.appId}/cronjobs`, cronjob, this.options)
+      .post(`/wayne/api/v1/apps/${cronjob.appId}/cronjobs`, cronjob, this.options)
 
       .catch(error => throwError(error));
   }
 
   update(cronjob: Cronjob): Observable<any> {
     return this.http
-      .put(`/api/v1/apps/${cronjob.appId}/cronjobs/${cronjob.id}`, cronjob, this.options)
+      .put(`/wayne/api/v1/apps/${cronjob.appId}/cronjobs/${cronjob.id}`, cronjob, this.options)
 
       .catch(error => throwError(error));
   }
 
   updateOrder(appId: number, orderList: Array<OrderItem>): Observable<any> {
     return this.http
-      .put(`/api/v1/apps/${appId}/cronjobs/updateorders`, orderList, this.options)
+      .put(`/wayne/api/v1/apps/${appId}/cronjobs/updateorders`, orderList, this.options)
 
       .catch(error => throwError(error));
   }
@@ -102,14 +102,14 @@ export class CronjobService {
     }
 
     return this.http
-      .delete(`/api/v1/apps/${appId}/cronjobs/${id}`, options)
+      .delete(`/wayne/api/v1/apps/${appId}/cronjobs/${id}`, options)
 
       .catch(error => throwError(error));
   }
 
   getById(id: number, appId: number): Observable<any> {
     return this.http
-      .get(`/api/v1/apps/${appId}/cronjobs/${id}`)
+      .get(`/wayne/api/v1/apps/${appId}/cronjobs/${id}`)
 
       .catch(error => throwError(error));
   }

@@ -19,7 +19,7 @@ export class ConfigService {
 
   listSystemConfig() {
     return this.http
-      .get('/api/v1/configs/system')
+      .get('/wayne/api/v1/configs/system')
 
       .catch(error => throwError(error));
   }
@@ -55,21 +55,21 @@ export class ConfigService {
       params = params.set('sortby', sortType);
     }
     return this.http
-      .get('/api/v1/configs', {params: params})
+      .get('/wayne/api/v1/configs', {params: params})
 
       .catch(error => throwError(error));
   }
 
   create(config: Config): Observable<any> {
     return this.http
-      .post(`/api/v1/configs`, config, this.options)
+      .post(`/wayne/api/v1/configs`, config, this.options)
 
       .catch(error => throwError(error));
   }
 
   update(config: Config): Observable<any> {
     return this.http
-      .put(`/api/v1/configs/${config.id}`, config, this.options)
+      .put(`/wayne/api/v1/configs/${config.id}`, config, this.options)
 
       .catch(error => throwError(error));
   }
@@ -78,14 +78,14 @@ export class ConfigService {
     const options: any = {};
 
     return this.http
-      .delete(`/api/v1/configs/${id}`, options)
+      .delete(`/wayne/api/v1/configs/${id}`, options)
 
       .catch(error => throwError(error));
   }
 
   getById(id: number): Observable<any> {
     return this.http
-      .get(`/api/v1/configs/${id}`)
+      .get(`/wayne/api/v1/configs/${id}`)
 
       .catch(error => throwError(error));
   }

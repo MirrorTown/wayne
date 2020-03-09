@@ -18,9 +18,9 @@ export class KubernetesClient {
       appId = '0';
     }
 
-    let link = `/api/v1/apps/${appId}/_proxy/clusters/${cluster}/${kind}/${name}`;
+    let link = `/wayne/api/v1/apps/${appId}/_proxy/clusters/${cluster}/${kind}/${name}`;
     if (namespace) {
-      link = `/api/v1/apps/${appId}/_proxy/clusters/${cluster}/namespaces/${namespace}/${kind}/${name}`;
+      link = `/wayne/api/v1/apps/${appId}/_proxy/clusters/${cluster}/namespaces/${namespace}/${kind}/${name}`;
     }
 
     return this.http
@@ -32,9 +32,9 @@ export class KubernetesClient {
     if ((typeof (appId) === 'undefined') || (!appId)) {
       appId = '0';
     }
-    let link = `/api/v1/apps/${appId}/_proxy/clusters/${cluster}/${kind}/names`;
+    let link = `/wayne/api/v1/apps/${appId}/_proxy/clusters/${cluster}/${kind}/names`;
     if (namespace) {
-      link = `/api/v1/apps/${appId}/_proxy/clusters/${cluster}/namespaces/${namespace}/${kind}/names`;
+      link = `/wayne/api/v1/apps/${appId}/_proxy/clusters/${cluster}/namespaces/${namespace}/${kind}/names`;
     }
     return this.http
       .get(link)
@@ -47,9 +47,9 @@ export class KubernetesClient {
       appId = '0';
     }
 
-    let link = `/api/v1/apps/${appId}/_proxy/clusters/${cluster}/${kind}`;
+    let link = `/wayne/api/v1/apps/${appId}/_proxy/clusters/${cluster}/${kind}`;
     if (namespace) {
-      link = `/api/v1/apps/${appId}/_proxy/clusters/${cluster}/namespaces/${namespace}/${kind}`;
+      link = `/wayne/api/v1/apps/${appId}/_proxy/clusters/${cluster}/namespaces/${namespace}/${kind}`;
     }
 
     return this.http
@@ -62,9 +62,9 @@ export class KubernetesClient {
       appId = '0';
     }
 
-    let link = `/api/v1/apps/${appId}/_proxy/clusters/${cluster}/${kind}`;
+    let link = `/wayne/api/v1/apps/${appId}/_proxy/clusters/${cluster}/${kind}`;
     if (namespace) {
-      link = `/api/v1/apps/${appId}/_proxy/clusters/${cluster}/namespaces/${namespace}/${kind}`;
+      link = `/wayne/api/v1/apps/${appId}/_proxy/clusters/${cluster}/namespaces/${namespace}/${kind}`;
     }
 
     return this.http
@@ -77,9 +77,9 @@ export class KubernetesClient {
       appId = '0';
     }
 
-    let link = `/api/v1/apps/${appId}/_proxy/clusters/${cluster}/${kind}/${name}`;
+    let link = `/wayne/api/v1/apps/${appId}/_proxy/clusters/${cluster}/${kind}/${name}`;
     if (namespace) {
-      link = `/api/v1/apps/${appId}/_proxy/clusters/${cluster}/namespaces/${namespace}/${kind}/${name}`;
+      link = `/wayne/api/v1/apps/${appId}/_proxy/clusters/${cluster}/namespaces/${namespace}/${kind}/${name}`;
     }
 
     return this.http
@@ -93,9 +93,9 @@ export class KubernetesClient {
       appId = '0';
     }
 
-    let link = `/api/v1/apps/${appId}/_proxy/clusters/${cluster}/${kind}/${name}`;
+    let link = `/wayne/api/v1/apps/${appId}/_proxy/clusters/${cluster}/${kind}/${name}`;
     if (namespace) {
-      link = `/api/v1/apps/${appId}/_proxy/clusters/${cluster}/namespaces/${namespace}/${kind}/${name}`;
+      link = `/wayne/api/v1/apps/${appId}/_proxy/clusters/${cluster}/namespaces/${namespace}/${kind}/${name}`;
     }
 
     if (force === true) {

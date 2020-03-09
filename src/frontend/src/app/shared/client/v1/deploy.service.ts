@@ -24,7 +24,7 @@ export class DeployService {
       appId = 0;
     }
     return this.http
-      .get(`/api/v1/apps/${appId}/deployments/names`, {params: params})
+      .get(`/wayne/api/v1/apps/${appId}/deployments/names`, {params: params})
 
       .catch(error => throwError(error));
   }
@@ -34,7 +34,7 @@ export class DeployService {
     if (typeof(namespaceId) !== 'undefined') {
       params = params.set('hello', 'world');
     }
-    return this.http.get(`/api/v1/harbor/${namespaceId}/images`, {params: params})
+    return this.http.get(`/wayne/api/v1/harbor/${namespaceId}/images`, {params: params})
       .catch(error => throwError(error));
   }
 
@@ -43,7 +43,7 @@ export class DeployService {
     if (typeof(image) !== 'undefined') {
       params = params.set('image', image);
     }
-    return this.http.get(`/api/v1/harbor/tags`, {params: params})
+    return this.http.get(`/wayne/api/v1/harbor/tags`, {params: params})
       .catch(error => throwError(error));
   }
 
@@ -86,7 +86,7 @@ export class DeployService {
       appId = '0';
     }
     return this.http
-      .get(`/api/v1/apps/${appId}/deployments`, {params: params})
+      .get(`/wayne/api/v1/apps/${appId}/deployments`, {params: params})
 
       .catch(error => throwError(error));
   }
@@ -111,21 +111,21 @@ export class DeployService {
 
   create(deployment: Deployment): Observable<any> {
     return this.http
-      .post(`/api/v1/apps/${deployment.appId}/deployments`, deployment)
+      .post(`/wayne/api/v1/apps/${deployment.appId}/deployments`, deployment)
 
       .catch(error => throwError(error));
   }
 
   update(deployment: Deployment): Observable<any> {
     return this.http
-      .put(`/api/v1/apps/${deployment.appId}/deployments/${deployment.id}`, deployment, this.options)
+      .put(`/wayne/api/v1/apps/${deployment.appId}/deployments/${deployment.id}`, deployment, this.options)
 
       .catch(error => throwError(error));
   }
 
   updateOrder(appId: number, orderList: Array<OrderItem>): Observable<any> {
     return this.http
-      .put(`/api/v1/apps/${appId}/deployments/updateorders`, orderList, this.options)
+      .put(`/wayne/api/v1/apps/${appId}/deployments/updateorders`, orderList, this.options)
 
       .catch(error => throwError(error));
   }
@@ -139,14 +139,14 @@ export class DeployService {
     }
 
     return this.http
-      .delete(`/api/v1/apps/${appId}/deployments/${id}`, options)
+      .delete(`/wayne/api/v1/apps/${appId}/deployments/${id}`, options)
 
       .catch(error => throwError(error));
   }
 
   getById(id: number, appId: number): Observable<any> {
     return this.http
-      .get(`/api/v1/apps/${appId}/deployments/${id}`)
+      .get(`/wayne/api/v1/apps/${appId}/deployments/${id}`)
 
       .catch(error => throwError(error));
   }

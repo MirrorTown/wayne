@@ -51,21 +51,21 @@ export class GroupService {
     }
 
     return this.http
-      .get('/api/v1/groups', {params: params})
+      .get('/wayne/api/v1/groups', {params: params})
 
       .catch(error => throwError(error));
   }
 
   createGroup(group: Group): Observable<any> {
     return this.http
-      .post(`/api/v1/groups`, group, this.options)
+      .post(`/wayne/api/v1/groups`, group, this.options)
 
       .catch(error => throwError(error));
   }
 
   updateGroup(group: Group): Observable<any> {
     return this.http
-      .put(`/api/v1/groups/${group.id}`, group, this.options)
+      .put(`/wayne/api/v1/groups/${group.id}`, group, this.options)
 
       .catch(error => throwError(error));
   }
@@ -73,20 +73,20 @@ export class GroupService {
   deleteGroup(groupId: number): Observable<any> {
     const options: any = {};
     return this.http
-      .delete(`/api/v1/groups/${groupId}`, options)
+      .delete(`/wayne/api/v1/groups/${groupId}`, options)
 
       .catch(error => throwError(error));
   }
 
   getGroup(groupId: number): Observable<any> {
     return this.http
-      .get(`/api/v1/groups/${groupId}`)
+      .get(`/wayne/api/v1/groups/${groupId}`)
 
       .catch(error => throwError(error));
   }
 
   initGroup(): Observable<any> {
-    return this.http.get(`/api/v1/groups/init`)
+    return this.http.get(`/wayne/api/v1/groups/init`)
 
       .catch(error => throwError(error));
   }

@@ -19,7 +19,7 @@ export class EdgeNodeService {
 
   getByCluster(cluster: string): Observable<any> {
     return this.http
-      .get(`/api/v1/services/edgenodes/cluster/${cluster}`)
+      .get(`/wayne/api/v1/services/edgenodes/cluster/${cluster}`)
 
       .catch(error => throwError(error));
   }
@@ -55,35 +55,35 @@ export class EdgeNodeService {
       params = params.set('sortby', sortType);
     }
     return this.http
-      .get('/api/v1/services/edgenodes', {params: params})
+      .get('/wayne/api/v1/services/edgenodes', {params: params})
 
       .catch(error => throwError(error));
   }
 
   create(edgeNode: EdgeNode): Observable<any> {
     return this.http
-      .post(`/api/v1/services/edgenodes`, edgeNode, this.options)
+      .post(`/wayne/api/v1/services/edgenodes`, edgeNode, this.options)
 
       .catch(error => throwError(error));
   }
 
   update(edgeNode: EdgeNode): Observable<any> {
     return this.http
-      .put(`/api/v1/services/edgenodes/${edgeNode.id}`, edgeNode, this.options)
+      .put(`/wayne/api/v1/services/edgenodes/${edgeNode.id}`, edgeNode, this.options)
 
       .catch(error => throwError(error));
   }
 
   deleteById(id: number): Observable<any> {
     return this.http
-      .delete(`/api/v1/services/edgenodes/${id}`)
+      .delete(`/wayne/api/v1/services/edgenodes/${id}`)
 
       .catch(error => throwError(error));
   }
 
   getById(id: number): Observable<any> {
     return this.http
-      .get(`/api/v1/services/edgenodes/${id}`)
+      .get(`/wayne/api/v1/services/edgenodes/${id}`)
 
       .catch(error => throwError(error));
   }

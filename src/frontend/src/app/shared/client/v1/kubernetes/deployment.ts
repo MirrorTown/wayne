@@ -18,13 +18,13 @@ export class DeploymentClient {
     }
 
     return this.http
-      .get(`/api/v1/kubernetes/apps/${appId}/deployments/namespaces/${namespace}/clusters/${cluster}`, {params: params})
+      .get(`/wayne/api/v1/kubernetes/apps/${appId}/deployments/namespaces/${namespace}/clusters/${cluster}`, {params: params})
       .catch(error => throwError(error));
   }
 
   deploy(appId: number, cluster: string, resourceId: number, tplId: number, template: any): Observable<any> {
     return this.http
-      .post(`/api/v1/kubernetes/apps/${appId}/deployments/${resourceId}/tpls/${tplId}/clusters/${cluster}`, template)
+      .post(`/wayne/api/v1/kubernetes/apps/${appId}/deployments/${resourceId}/tpls/${tplId}/clusters/${cluster}`, template)
       .catch(error => throwError(error));
   }
 
@@ -32,7 +32,7 @@ export class DeploymentClient {
     let params = new HttpParams();
     params = params.set('grayPublish', 'True');
     return this.http
-      .post(`/api/v1/kubernetes/apps/${appId}/deployments/${resourceId}/tpls/${tplId}/clusters/${cluster}`, template, {params: params})
+      .post(`/wayne/api/v1/kubernetes/apps/${appId}/deployments/${resourceId}/tpls/${tplId}/clusters/${cluster}`, template, {params: params})
       .catch(error => throwError(error));
   }*/
 
@@ -40,19 +40,19 @@ export class DeploymentClient {
     let params = new HttpParams();
     params = params.set('grayPublish', 'True');
     return this.http
-      .post(`/api/v1/reviews/apps/${appId}/deployments/${resourceId}/tpls/${tplId}/clusters/${cluster}`, template, {params: params})
+      .post(`/wayne/api/v1/reviews/apps/${appId}/deployments/${resourceId}/tpls/${tplId}/clusters/${cluster}`, template, {params: params})
       .catch(error => throwError(error));
   }
 
   getDetail(appId: number, cluster: string, namespace: string, name: string): Observable<any> {
     return this.http
-      .get(`/api/v1/kubernetes/apps/${appId}/deployments/${name}/detail/namespaces/${namespace}/clusters/${cluster}`)
+      .get(`/wayne/api/v1/kubernetes/apps/${appId}/deployments/${name}/detail/namespaces/${namespace}/clusters/${cluster}`)
       .catch(error => throwError(error));
   }
 
   deleteByName(appId: number, cluster: string, namespace: string, name: string): Observable<any> {
     return this.http
-      .delete(`/api/v1/kubernetes/apps/${appId}/deployments/${name}/namespaces/${namespace}/clusters/${cluster}`)
+      .delete(`/wayne/api/v1/kubernetes/apps/${appId}/deployments/${name}/namespaces/${namespace}/clusters/${cluster}`)
       .catch(error => throwError(error));
   }
 }

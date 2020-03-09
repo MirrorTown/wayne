@@ -47,21 +47,21 @@ export class HostAliasService {
       params = params.set('sortby', sortType);
     }
     return this.http
-      .get(`/api/v1/hostalias/namespace/${nsId}/apps/${appId}`, {params: params})
+      .get(`/wayne/api/v1/hostalias/namespace/${nsId}/apps/${appId}`, {params: params})
 
       .catch(error => throwError(error));
   }
 
   create(hostAliases: HostAlias[], appId: number, nsId: number): Observable<any> {
     return this.http
-      .post(`/api/v1/hostalias/namespace/${nsId}/apps/${appId}`, hostAliases, this.options)
+      .post(`/wayne/api/v1/hostalias/namespace/${nsId}/apps/${appId}`, hostAliases, this.options)
 
       .catch(error => throwError(error));
   }
 
   update(hostAliases: HostAlias[]): Observable<any> {
     return this.http
-      .put(`/api/v1/hostalias`, hostAliases, this.options)
+      .put(`/wayne/api/v1/hostalias`, hostAliases, this.options)
 
       .catch(error => throwError(error));
   }
@@ -70,14 +70,14 @@ export class HostAliasService {
     const options: any = {};
 
     return this.http
-      .delete(`/api/v1/hostalias/${hostaliasId}`, options)
+      .delete(`/wayne/api/v1/hostalias/${hostaliasId}`, options)
 
       .catch(error => throwError(error));
   }
 
   getByName(name: string): Observable<any> {
     return this.http
-      .get(`/api/v1/harbors/${name}`)
+      .get(`/wayne/api/v1/harbors/${name}`)
 
       .catch(error => throwError(error));
   }

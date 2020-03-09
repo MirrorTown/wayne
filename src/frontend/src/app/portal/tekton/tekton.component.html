@@ -53,7 +53,7 @@
   </div>
   <br>
   <list-tekton [tektonTasks]="changedTektonTasks" [active]= "active" [originActive]="originActive" [processStatus]="processStatus" (paginate)="retrieve($event)"
-                   (edit)="editDeployment()" (createTpl)="createDeploymentTpl()" [showState]="showState"
+                   (edit)="editTekton()" (createTpl)="createTektonTask()" [showState]="showState"
                    (cloneTpl)="cloneDeploymentTpl($event)" [appId]="appId" [page]="pageState.page">
   </list-tekton>
 </div>

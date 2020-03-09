@@ -57,32 +57,32 @@ export class AppUserService {
       const sortType: any = pageState.sort.reverse ? `-${pageState.sort.by}` : pageState.sort.by;
       params = params.set('sortby', sortType);
     }
-    return this.http.get(`/api/v1/apps/${appId}/users`, {params: params})
+    return this.http.get(`/wayne/api/v1/apps/${appId}/users`, {params: params})
 
       .catch(error => throwError(error));
   }
 
   create(appUser: AppUser): Observable<any> {
-    return this.http.post(`/api/v1/apps/${appUser.app.id}/users`, appUser, this.options)
+    return this.http.post(`/wayne/api/v1/apps/${appUser.app.id}/users`, appUser, this.options)
 
       .catch(error => throwError(error));
   }
 
   update(appUser: AppUser): Observable<any> {
-    return this.http.put(`/api/v1/apps/${appUser.app.id}/users/${appUser.id}`, appUser, this.options)
+    return this.http.put(`/wayne/api/v1/apps/${appUser.app.id}/users/${appUser.id}`, appUser, this.options)
 
       .catch(error => throwError(error));
   }
 
   deleteById(id: number, appId: number): Observable<any> {
     const options: any = {};
-    return this.http.delete(`/api/v1/apps/${appId}/users/${id}`, options)
+    return this.http.delete(`/wayne/api/v1/apps/${appId}/users/${id}`, options)
 
       .catch(error => throwError(error));
   }
 
   getById(id: number, appId: number): Observable<any> {
-    return this.http.get(`/api/v1/apps/${appId}/users/${id}`)
+    return this.http.get(`/wayne/api/v1/apps/${appId}/users/${id}`)
 
       .catch(error => throwError(error));
   }

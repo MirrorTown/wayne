@@ -20,9 +20,9 @@ export class WebHookService {
   get(scope: number, scopeId: number, id: number): Observable<any> {
     let restUrl: string;
     if (scope === 0) { // Namespace
-      restUrl = `/api/v1/namespaces/${scopeId}/webhooks/${id}`;
+      restUrl = `/wayne/api/v1/namespaces/${scopeId}/webhooks/${id}`;
     } else if (scope === 1) { // App
-      restUrl = `/api/v1/apps/${scopeId}/webhooks/${id}`;
+      restUrl = `/wayne/api/v1/apps/${scopeId}/webhooks/${id}`;
     } else {
       throwError('invalid scope');
     }
@@ -67,9 +67,9 @@ export class WebHookService {
     }
     let restUrl: string;
     if (scope === 0) { // Namespace
-      restUrl = `/api/v1/namespaces/${scopeId}/webhooks`;
+      restUrl = `/wayne/api/v1/namespaces/${scopeId}/webhooks`;
     } else if (scope === 1) { // App
-      restUrl = `/api/v1/apps/${scopeId}/webhooks`;
+      restUrl = `/wayne/api/v1/apps/${scopeId}/webhooks`;
     } else {
       throwError('invalid scope');
     }
@@ -83,9 +83,9 @@ export class WebHookService {
   create(webHook: WebHook): Observable<any> {
     let restUrl: string;
     if (webHook.scope === 0) { // Namespace
-      restUrl = `/api/v1/namespaces/${webHook.objectId}/webhooks`;
+      restUrl = `/wayne/api/v1/namespaces/${webHook.objectId}/webhooks`;
     } else if (webHook.scope === 1) { // App
-      restUrl = `/api/v1/apps/${webHook.objectId}/webhooks`;
+      restUrl = `/wayne/api/v1/apps/${webHook.objectId}/webhooks`;
     }
 
     return this.http
@@ -97,9 +97,9 @@ export class WebHookService {
   update(webHook: WebHook): Observable<any> {
     let restUrl: string;
     if (webHook.scope === 0) { // Namespace
-      restUrl = `/api/v1/namespaces/${webHook.objectId}/webhooks/${webHook.id}`;
+      restUrl = `/wayne/api/v1/namespaces/${webHook.objectId}/webhooks/${webHook.id}`;
     } else if (webHook.scope === 1) { // App
-      restUrl = `/api/v1/apps/${webHook.objectId}/webhooks/${webHook.id}`;
+      restUrl = `/wayne/api/v1/apps/${webHook.objectId}/webhooks/${webHook.id}`;
     }
 
     return this.http
@@ -111,9 +111,9 @@ export class WebHookService {
   delete(webHook: WebHook): Observable<any> {
     let restUrl: string;
     if (webHook.scope === 0) { // Namespace
-      restUrl = `/api/v1/namespaces/${webHook.objectId}/webhooks/${webHook.id}`;
+      restUrl = `/wayne/api/v1/namespaces/${webHook.objectId}/webhooks/${webHook.id}`;
     } else if (webHook.scope === 1) { // App
-      restUrl = `/api/v1/apps/${webHook.objectId}/webhooks/${webHook.id}`;
+      restUrl = `/wayne/api/v1/apps/${webHook.objectId}/webhooks/${webHook.id}`;
     }
 
     return this.http
@@ -124,7 +124,7 @@ export class WebHookService {
 
   getEvents(): Observable<any> {
     return this.http
-      .get(`/api/v1/apps/0/webhooks/events`)
+      .get(`/wayne/api/v1/apps/0/webhooks/events`)
 
       .catch(error => throwError(error));
   }

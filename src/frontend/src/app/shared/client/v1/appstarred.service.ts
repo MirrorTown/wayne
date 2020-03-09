@@ -17,14 +17,14 @@ export class AppStarredService {
 
   create(app: AppStarred): Observable<any> {
     return this.http
-      .post(`/api/v1/apps/stars`, app, this.options)
+      .post(`/wayne/api/v1/apps/stars`, app, this.options)
 
       .catch(error => throwError(error));
   }
 
   deleteByAppId(appId: number): Observable<any> {
     return this.http
-      .delete(`/api/v1/apps/stars/${appId}`)
+      .delete(`/wayne/api/v1/apps/stars/${appId}`)
 
       .catch(error => throwError(error));
   }

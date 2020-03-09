@@ -21,7 +21,7 @@ export class ClusterService {
 
   getNames(): Observable<any> {
     return this.http
-      .get('/api/v1/clusters/names')
+      .get('/wayne/api/v1/clusters/names')
       .catch(error => throwError(error));
   }
 
@@ -57,21 +57,21 @@ export class ClusterService {
       params = params.set('sortby', sortType);
     }
     return this.http
-      .get('/api/v1/clusters', {params: params})
+      .get('/wayne/api/v1/clusters', {params: params})
 
       .catch(error => throwError(error));
   }
 
   create(cluster: Cluster): Observable<any> {
     return this.http
-      .post(`/api/v1/clusters`, cluster, this.options)
+      .post(`/wayne/api/v1/clusters`, cluster, this.options)
 
       .catch(error => throwError(error));
   }
 
   update(cluster: Cluster): Observable<any> {
     return this.http
-      .put(`/api/v1/clusters/${cluster.name}`, cluster, this.options)
+      .put(`/wayne/api/v1/clusters/${cluster.name}`, cluster, this.options)
 
       .catch(error => throwError(error));
   }
@@ -85,39 +85,39 @@ export class ClusterService {
     }
 
     return this.http
-      .delete(`/api/v1/clusters/${name}`, options)
+      .delete(`/wayne/api/v1/clusters/${name}`, options)
 
       .catch(error => throwError(error));
   }
 
   getByName(name: string): Observable<any> {
     return this.http
-      .get(`/api/v1/clusters/${name}`)
+      .get(`/wayne/api/v1/clusters/${name}`)
 
       .catch(error => throwError(error));
   }
 
   addLabels(name: string, cluster: string, label: Object) {
     return this.http
-      .post(`/api/v1/kubernetes/nodes/${name}/clusters/${cluster}/labels`, label, this.options)
+      .post(`/wayne/api/v1/kubernetes/nodes/${name}/clusters/${cluster}/labels`, label, this.options)
       .catch(error => throwError(error));
   }
 
   deleteLabels(name: string, cluster: string, label: Object) {
-    return this.http.request('delete', `/api/v1/kubernetes/nodes/${name}/clusters/${cluster}/labels`, {
+    return this.http.request('delete', `/wayne/api/v1/kubernetes/nodes/${name}/clusters/${cluster}/labels`, {
       body: label
     }).catch(error => throwError(error));
   }
 
   addTaint(name: string, cluster: string, taint: TaintMetaData) {
     return this.http
-      .post(`/api/v1/kubernetes/nodes/${name}/clusters/${cluster}/taint`, taint)
+      .post(`/wayne/api/v1/kubernetes/nodes/${name}/clusters/${cluster}/taint`, taint)
       .catch(error => throwError(error));
   }
 
   deleteTaint(name: string, cluster: string, taint: TaintMetaData) {
     return this.http
-      .request('delete', `/api/v1/kubernetes/nodes/${name}/clusters/${cluster}/taint`, {
+      .request('delete', `/wayne/api/v1/kubernetes/nodes/${name}/clusters/${cluster}/taint`, {
         body: taint
       })
       .catch(error => throwError(error));

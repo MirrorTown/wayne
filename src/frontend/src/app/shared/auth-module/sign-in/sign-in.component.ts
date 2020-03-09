@@ -34,11 +34,14 @@ export class SignInComponent implements OnInit {
       connectParticles: true
     });
 
+    console.log("enter sign-in")
     const sid = this.route.snapshot.queryParams['sid'];
-    const ref = this.route.snapshot.queryParams['ref'] ? this.route.snapshot.queryParams['ref'] : '/';
+    const ref = this.route.snapshot.queryParams['ref'] ? this.route.snapshot.queryParams['ref'] : '/wayne';
+    console.log(sid, ref)
     if (sid) {
       localStorage.setItem(LoginTokenKey, sid);
-      window.location.replace(ref);
+      console.log(ref)
+      // window.location.replace(ref);
     }
     if (this.authService.currentUser) {
       window.location.replace(ref);
@@ -85,7 +88,7 @@ export class SignInComponent implements OnInit {
     var config = require("config")
     const currentUrl = document.location.origin;
     const ref = this.route.snapshot.queryParams['ref'] ? this.route.snapshot.queryParams['ref'] : '/';
-    window.location.replace(environment.url + `/login/sso/sso?next=${currentUrl}/sign-in?ref=${ref}`);
+    window.location.replace(environment.url + `/wayne/login/sso/sso?next=${currentUrl}/wayne/sign-in?ref=${ref}`);
   }
 
   getOAuth2Title() {

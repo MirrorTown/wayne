@@ -55,21 +55,21 @@ export class DeploymentTplService {
       params = params.set('sortby', sortType);
     }
     return this.http
-      .get(`/api/v1/apps/${appId}/deployments/tpls`, {params: params})
+      .get(`/wayne/api/v1/apps/${appId}/deployments/tpls`, {params: params})
 
       .catch(error => throwError(error));
   }
 
   create(tpl: DeploymentTpl, appId: number): Observable<any> {
     return this.http
-      .post(`/api/v1/apps/${appId}/deployments/tpls`, tpl)
+      .post(`/wayne/api/v1/apps/${appId}/deployments/tpls`, tpl)
 
       .catch(error => throwError(error));
   }
 
   update(tpl: DeploymentTpl, appId: number): Observable<any> {
     return this.http
-      .put(`/api/v1/apps/${appId}/deployments/tpls/${tpl.id}`, tpl, this.options)
+      .put(`/wayne/api/v1/apps/${appId}/deployments/tpls/${tpl.id}`, tpl, this.options)
 
       .catch(error => throwError(error));
   }
@@ -83,14 +83,14 @@ export class DeploymentTplService {
     }
 
     return this.http
-      .delete(`/api/v1/apps/${appId}/deployments/tpls/${id}`, options)
+      .delete(`/wayne/api/v1/apps/${appId}/deployments/tpls/${id}`, options)
 
       .catch(error => throwError(error));
   }
 
   getById(id: number, appId: number): Observable<any> {
     return this.http
-      .get(`/api/v1/apps/${appId}/deployments/tpls/${id}`)
+      .get(`/wayne/api/v1/apps/${appId}/deployments/tpls/${id}`)
 
       .catch(error => throwError(error));
   }

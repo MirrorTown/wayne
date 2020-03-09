@@ -24,7 +24,7 @@ export class DaemonSetService {
       appId = 0;
     }
     return this.http
-      .get(`/api/v1/apps/${appId}/daemonsets/names`, {params: params})
+      .get(`/wayne/api/v1/apps/${appId}/daemonsets/names`, {params: params})
 
       .catch(error => throwError(error));
   }
@@ -67,28 +67,28 @@ export class DaemonSetService {
     }
 
     return this.http
-      .get(`/api/v1/apps/${appId}/daemonsets`, {params: params})
+      .get(`/wayne/api/v1/apps/${appId}/daemonsets`, {params: params})
 
       .catch(error => throwError(error));
   }
 
   create(obj: DaemonSet): Observable<any> {
     return this.http
-      .post(`/api/v1/apps/${obj.appId}/daemonsets`, obj)
+      .post(`/wayne/api/v1/apps/${obj.appId}/daemonsets`, obj)
 
       .catch(error => throwError(error));
   }
 
   update(obj: DaemonSet): Observable<any> {
     return this.http
-      .put(`/api/v1/apps/${obj.appId}/daemonsets/${obj.id}`, obj, this.options)
+      .put(`/wayne/api/v1/apps/${obj.appId}/daemonsets/${obj.id}`, obj, this.options)
 
       .catch(error => throwError(error));
   }
 
   updateOrder(appId: number, orderList: Array<OrderItem>): Observable<any> {
     return this.http
-      .put(`/api/v1/apps/${appId}/daemonsets/updateorders`, orderList, this.options)
+      .put(`/wayne/api/v1/apps/${appId}/daemonsets/updateorders`, orderList, this.options)
 
       .catch(error => throwError(error));
   }
@@ -102,14 +102,14 @@ export class DaemonSetService {
     }
 
     return this.http
-      .delete(`/api/v1/apps/${appId}/daemonsets/${id}`, options)
+      .delete(`/wayne/api/v1/apps/${appId}/daemonsets/${id}`, options)
 
       .catch(error => throwError(error));
   }
 
   getById(id: number, appId: number): Observable<any> {
     return this.http
-      .get(`/api/v1/apps/${appId}/daemonsets/${id}`)
+      .get(`/wayne/api/v1/apps/${appId}/daemonsets/${id}`)
 
       .catch(error => throwError(error));
   }

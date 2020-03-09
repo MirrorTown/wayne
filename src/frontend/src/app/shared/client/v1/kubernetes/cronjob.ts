@@ -10,25 +10,25 @@ export class CronjobClient {
 
   deploy(appId: number, cluster: string, resourceId: number, tplId: number, template: any): Observable<any> {
     return this.http
-      .post(`/api/v1/kubernetes/apps/${appId}/cronjobs/${resourceId}/tpls/${tplId}/clusters/${cluster}`, template)
+      .post(`/wayne/api/v1/kubernetes/apps/${appId}/cronjobs/${resourceId}/tpls/${tplId}/clusters/${cluster}`, template)
       .catch(error => throwError(error));
   }
 
   suspend(appId: number, cluster: string, resourceId: number, tplId: number): Observable<any> {
     return this.http
-      .post(`/api/v1/kubernetes/apps/${appId}/cronjobs/${resourceId}/tpls/${tplId}/clusters/${cluster}/suspend`, null)
+      .post(`/wayne/api/v1/kubernetes/apps/${appId}/cronjobs/${resourceId}/tpls/${tplId}/clusters/${cluster}/suspend`, null)
       .catch(error => throwError(error));
   }
 
   get(appId: number, cluster: string, namespace: string, name: string): Observable<any> {
     return this.http
-      .get(`/api/v1/kubernetes/apps/${appId}/cronjobs/${name}/namespaces/${namespace}/clusters/${cluster}`)
+      .get(`/wayne/api/v1/kubernetes/apps/${appId}/cronjobs/${name}/namespaces/${namespace}/clusters/${cluster}`)
       .catch(error => throwError(error));
   }
 
   deleteByName(appId: number, cluster: string, namespace: string, name: string): Observable<any> {
     return this.http
-      .delete(`/api/v1/kubernetes/apps/${appId}/cronjobs/${name}/namespaces/${namespace}/clusters/${cluster}`)
+      .delete(`/wayne/api/v1/kubernetes/apps/${appId}/cronjobs/${name}/namespaces/${namespace}/clusters/${cluster}`)
       .catch(error => throwError(error));
   }
 

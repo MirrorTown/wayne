@@ -19,14 +19,14 @@ export class PublishStatusService {
     params = params.set('type', type + '');
     params = params.set('resourceId', resourceId + '');
     return this.http
-      .get('/api/v1/publishstatus', {params: params})
+      .get('/wayne/api/v1/publishstatus', {params: params})
 
       .catch(error => throwError(error));
   }
 
   deleteById(id: number): Observable<any> {
     return this.http
-      .delete(`/api/v1/publishstatus/${id}`)
+      .delete(`/wayne/api/v1/publishstatus/${id}`)
 
       .catch(error => throwError(error));
   }

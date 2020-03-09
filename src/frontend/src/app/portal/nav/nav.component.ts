@@ -74,7 +74,7 @@ export class NavComponent implements OnInit, OnDestroy {
 
   goBack() {
     if (window) {
-      window.location.href = '/admin/reportform/overview';
+      window.location.href = '/wayne/admin/reportform/overview';
     }
   }
 

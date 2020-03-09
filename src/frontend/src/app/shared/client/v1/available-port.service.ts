@@ -19,7 +19,7 @@ export class AvailablePortService {
 
   getLvs(): Observable<any> {
     return this.http
-      .get(`/api/v1/services/availableports/lvs`)
+      .get(`/wayne/api/v1/services/availableports/lvs`)
 
       .catch(error => throwError(error));
   }
@@ -55,42 +55,42 @@ export class AvailablePortService {
       params = params.set('sortby', sortType);
     }
     return this.http
-      .get('/api/v1/services/availableports', {params: params})
+      .get('/wayne/api/v1/services/availableports', {params: params})
 
       .catch(error => throwError(error));
   }
 
   create(availablePort: AvailablePort): Observable<any> {
     return this.http
-      .post(`/api/v1/services/availableports`, availablePort, this.options)
+      .post(`/wayne/api/v1/services/availableports`, availablePort, this.options)
 
       .catch(error => throwError(error));
   }
 
   update(availablePort: AvailablePort): Observable<any> {
     return this.http
-      .put(`/api/v1/services/availableports/${availablePort.id}`, availablePort, this.options)
+      .put(`/wayne/api/v1/services/availableports/${availablePort.id}`, availablePort, this.options)
 
       .catch(error => throwError(error));
   }
 
   deleteById(id: number): Observable<any> {
     return this.http
-      .delete(`/api/v1/services/availableports/${id}`)
+      .delete(`/wayne/api/v1/services/availableports/${id}`)
 
       .catch(error => throwError(error));
   }
 
   getById(id: number): Observable<any> {
     return this.http
-      .get(`/api/v1/services/availableports/${id}`)
+      .get(`/wayne/api/v1/services/availableports/${id}`)
 
       .catch(error => throwError(error));
   }
 
   getByPort(port: number): Observable<any> {
     return this.http
-      .get(`/api/v1/services/availableports/port/${port}`)
+      .get(`/wayne/api/v1/services/availableports/port/${port}`)
 
       .catch(error => throwError(error));
   }

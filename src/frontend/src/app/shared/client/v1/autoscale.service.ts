@@ -21,7 +21,7 @@ export class AutoscaleService {
       appId = 0;
     }
     return this.http
-      .get(`/api/v1/apps/${appId}/hpas/names`, {params: params})
+      .get(`/wayne/api/v1/apps/${appId}/hpas/names`, {params: params})
       .catch(error => throwError(error));
   }
 
@@ -62,25 +62,25 @@ export class AutoscaleService {
       appId = '0';
     }
     return this.http
-      .get(`/api/v1/apps/${appId}/hpas`, {params: params})
+      .get(`/wayne/api/v1/apps/${appId}/hpas`, {params: params})
       .catch(error => throwError(error));
   }
 
   create(hpa: Autoscale): Observable<any> {
     return this.http
-      .post(`/api/v1/apps/${hpa.appId}/hpas`, hpa, this.options)
+      .post(`/wayne/api/v1/apps/${hpa.appId}/hpas`, hpa, this.options)
       .catch(error => throwError(error));
   }
 
   update(hpa: Autoscale): Observable<any> {
     return this.http
-      .put(`/api/v1/apps/${hpa.appId}/hpas/${hpa.id}`, hpa, this.options)
+      .put(`/wayne/api/v1/apps/${hpa.appId}/hpas/${hpa.id}`, hpa, this.options)
       .catch(error => throwError(error));
   }
 
   updateOrder(appId: number, orderList: Array<OrderItem>): Observable<any> {
     return this.http
-      .put(`/api/v1/apps/${appId}/hpas/updateorders`, orderList, this.options)
+      .put(`/wayne/api/v1/apps/${appId}/hpas/updateorders`, orderList, this.options)
       .catch(error => throwError(error));
   }
 
@@ -93,13 +93,13 @@ export class AutoscaleService {
     }
 
     return this.http
-      .delete(`/api/v1/apps/${appId}/hpas/${id}`, options)
+      .delete(`/wayne/api/v1/apps/${appId}/hpas/${id}`, options)
       .catch(error => throwError(error));
   }
 
   getById(id: number, appId: number): Observable<any> {
     return this.http
-      .get(`/api/v1/apps/${appId}/hpas/${id}`)
+      .get(`/wayne/api/v1/apps/${appId}/hpas/${id}`)
       .catch(error => throwError(error));
   }
 }

@@ -17,9 +17,9 @@ export class CustomCRDClient {
       appId = '0';
     }
 
-    let link = `/api/v1/apps/${appId}/_proxy/clusters/${cluster}/apis/${group}/${version}/${kind}/${name}`;
+    let link = `/wayne/api/v1/apps/${appId}/_proxy/clusters/${cluster}/apis/${group}/${version}/${kind}/${name}`;
     if (namespace) {
-      link = `/api/v1/apps/${appId}/_proxy/clusters/${cluster}/apis/${group}/${version}/namespaces/${namespace}/${kind}/${name}`;
+      link = `/wayne/api/v1/apps/${appId}/_proxy/clusters/${cluster}/apis/${group}/${version}/namespaces/${namespace}/${kind}/${name}`;
     }
 
     return this.http
@@ -33,9 +33,9 @@ export class CustomCRDClient {
       appId = '0';
     }
 
-    let link = `/api/v1/apps/${appId}/_proxy/clusters/${cluster}/apis/${group}/${version}/${kind}`;
+    let link = `/wayne/api/v1/apps/${appId}/_proxy/clusters/${cluster}/apis/${group}/${version}/${kind}`;
     if (namespace) {
-      link = `/api/v1/apps/${appId}/_proxy/clusters/${cluster}/apis/${group}/${version}/namespaces/${namespace}/${kind}`;
+      link = `/wayne/api/v1/apps/${appId}/_proxy/clusters/${cluster}/apis/${group}/${version}/namespaces/${namespace}/${kind}`;
     }
 
     return this.http
@@ -47,9 +47,9 @@ export class CustomCRDClient {
     if ((typeof (appId) === 'undefined') || (!appId)) {
       appId = '0';
     }
-    let link = `/api/v1/apps/${appId}/_proxy/clusters/${cluster}/apis/${group}/${version}/${kind}`;
+    let link = `/wayne/api/v1/apps/${appId}/_proxy/clusters/${cluster}/apis/${group}/${version}/${kind}`;
     if (namespace) {
-      link = `/api/v1/apps/${appId}/_proxy/clusters/${cluster}/apis/${group}/${version}/namespaces/${namespace}/${kind}`;
+      link = `/wayne/api/v1/apps/${appId}/_proxy/clusters/${cluster}/apis/${group}/${version}/namespaces/${namespace}/${kind}`;
     }
 
     return this.http
@@ -62,9 +62,9 @@ export class CustomCRDClient {
       appId = '0';
     }
 
-    let link = `/api/v1/apps/${appId}/_proxy/clusters/${cluster}/apis/${group}/${version}/${kind}/${name}`;
+    let link = `/wayne/api/v1/apps/${appId}/_proxy/clusters/${cluster}/apis/${group}/${version}/${kind}/${name}`;
     if (namespace) {
-      link = `/api/v1/apps/${appId}/_proxy/clusters/${cluster}/apis/${group}/${version}/namespaces/${namespace}/${kind}/${name}`;
+      link = `/wayne/api/v1/apps/${appId}/_proxy/clusters/${cluster}/apis/${group}/${version}/namespaces/${namespace}/${kind}/${name}`;
     }
 
     return this.http
@@ -78,9 +78,9 @@ export class CustomCRDClient {
       appId = '0';
     }
 
-    let link = `/api/v1/apps/${appId}/_proxy/clusters/${cluster}/apis/${group}/${version}/${kind}/${name}`;
+    let link = `/wayne/api/v1/apps/${appId}/_proxy/clusters/${cluster}/apis/${group}/${version}/${kind}/${name}`;
     if (namespace) {
-      link = `/api/v1/apps/${appId}/_proxy/clusters/${cluster}/apis/${group}/${version}/namespaces/${namespace}/${kind}/${name}`;
+      link = `/wayne/api/v1/apps/${appId}/_proxy/clusters/${cluster}/apis/${group}/${version}/namespaces/${namespace}/${kind}/${name}`;
     }
 
     return this.http

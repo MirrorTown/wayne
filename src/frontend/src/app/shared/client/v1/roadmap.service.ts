@@ -19,7 +19,7 @@ export class RoadmapService {
 
   listSystemConfig() {
     return this.http
-      .get('/api/v1/linktypes/system')
+      .get('/wayne/api/v1/linktypes/system')
 
       .catch(error => throwError(error));
   }
@@ -55,21 +55,21 @@ export class RoadmapService {
     }
     params = params.set('deleted', 'false');
     return this.http
-      .get('/api/v1/linktypes', {params: params})
+      .get('/wayne/api/v1/linktypes', {params: params})
 
       .catch(error => throwError(error));
   }
 
   create(config: LinkType): Observable<any> {
     return this.http
-      .post(`/api/v1/linktypes`, config, this.options)
+      .post(`/wayne/api/v1/linktypes`, config, this.options)
 
       .catch(error => throwError(error));
   }
 
   update(config: LinkType): Observable<any> {
     return this.http
-      .put(`/api/v1/linktypes/${config.id}`, config, this.options)
+      .put(`/wayne/api/v1/linktypes/${config.id}`, config, this.options)
 
       .catch(error => throwError(error));
   }
@@ -78,14 +78,14 @@ export class RoadmapService {
     const options: any = {};
 
     return this.http
-      .delete(`/api/v1/linktypes/${id}`, options)
+      .delete(`/wayne/api/v1/linktypes/${id}`, options)
 
       .catch(error => throwError(error));
   }
 
   getById(id: number): Observable<any> {
     return this.http
-      .get(`/api/v1/linktypes/${id}`)
+      .get(`/wayne/api/v1/linktypes/${id}`)
 
       .catch(error => throwError(error));
   }

@@ -19,7 +19,7 @@ export class ReviewService {
 
   getNames(): Observable<any> {
     return this.http
-      .get('/api/v1/review/names')
+      .get('/wayne/api/v1/review/names')
       .catch(error => throwError(error));
   }
 
@@ -54,21 +54,21 @@ export class ReviewService {
       params = params.set('sortby', sortType);
     }
     return this.http
-      .get('/api/v1/reviews', {params: params})
+      .get('/wayne/api/v1/reviews', {params: params})
 
       .catch(error => throwError(error));
   }
 
   create(review: Review): Observable<any> {
     return this.http
-      .post(`/api/v1/reviews`, review, this.options)
+      .post(`/wayne/api/v1/reviews`, review, this.options)
 
       .catch(error => throwError(error));
   }
 
   update(nid: number, review: Review): Observable<any> {
     return this.http
-      .put(`/api/v1/reviews/${nid}/${review.name}/status/${review.status}`, review, this.options)
+      .put(`/wayne/api/v1/reviews/${nid}/${review.name}/status/${review.status}`, review, this.options)
 
       .catch(error => throwError(error));
   }
@@ -82,7 +82,7 @@ export class ReviewService {
     }
 
     return this.http
-      .delete(`/api/v1/reviews/${name}`, options)
+      .delete(`/wayne/api/v1/reviews/${name}`, options)
 
       .catch(error => throwError(error));
   }
@@ -91,7 +91,7 @@ export class ReviewService {
     let params = new HttpParams();
     params = params.set('appId', String(appId));
     return this.http
-      .get(`/api/v1/reviews/${project}`)
+      .get(`/wayne/api/v1/reviews/${project}`)
       .catch(err => throwError(err));
   }
 

@@ -11,7 +11,7 @@ func init() {
 		beego.GlobalControllerRouter[AuthController],
 		beego.ControllerComments{
 			Method:           "CurrentUser",
-			Router:           `/currentuser`,
+			Router:           `/wayne/currentuser`,
 			AllowHTTPMethods: []string{"get"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
@@ -19,7 +19,7 @@ func init() {
 		},
 		beego.ControllerComments{
 			Method:           "Login",
-			Router:           `/login/:type/?:name`,
+			Router:           `/wayne/login/:type/?:name`,
 			AllowHTTPMethods: []string{"get", "post"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
@@ -27,7 +27,7 @@ func init() {
 		},
 		beego.ControllerComments{
 			Method:           "Logout",
-			Router:           `/logout`,
+			Router:           `/wayne/logout`,
 			AllowHTTPMethods: []string{"get"},
 			MethodParams:     param.Make(),
 			Filters:          nil,

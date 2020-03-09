@@ -19,14 +19,14 @@ export class EventClient {
     params = params.set('type', resouceType);
     params = params.set('name', name);
     return this.http
-      .get(`/api/v1/kubernetes/apps/${appId}/events/namespaces/${namespace}/clusters/${cluster}`, {params: params})
+      .get(`/wayne/api/v1/kubernetes/apps/${appId}/events/namespaces/${namespace}/clusters/${cluster}`, {params: params})
       .catch(error => throwError(error));
   }
 
   listEventByCluster(pageState: PageState, cluster: string): Observable<any> {
     let params = BaseClient.buildParam(pageState);
     return this.http
-      .get(`/api/v1/events/clusters/${cluster}`, {params: params})
+      .get(`/wayne/api/v1/events/clusters/${cluster}`, {params: params})
       .catch(error => throwError(error));
   }
 

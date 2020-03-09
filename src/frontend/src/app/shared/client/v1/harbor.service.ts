@@ -19,7 +19,7 @@ export class HarborService {
 
   getNames(): Observable<any> {
     return this.http
-      .get('/api/v1/harbor/names')
+      .get('/wayne/api/v1/harbor/names')
       .catch(error => throwError(error));
   }
 
@@ -28,7 +28,7 @@ export class HarborService {
     if (typeof(projectName) !== 'undefined') {
       params = params.set('projectName', projectName);
     }
-    return this.http.get('/api/v1/harbor/images', {params: params})
+    return this.http.get('/wayne/api/v1/harbor/images', {params: params})
       .catch(error => throwError(error));
   }
 
@@ -63,21 +63,21 @@ export class HarborService {
       params = params.set('sortby', sortType);
     }
     return this.http
-      .get('/api/v1/harbors', {params: params})
+      .get('/wayne/api/v1/harbors', {params: params})
 
       .catch(error => throwError(error));
   }
 
   create(harbor: Harbor): Observable<any> {
     return this.http
-      .post(`/api/v1/harbors`, harbor, this.options)
+      .post(`/wayne/api/v1/harbors`, harbor, this.options)
 
       .catch(error => throwError(error));
   }
 
   update(harbor: Harbor): Observable<any> {
     return this.http
-      .put(`/api/v1/harbors/${harbor.name}`, harbor, this.options)
+      .put(`/wayne/api/v1/harbors/${harbor.name}`, harbor, this.options)
 
       .catch(error => throwError(error));
   }
@@ -91,14 +91,14 @@ export class HarborService {
     }
 
     return this.http
-      .delete(`/api/v1/harbors/${name}`, options)
+      .delete(`/wayne/api/v1/harbors/${name}`, options)
 
       .catch(error => throwError(error));
   }
 
   getByName(name: string): Observable<any> {
     return this.http
-      .get(`/api/v1/harbors/${name}`)
+      .get(`/wayne/api/v1/harbors/${name}`)
 
       .catch(error => throwError(error));
   }

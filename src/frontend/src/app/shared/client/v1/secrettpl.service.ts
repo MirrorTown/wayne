@@ -22,7 +22,7 @@ export class SecretTplService {
       appId = 0;
     }
     return this.http
-      .get(`/api/v1/apps/${appId}/secrets/tpls/names`)
+      .get(`/wayne/api/v1/apps/${appId}/secrets/tpls/names`)
 
       .catch(error => throwError(error));
   }
@@ -62,21 +62,21 @@ export class SecretTplService {
     }
 
     return this.http
-      .get(`/api/v1/apps/${appId}/secrets/tpls`, {params: params})
+      .get(`/wayne/api/v1/apps/${appId}/secrets/tpls`, {params: params})
 
       .catch(error => throwError(error));
   }
 
   create(secretTpl: SecretTpl, appId: number): Observable<any> {
     return this.http
-      .post(`/api/v1/apps/${appId}/secrets/tpls`, secretTpl, this.options)
+      .post(`/wayne/api/v1/apps/${appId}/secrets/tpls`, secretTpl, this.options)
 
       .catch(error => throwError(error));
   }
 
   update(secretTpl: SecretTpl, appId: number): Observable<any> {
     return this.http
-      .put(`/api/v1/apps/${appId}/secrets/tpls/${secretTpl.id}`, secretTpl, this.options)
+      .put(`/wayne/api/v1/apps/${appId}/secrets/tpls/${secretTpl.id}`, secretTpl, this.options)
 
       .catch(error => throwError(error));
   }
@@ -90,14 +90,14 @@ export class SecretTplService {
     }
 
     return this.http
-      .delete(`/api/v1/apps/${appId}/secrets/tpls/${id}`, options)
+      .delete(`/wayne/api/v1/apps/${appId}/secrets/tpls/${id}`, options)
 
       .catch(error => throwError(error));
   }
 
   getById(id: number, appId: number): Observable<any> {
     return this.http
-      .get(`/api/v1/apps/${appId}/secrets/tpls/${id}`)
+      .get(`/wayne/api/v1/apps/${appId}/secrets/tpls/${id}`)
 
       .catch(error => throwError(error));
   }

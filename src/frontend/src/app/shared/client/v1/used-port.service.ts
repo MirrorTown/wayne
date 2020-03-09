@@ -47,7 +47,7 @@ export class UsedPortService {
       params = params.set('sortby', sortType);
     }
     return this.http
-      .get('/api/v1/services/usedports', {params: params})
+      .get('/wayne/api/v1/services/usedports', {params: params})
 
       .catch(error => throwError(error));
   }
@@ -61,7 +61,7 @@ export class UsedPortService {
     }
 
     return this.http
-      .delete(`/api/v1/services/usedports/${id}`, options)
+      .delete(`/wayne/api/v1/services/usedports/${id}`, options)
 
       .catch(error => throwError(error));
   }
@@ -72,14 +72,14 @@ export class UsedPortService {
     params = params.set('serviceId', serviceId + '');
     options.params = params;
     return this.http
-      .delete(`/api/v1/services/usedports`, options)
+      .delete(`/wayne/api/v1/services/usedports`, options)
 
       .catch(error => throwError(error));
   }
 
   getById(id: number): Observable<any> {
     return this.http
-      .get(`/api/v1/services/usedports/${id}`)
+      .get(`/wayne/api/v1/services/usedports/${id}`)
 
       .catch(error => throwError(error));
   }

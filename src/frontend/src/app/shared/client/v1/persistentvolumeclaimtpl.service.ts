@@ -68,7 +68,7 @@ export class PersistentVolumeClaimTplService {
     }
 
     return this.http
-      .get(`/api/v1/apps/${appId}/persistentvolumeclaims/tpls`, {params: params})
+      .get(`/wayne/api/v1/apps/${appId}/persistentvolumeclaims/tpls`, {params: params})
 
       .catch(error => throwError(error));
   }
@@ -107,21 +107,21 @@ export class PersistentVolumeClaimTplService {
     }
 
     return this.http
-      .get(`/api/v1/apps/${appId}/persistentvolumeclaims/tpls`, {params: params})
+      .get(`/wayne/api/v1/apps/${appId}/persistentvolumeclaims/tpls`, {params: params})
 
       .catch(error => throwError(error));
   }
 
   create(pvcTpl: PersistentVolumeClaimTpl, appId: number): Observable<any> {
     return this.http
-      .post(`/api/v1/apps/${appId}/persistentvolumeclaims/tpls`, pvcTpl, this.options)
+      .post(`/wayne/api/v1/apps/${appId}/persistentvolumeclaims/tpls`, pvcTpl, this.options)
 
       .catch(error => throwError(error));
   }
 
   update(pvcTpl: PersistentVolumeClaimTpl, appId: number): Observable<any> {
     return this.http
-      .put(`/api/v1/apps/${appId}/persistentvolumeclaims/tpls/${pvcTpl.id}`, pvcTpl, this.options)
+      .put(`/wayne/api/v1/apps/${appId}/persistentvolumeclaims/tpls/${pvcTpl.id}`, pvcTpl, this.options)
 
       .catch(error => throwError(error));
   }
@@ -135,14 +135,14 @@ export class PersistentVolumeClaimTplService {
     }
 
     return this.http
-      .delete(`/api/v1/apps/${appId}/persistentvolumeclaims/tpls/${id}`, options)
+      .delete(`/wayne/api/v1/apps/${appId}/persistentvolumeclaims/tpls/${id}`, options)
 
       .catch(error => throwError(error));
   }
 
   getById(id: number, appId: number): Observable<any> {
     return this.http
-      .get(`/api/v1/apps/${appId}/persistentvolumeclaims/tpls/${id}`)
+      .get(`/wayne/api/v1/apps/${appId}/persistentvolumeclaims/tpls/${id}`)
 
       .catch(error => throwError(error));
   }

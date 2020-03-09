@@ -48,28 +48,28 @@ export class NamespaceService {
       params = params.set('sortby', sortType);
     }
     return this.http
-      .get('/api/v1/namespaces', {params: params})
+      .get('/wayne/api/v1/namespaces', {params: params})
       //
       .catch(error => throwError(error));
   }
 
   getNames(): Observable<any> {
     return this.http
-      .get('/api/v1/namespaces/names')
+      .get('/wayne/api/v1/namespaces/names')
 
       .catch(error => throwError(error));
   }
 
   createNamespace(ns: Namespace): Observable<any> {
     return this.http
-      .post(`/api/v1/namespaces`, ns, this.options)
+      .post(`/wayne/api/v1/namespaces`, ns, this.options)
 
       .catch(error => throwError(error));
   }
 
   updateNamespace(ns: Namespace): Observable<any> {
     return this.http
-      .put(`/api/v1/namespaces/${ns.id}`, ns, this.options)
+      .put(`/wayne/api/v1/namespaces/${ns.id}`, ns, this.options)
 
       .catch(error => throwError(error));
   }
@@ -82,20 +82,20 @@ export class NamespaceService {
       options.params = params;
     }
     return this.http
-      .delete(`/api/v1/namespaces/${nsId}`, options)
+      .delete(`/wayne/api/v1/namespaces/${nsId}`, options)
 
       .catch(error => throwError(error));
   }
 
   getNamespace(nsId: number): Observable<any> {
     return this.http
-      .get(`/api/v1/namespaces/${nsId}`)
+      .get(`/wayne/api/v1/namespaces/${nsId}`)
 
       .catch(error => throwError(error));
   }
 
   initDefault(): Observable<any> {
-    return this.http.get(`/api/v1/namespaces/init`)
+    return this.http.get(`/wayne/api/v1/namespaces/init`)
 
       .catch(error => throwError(error));
   }
@@ -107,7 +107,7 @@ export class NamespaceService {
       params = params.set('app', appName);
     }
     return this.http
-      .get(`/api/v1/namespaces/${namespaceId}/history`, {params: params})
+      .get(`/wayne/api/v1/namespaces/${namespaceId}/history`, {params: params})
       .catch(error => throwError(error));
   }
 }

@@ -56,7 +56,7 @@ export class AppService {
       namespaceId = '0';
     }
     return this.http
-      .get(`/api/v1/namespaces/${namespaceId}/apps`, {params: params})
+      .get(`/wayne/api/v1/namespaces/${namespaceId}/apps`, {params: params})
 
       .catch(error => throwError(error));
   }
@@ -73,7 +73,7 @@ export class AppService {
     }
     console.log("enter sysnc")
     return this.http
-      .get(`/api/v1/hongmao/app/sysnc`, options)
+      .get(`/wayne/api/v1/hongmao/app/sysnc`, options)
 
       .catch(error => throwError(error));
   }
@@ -89,7 +89,7 @@ export class AppService {
       options.params = params;
     }
     return this.http
-      .get(`/api/v1/namespaces/${namespaceId}/statistics`, options)
+      .get(`/wayne/api/v1/namespaces/${namespaceId}/statistics`, options)
 
       .catch(error => throwError(error));
   }
@@ -99,21 +99,21 @@ export class AppService {
       namespaceId = 0;
     }
     return this.http
-      .get(`/api/v1/namespaces/${namespaceId}/apps/names`)
+      .get(`/wayne/api/v1/namespaces/${namespaceId}/apps/names`)
 
       .catch(error => throwError(error));
   }
 
   create(app: App): Observable<any> {
     return this.http
-      .post(`/api/v1/namespaces/${app.namespace.id}/apps`, app, this.options)
+      .post(`/wayne/api/v1/namespaces/${app.namespace.id}/apps`, app, this.options)
 
       .catch(error => throwError(error));
   }
 
   update(app: App): Observable<any> {
     return this.http
-      .put(`/api/v1/namespaces/${app.namespace.id}/apps/${app.id}`, app, this.options)
+      .put(`/wayne/api/v1/namespaces/${app.namespace.id}/apps/${app.id}`, app, this.options)
 
       .catch(error => throwError(error));
   }
@@ -127,19 +127,19 @@ export class AppService {
     }
 
     return this.http
-      .delete(`/api/v1/namespaces/${namespaceId}/apps/${id}`, options)
+      .delete(`/wayne/api/v1/namespaces/${namespaceId}/apps/${id}`, options)
 
       .catch(error => throwError(error));
   }
 
   getById(id: number, namespaceId: number): Observable<any> {
-    return this.http.get(`/api/v1/namespaces/${namespaceId}/apps/${id}`)
+    return this.http.get(`/wayne/api/v1/namespaces/${namespaceId}/apps/${id}`)
 
       .catch(error => throwError(error));
   }
 
   getStatistics(): Observable<any> {
-    return this.http.get(`/api/v1/apps/statistics`)
+    return this.http.get(`/wayne/api/v1/apps/statistics`)
 
       .catch(error => throwError(error));
   }

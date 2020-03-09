@@ -10,6 +10,7 @@ import {Hero, HEROES} from "./list-deploy.module";
 export class CmdbDeployComponent implements OnInit {
 
   heroes = HEROES;
+  tableData: any;
   selectedHero: Hero;
   @Input() selectedPod: Hero;
   @Input() selectedNS: Hero;

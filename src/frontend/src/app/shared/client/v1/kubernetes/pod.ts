@@ -19,13 +19,13 @@ export class PodClient {
     params = params.set('type', resouceType);
     params = params.set('name', name);
     return this.http
-      .get(`/api/v1/kubernetes/apps/${appId}/pods/namespaces/${namespace}/clusters/${cluster}`, {params: params})
+      .get(`/wayne/api/v1/kubernetes/apps/${appId}/pods/namespaces/${namespace}/clusters/${cluster}`, {params: params})
       .catch(error => throwError(error));
   }
 
   getStatistics(): Observable<any> {
     return this.http
-      .get(`/api/v1/kubernetes/pods/statistics`)
+      .get(`/wayne/api/v1/kubernetes/pods/statistics`)
       .catch(error => throwError(error));
   }
 
@@ -34,7 +34,7 @@ export class PodClient {
     params = params.set('container', container);
     params = params.set('cmd', cmd);
     return this.http
-      .post(`/api/v1/kubernetes/apps/${appId}/pods/${pod}/terminal/namespaces/${namespace}/clusters/${cluster}`, null, {params: params})
+      .post(`/wayne/api/v1/kubernetes/apps/${appId}/pods/${pod}/terminal/namespaces/${namespace}/clusters/${cluster}`, null, {params: params})
       .catch(error => throwError(error));
   }
 

@@ -22,7 +22,7 @@ export class PublicService {
     urlSearchParams.append('namespace', namespace);
     urlSearchParams.append('podName', podName);
     return this.http
-      .post(`/api/v1/public/shell/token`, urlSearchParams, options)
+      .post(`/wayne/api/v1/public/shell/token`, urlSearchParams, options)
 
       .catch(error => throwError(error));
   }

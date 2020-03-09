@@ -11,13 +11,13 @@ export class PersistentVolumeRobinClient {
 
   listRbdImages(cluster: string): Observable<any> {
     return this.http
-      .get(`/api/v1/kubernetes/persistentvolumes/robin/rbd.images/clusters/${cluster}`)
+      .get(`/wayne/api/v1/kubernetes/persistentvolumes/robin/rbd.images/clusters/${cluster}`)
       .catch(error => throwError(error));
   }
 
   createRbdImage(pv: PersistentVolume, cluster: string): Observable<any> {
     return this.http
-      .post(`/api/v1/kubernetes/persistentvolumes/robin/rbd.images/clusters/${cluster}`, pv)
+      .post(`/wayne/api/v1/kubernetes/persistentvolumes/robin/rbd.images/clusters/${cluster}`, pv)
       .catch(error => throwError(error));
   }
 

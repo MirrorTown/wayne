@@ -17,14 +17,14 @@ export class NotificationService {
     params = params.set('pageSize', pageState.page.pageSize + '');
     params = params.set('sortby', '-id');
     return this.http
-      .get(`/api/v1/notifications`, {params: params})
+      .get(`/wayne/api/v1/notifications`, {params: params})
       //
       .catch(error => throwError(error));
   }
 
   publish(id): Observable<any> {
     return this.http
-      .put(`/api/v1/notifications?id=` + id, {})
+      .put(`/wayne/api/v1/notifications?id=` + id, {})
 
       .catch(error => throwError(error));
   }
@@ -36,21 +36,21 @@ export class NotificationService {
     params = params.set('sortby', '-id');
     // params = params.set('is_readed', pageState.params['is_readed'])
     return this.http
-      .get(`/api/v1/notifications/subscribe`, {params: params})
+      .get(`/wayne/api/v1/notifications/subscribe`, {params: params})
 
       .catch(error => throwError(error));
   }
 
   read(id): Observable<any> {
     return this.http
-      .put(`/api/v1/notifications/subscribe?id=` + id, {})
+      .put(`/wayne/api/v1/notifications/subscribe?id=` + id, {})
 
       .catch(error => throwError(error));
   }
 
   create(notify: Notification): Observable<any> {
     return this.http
-      .post(`/api/v1/notifications`, notify)
+      .post(`/wayne/api/v1/notifications`, notify)
 
       .catch(error => throwError(error));
   }

@@ -51,7 +51,7 @@ export class PublishService {
     }
 
     return this.http
-      .get('/api/v1/publish/histories', {params: params})
+      .get('/wayne/api/v1/publish/histories', {params: params})
 
       .catch(error => throwError(error));
   }
@@ -61,7 +61,7 @@ export class PublishService {
     params = params.set('type', type + '');
     params = params.set('resourceId', resourceId + '');
     return this.http
-      .get('/api/v1/publishstatus', {params: params});
+      .get('/wayne/api/v1/publishstatus', {params: params});
   }
 
   getDeployStatistics(startTime: string, endTime: string): Observable<any> {
@@ -69,7 +69,7 @@ export class PublishService {
     params = params.set('start_time', startTime);
     params = params.set('end_time', endTime);
     return this.http
-      .get('/api/v1/publish/statistics', {params: params})
+      .get('/wayne/api/v1/publish/statistics', {params: params})
 
       .catch(error => throwError(error));
   }
@@ -82,14 +82,14 @@ export class PublishService {
     params = params.set('cluster', cluster);
     params = params.set('user', user);
     return this.http
-      .get(`/api/v1/publish/chart/${resourceType}`, {params: params})
+      .get(`/wayne/api/v1/publish/chart/${resourceType}`, {params: params})
   }
 
   rollback(image: string, cluster: string, tplId: number, nsId: number, template?: any): Observable<any> {
     let params = new HttpParams();
     params = params.set('image', image);
     return this.http
-      .post(`/api/v1/publish/tpl/${tplId}/namespace/${nsId}/clusters/${cluster}`, template, {params: params})
+      .post(`/wayne/api/v1/publish/tpl/${tplId}/namespace/${nsId}/clusters/${cluster}`, template, {params: params})
       .catch(error => throwError(error));
   }
 }

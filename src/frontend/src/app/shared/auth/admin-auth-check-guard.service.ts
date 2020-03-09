@@ -21,6 +21,7 @@ export class AdminAuthCheckGuard implements CanActivate, CanActivateChild {
 
     return new Promise((resolve, reject) => {
       if (!this.authService.currentUser) {
+        console.log("admin-auth-check")
         this.authService.retrieveUser().then(() => {
             if (this.authService.currentUser.admin) {
               resolve(true);

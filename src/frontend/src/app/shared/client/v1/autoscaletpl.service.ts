@@ -52,19 +52,19 @@ export class AutoscaleTplService {
     }
 
     return this.http
-      .get(`/api/v1/apps/${appId}/hpas/tpls`, {params: params})
+      .get(`/wayne/api/v1/apps/${appId}/hpas/tpls`, {params: params})
       .catch(error => throwError(error));
   }
 
   create(autoscaletpl: AutoscaleTpl, appId: number): Observable<any> {
     return this.http
-      .post(`/api/v1/apps/${appId}/hpas/tpls`, autoscaletpl, this.options)
+      .post(`/wayne/api/v1/apps/${appId}/hpas/tpls`, autoscaletpl, this.options)
       .catch(error => throwError(error));
   }
 
   update(autoscaletpl: AutoscaleTpl, appId: number): Observable<any> {
     return this.http
-      .put(`/api/v1/apps/${appId}/hpas/tpls/${autoscaletpl.id}`, autoscaletpl, this.options)
+      .put(`/wayne/api/v1/apps/${appId}/hpas/tpls/${autoscaletpl.id}`, autoscaletpl, this.options)
       .catch(error => throwError(error));
   }
 
@@ -77,13 +77,13 @@ export class AutoscaleTplService {
     }
 
     return this.http
-      .delete(`/api/v1/apps/${appId}/hpas/tpls/${id}`, options)
+      .delete(`/wayne/api/v1/apps/${appId}/hpas/tpls/${id}`, options)
       .catch(error => throwError(error));
   }
 
   getById(id: number, appId: number): Observable<any> {
     return this.http
-      .get(`/api/v1/apps/${appId}/hpas/tpls/${id}`)
+      .get(`/wayne/api/v1/apps/${appId}/hpas/tpls/${id}`)
       .catch(error => throwError(error));
   }
 }

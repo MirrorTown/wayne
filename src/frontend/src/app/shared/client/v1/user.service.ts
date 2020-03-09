@@ -46,41 +46,41 @@ export class UserService {
       params = params.set('sortby', sortType);
     }
     return this.http
-      .get('/api/v1/users', {params: params})
+      .get('/wayne/api/v1/users', {params: params})
 
       .catch(error => throwError(error));
   }
 
   createUser(user: User): Observable<any> {
     return this.http
-      .post(`/api/v1/users`, user, this.options)
+      .post(`/wayne/api/v1/users`, user, this.options)
 
       .catch(error => throwError(error));
   }
 
   getNames(): Observable<any> {
-    return this.http.get('/api/v1/users/names')
+    return this.http.get('/wayne/api/v1/users/names')
 
       .catch(error => throwError(error));
   }
 
   updateUser(user: User): Observable<any> {
     return this.http
-      .put(`/api/v1/users/${user.id}`, user, this.options)
+      .put(`/wayne/api/v1/users/${user.id}`, user, this.options)
 
       .catch(error => throwError(error));
   }
 
   updateUserAdmin(user: User): Observable<any> {
     return this.http
-      .put(`/api/v1/users/${user.id}/admin`, user, this.options)
+      .put(`/wayne/api/v1/users/${user.id}/admin`, user, this.options)
 
       .catch(error => throwError(error));
   }
 
   resetPassword(user: User): Observable<any> {
     return this.http
-      .put(`/api/v1/users/${user.id}/resetpassword`, user, this.options)
+      .put(`/wayne/api/v1/users/${user.id}/resetpassword`, user, this.options)
 
       .catch(error => throwError(error));
   }
@@ -88,21 +88,21 @@ export class UserService {
   deleteUser(userId: number): Observable<any> {
     const options: any = {};
     return this.http
-      .delete(`/api/v1/users/${userId}`, options)
+      .delete(`/wayne/api/v1/users/${userId}`, options)
 
       .catch(error => throwError(error));
   }
 
   getUser(userId: number): Observable<any> {
     return this.http
-      .get(`/api/v1/users/${userId}`)
+      .get(`/wayne/api/v1/users/${userId}`)
 
       .catch(error => throwError(error));
   }
 
   getStatistics(): Observable<any> {
     return this.http
-      .get('/api/v1/users/statistics')
+      .get('/wayne/api/v1/users/statistics')
 
       .catch(error => throwError(error));
   }

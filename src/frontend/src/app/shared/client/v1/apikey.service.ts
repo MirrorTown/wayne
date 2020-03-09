@@ -56,10 +56,10 @@ export class ApiKeyService {
   buildAPIKeyUrl(namespaceId?: number, appId?: number): string {
     let url = '';
     if (isNotEmpty(namespaceId)) {
-      url = `/api/v1/namespaces/${namespaceId}/apikeys`;
+      url = `/wayne/api/v1/namespaces/${namespaceId}/apikeys`;
     }
     if (isNotEmpty(appId)) {
-      url = `/api/v1/apps/${appId}/apikeys`;
+      url = `/wayne/api/v1/apps/${appId}/apikeys`;
     }
     return url;
   }

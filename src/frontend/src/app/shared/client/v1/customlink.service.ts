@@ -19,7 +19,7 @@ export class CustomlinkService {
 
   listSystemConfig() {
     return this.http
-      .get('/api/v1/customlinks/system')
+      .get('/wayne/api/v1/customlinks/system')
 
       .catch(error => throwError(error));
   }
@@ -56,28 +56,28 @@ export class CustomlinkService {
     }
     params = params.set('deleted', 'false');
     return this.http
-      .get('/api/v1/customlinks', {params: params})
+      .get('/wayne/api/v1/customlinks', {params: params})
 
       .catch(error => throwError(error));
   }
 
   create(config: Customlink): Observable<any> {
     return this.http
-      .post(`/api/v1/customlinks`, config, this.options)
+      .post(`/wayne/api/v1/customlinks`, config, this.options)
 
       .catch(error => throwError(error));
   }
 
   update(config: Customlink): Observable<any> {
     return this.http
-      .put(`/api/v1/customlinks/${config.id}`, config, this.options)
+      .put(`/wayne/api/v1/customlinks/${config.id}`, config, this.options)
 
       .catch(error => throwError(error));
   }
 
   updateStatus(config: Customlink): Observable<any> {
     return this.http
-      .put(`/api/v1/customlinks/${config.id}/status`, null, this.options)
+      .put(`/wayne/api/v1/customlinks/${config.id}/status`, null, this.options)
 
       .catch(error => throwError(error));
   }
@@ -86,14 +86,14 @@ export class CustomlinkService {
     const options: any = {};
 
     return this.http
-      .delete(`/api/v1/customlinks/${id}`, options)
+      .delete(`/wayne/api/v1/customlinks/${id}`, options)
 
       .catch(error => throwError(error));
   }
 
   getById(id: number): Observable<any> {
     return this.http
-      .get(`/api/v1/customlinks/${id}`)
+      .get(`/wayne/api/v1/customlinks/${id}`)
 
       .catch(error => throwError(error));
   }

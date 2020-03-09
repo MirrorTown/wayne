@@ -3,7 +3,7 @@ import { Observable } from 'rxjs/Observable';
 import { HttpClient } from '@angular/common/http';
 import { throwError } from 'rxjs';
 
-export const robinBaseUrl = `/api/v1/kubernetes/apps/`;
+export const robinBaseUrl = `/wayne/api/v1/kubernetes/apps/`;
 
 @Injectable()
 export class PersistentVolumeClaimRobinClient {

@@ -51,21 +51,21 @@ export class StatefulsetTplService {
     }
 
     return this.http
-      .get(`/api/v1/apps/${appId}/statefulsets/tpls`, {params: params})
+      .get(`/wayne/api/v1/apps/${appId}/statefulsets/tpls`, {params: params})
 
       .catch(error => throwError(error));
   }
 
   create(tpl: StatefulsetTemplate, appId: number): Observable<any> {
     return this.http
-      .post(`/api/v1/apps/${appId}/statefulsets/tpls`, tpl)
+      .post(`/wayne/api/v1/apps/${appId}/statefulsets/tpls`, tpl)
 
       .catch(error => throwError(error));
   }
 
   update(tpl: StatefulsetTemplate, appId: number): Observable<any> {
     return this.http
-      .put(`/api/v1/apps/${appId}/statefulsets/tpls/${tpl.id}`, tpl, this.options)
+      .put(`/wayne/api/v1/apps/${appId}/statefulsets/tpls/${tpl.id}`, tpl, this.options)
 
       .catch(error => throwError(error));
   }
@@ -79,14 +79,14 @@ export class StatefulsetTplService {
     }
 
     return this.http
-      .delete(`/api/v1/apps/${appId}/statefulsets/tpls/${id}`, options)
+      .delete(`/wayne/api/v1/apps/${appId}/statefulsets/tpls/${id}`, options)
 
       .catch(error => throwError(error));
   }
 
   getById(id: number, appId: number): Observable<any> {
     return this.http
-      .get(`/api/v1/apps/${appId}/statefulsets/tpls/${id}`)
+      .get(`/wayne/api/v1/apps/${appId}/statefulsets/tpls/${id}`)
 
       .catch(error => throwError(error));
   }

@@ -22,6 +22,7 @@ export class AuthCheckGuard implements CanActivate, CanActivateChild {
     this.msgHandler.clear();
     return new Promise((resolve, reject) => {
       if (!this.authService.currentUser) {
+        console.log("auth-check")
         this.authService.retrieveUser().then(() => {
           this.setCache(state);
           resolve(true);

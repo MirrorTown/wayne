@@ -10,7 +10,7 @@ export class NamespaceClient {
 
   create(name: string, cluster: string): Observable<any> {
     return this.http
-      .post(`/api/v1/kubernetes/namespaces/${name}/clusters/${cluster}`, {})
+      .post(`/wayne/api/v1/kubernetes/namespaces/${name}/clusters/${cluster}`, {})
       .catch(error => throwError(error));
   }
 
@@ -21,7 +21,7 @@ export class NamespaceClient {
       params = params.set('app', appName);
     }
     return this.http
-      .get(`/api/v1/kubernetes/namespaces/${namespaceId}/resources`, {params: params})
+      .get(`/wayne/api/v1/kubernetes/namespaces/${namespaceId}/resources`, {params: params})
       .catch(error => throwError(error));
   }
 
@@ -31,7 +31,7 @@ export class NamespaceClient {
       params = params.set('app', appName);
     }
     return this.http
-      .get(`/api/v1/kubernetes/namespaces/${namespaceId}/statistics`, {params: params})
+      .get(`/wayne/api/v1/kubernetes/namespaces/${namespaceId}/statistics`, {params: params})
       .catch(error => throwError(error));
   }
 }

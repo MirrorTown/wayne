@@ -24,7 +24,7 @@ export class AuthService {
 
   initConfig(): Promise<any> {
     return this.http
-      .get(`/api/v1/configs/base`)
+      .get(`/wayne/api/v1/configs/base`)
       .toPromise().then((response: any) => {
           this.config = response.data;
           return response.data;
@@ -34,7 +34,7 @@ export class AuthService {
   }
 
   retrieveUser(): Promise<User> {
-    return this.http.get(`/currentuser`).toPromise().then((response: any) => {
+    return this.http.get(`/wayne/currentuser`).toPromise().then((response: any) => {
       this.currentUser = response.data;
       this.cacheService.setNamespaces(this.currentUser.namespaces);
       return response.data;
@@ -45,13 +45,13 @@ export class AuthService {
   }
 
   setNamespacePermissionById(id: number) {
-    return this.http.get(`/api/v1/namespaces/${id}/users/permissions/${id}`).toPromise().then((response: any) => {
+    return this.http.get(`/wayne/api/v1/namespaces/${id}/users/permissions/${id}`).toPromise().then((response: any) => {
       this.currentNamespacePermission = response.data;
     }).catch(error => this.handleError(error));
   }
 
   setAppPermissionById(id: number) {
-    return this.http.get(`/api/v1/apps/${id}/users/permissions/${id}`).toPromise().then((response: any) => {
+    return this.http.get(`/wayne/api/v1/apps/${id}/users/permissions/${id}`).toPromise().then((response: any) => {
       this.currentAppPermission = response.data;
     }).catch(error => this.handleError(error));
   }

@@ -81,9 +81,9 @@ func init() {
 		AllowCredentials: true,
 	}))
 
-	beego.Handler("/ws/pods/exec", kpod.CreateAttachHandler("/ws/pods/exec"), true)
+	beego.Handler("/wayne/ws/pods/exec", kpod.CreateAttachHandler("/ws/pods/exec"), true)
 
-	beego.Get("/healthz", func(ctx *context.Context) {
+	beego.Get("/wayne/healthz", func(ctx *context.Context) {
 		dc := health.DatabaseCheck{}
 		err := dc.Check()
 		if err != nil {
@@ -97,7 +97,7 @@ func init() {
 
 	beego.Include(&auth.AuthController{})
 
-	nsWithApp := beego.NewNamespace("/api/v1",
+	nsWithApp := beego.NewNamespace("/wayne/api/v1",
 		// 路由中携带appid
 		beego.NSNamespace("/apps/:appid([0-9]+)/users",
 			beego.NSInclude(
@@ -216,7 +216,7 @@ func init() {
 		),
 	)
 
-	nsWithKubernetes := beego.NewNamespace("/api/v1",
+	nsWithKubernetes := beego.NewNamespace("/wayne/api/v1",
 		beego.NSRouter("/kubernetes/pods/statistics", &kpod.KubePodController{}, "get:PodStatistics"),
 
 		beego.NSNamespace("/kubernetes/persistentvolumes",
@@ -241,7 +241,7 @@ func init() {
 		),
 	)
 
-	nsWithKubernetesApp := beego.NewNamespace("/api/v1",
+	nsWithKubernetesApp := beego.NewNamespace("/wayne/api/v1",
 		beego.NSNamespace("/kubernetes/apps/:appid([0-9]+)/cronjobs",
 			beego.NSInclude(
 				&kcronjob.KubeCronjobController{},
@@ -317,7 +317,7 @@ func init() {
 		),
 	)
 
-	nsWithNamespace := beego.NewNamespace("/api/v1",
+	nsWithNamespace := beego.NewNamespace("/wayne/api/v1",
 		// 路由中携带namespaceid
 		beego.NSNamespace("/namespaces/:namespaceid([0-9]+)/apps",
 			beego.NSInclude(
@@ -351,7 +351,7 @@ func init() {
 		),
 	)
 
-	nsWithoutApp := beego.NewNamespace("/api/v1",
+	nsWithoutApp := beego.NewNamespace("/wayne/api/v1",
 		// 路由中不携带任何id
 		beego.NSNamespace("/configs",
 			beego.NSInclude(
@@ -430,7 +430,7 @@ func init() {
 		),
 	)
 
-	nsWithOpenAPI := beego.NewNamespace("/openapi/v1",
+	nsWithOpenAPI := beego.NewNamespace("/wayne/openapi/v1",
 		beego.NSNamespace("/gateway/action",
 			beego.NSInclude(
 				&openapi.OpenAPIController{}),
@@ -439,7 +439,7 @@ func init() {
 
 	// For Kubernetes resource router
 	// appid used to check permission
-	nsWithKubernetesProxy := beego.NewNamespace("/api/v1",
+	nsWithKubernetesProxy := beego.NewNamespace("/wayne/api/v1",
 		beego.NSNamespace("/apps/:appid([0-9]+)/_proxy/clusters/:cluster/namespaces/:namespace/:kind",
 			beego.NSInclude(
 				&proxy.KubeProxyController{},
@@ -472,10 +472,10 @@ func init() {
 		),
 	)
 
-	beego.Router("/api/v1/harbor/:namespaceId/images", &image.HarborImageController{}, "get:List")
-	beego.Router("/api/v1/harbor/tags", &image.HarborImageController{}, "get:ListTag")
+	beego.Router("/wayne/api/v1/harbor/:namespaceId/images", &image.HarborImageController{}, "get:List")
+	beego.Router("/wayne/api/v1/harbor/tags", &image.HarborImageController{}, "get:ListTag")
 
-	nsWithHarbor := beego.NewNamespace("/api/v1",
+	nsWithHarbor := beego.NewNamespace("/wayne/api/v1",
 		beego.NSNamespace("/harbors",
 			beego.NSInclude(
 				&harbor.HarborController{},
@@ -483,7 +483,7 @@ func init() {
 		),
 	)
 
-	nsWithHongmao := beego.NewNamespace("/api/v1",
+	nsWithHongmao := beego.NewNamespace("/wayne/api/v1",
 		beego.NSNamespace("/hongmao",
 			beego.NSInclude(
 				&hongmao.HongMaoController{},
@@ -491,7 +491,7 @@ func init() {
 		),
 	)
 
-	nsWithReview := beego.NewNamespace("/api/v1",
+	nsWithReview := beego.NewNamespace("/wayne/api/v1",
 		beego.NSNamespace("/reviews",
 			beego.NSInclude(
 				&review.ReviewController{},
@@ -499,7 +499,7 @@ func init() {
 		),
 	)
 
-	nsWithMultienv := beego.NewNamespace("/api/v1",
+	nsWithMultienv := beego.NewNamespace("/wayne/api/v1",
 		beego.NSNamespace("/multienv",
 			beego.NSInclude(
 				&multienv.MultienvController{},
@@ -507,7 +507,7 @@ func init() {
 		),
 	)
 
-	nsWithHostAliase := beego.NewNamespace("/api/v1",
+	nsWithHostAliase := beego.NewNamespace("/wayne/api/v1",
 		beego.NSNamespace("/hostalias",
 			beego.NSInclude(
 				&hostAlias.HostAliasController{},
@@ -515,7 +515,7 @@ func init() {
 		),
 	)
 
-	nsWithWorkStep := beego.NewNamespace("/api/v1",
+	nsWithWorkStep := beego.NewNamespace("/wayne/api/v1",
 		beego.NSNamespace("/workstep",
 			beego.NSInclude(
 				&workstep.WorkStepController{},

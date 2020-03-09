@@ -23,7 +23,7 @@ export class SideNavService {
     );
   }
   getMonitors(namespace: number): Observable<any> {
-    return this.http.get(`/api/v1/namespaces/${namespace}/customlink/links`)
+    return this.http.get(`/wayne/api/v1/namespaces/${namespace}/customlink/links`)
       .catch(error => throwError(error));
   }
   routerChangeTrigger(url: string): void {

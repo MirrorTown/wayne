@@ -24,7 +24,7 @@ export class SecretService {
       appId = 0;
     }
     return this.http
-      .get(`/api/v1/apps/${appId}/secrets/names`, {params: params})
+      .get(`/wayne/api/v1/apps/${appId}/secrets/names`, {params: params})
 
       .catch(error => throwError(error));
   }
@@ -66,28 +66,28 @@ export class SecretService {
       appId = '0';
     }
     return this.http
-      .get(`/api/v1/apps/${appId}/secrets`, {params: params})
+      .get(`/wayne/api/v1/apps/${appId}/secrets`, {params: params})
 
       .catch(error => throwError(error));
   }
 
   create(secret: Secret): Observable<any> {
     return this.http
-      .post(`/api/v1/apps/${secret.appId}/secrets`, secret, this.options)
+      .post(`/wayne/api/v1/apps/${secret.appId}/secrets`, secret, this.options)
 
       .catch(error => throwError(error));
   }
 
   update(secret: Secret): Observable<any> {
     return this.http
-      .put(`/api/v1/apps/${secret.appId}/secrets/${secret.id}`, secret, this.options)
+      .put(`/wayne/api/v1/apps/${secret.appId}/secrets/${secret.id}`, secret, this.options)
 
       .catch(error => throwError(error));
   }
 
   updateOrder(appId: number, orderList: Array<OrderItem>): Observable<any> {
     return this.http
-      .put(`/api/v1/apps/${appId}/secrets/updateorders`, orderList, this.options)
+      .put(`/wayne/api/v1/apps/${appId}/secrets/updateorders`, orderList, this.options)
 
       .catch(error => throwError(error));
   }
@@ -102,14 +102,14 @@ export class SecretService {
     }
 
     return this.http
-      .delete(`/api/v1/apps/${appId}/secrets/${id}`, options)
+      .delete(`/wayne/api/v1/apps/${appId}/secrets/${id}`, options)
 
       .catch(error => throwError(error));
   }
 
   getById(id: number, appId: number): Observable<any> {
     return this.http
-      .get(`/api/v1/apps/${appId}/secrets/${id}`)
+      .get(`/wayne/api/v1/apps/${appId}/secrets/${id}`)
 
       .catch(error => throwError(error));
   }

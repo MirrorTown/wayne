@@ -17,13 +17,13 @@ export class JobClient {
     }
     params = params.set('name', cronjobName);
     return this.http
-      .get(`/api/v1/kubernetes/apps/${appId}/jobs/namespaces/${namespace}/clusters/${cluster}`, {params: params})
+      .get(`/wayne/api/v1/kubernetes/apps/${appId}/jobs/namespaces/${namespace}/clusters/${cluster}`, {params: params})
       .catch(error => throwError(error));
   }
 
   PodsEvent(appId: number, cluster: string, namespace: string, jobName: string, cronjobName: string): Observable<any> {
     return this.http
-      .get(`/api/v1/kubernetes/apps/${appId}/jobs/getPodsEvent/${jobName}/${cronjobName}/namespaces/${namespace}/clusters/${cluster}`)
+      .get(`/wayne/api/v1/kubernetes/apps/${appId}/jobs/getPodsEvent/${jobName}/${cronjobName}/namespaces/${namespace}/clusters/${cluster}`)
       .catch(error => throwError(error));
   }
 }

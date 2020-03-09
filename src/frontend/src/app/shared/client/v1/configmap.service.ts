@@ -24,7 +24,7 @@ export class ConfigMapService {
       appId = 0;
     }
     return this.http
-      .get(`/api/v1/apps/${appId}/configmaps/names`, {params: params})
+      .get(`/wayne/api/v1/apps/${appId}/configmaps/names`, {params: params})
 
       .catch(error => throwError(error));
   }
@@ -65,28 +65,28 @@ export class ConfigMapService {
       appId = '0';
     }
     return this.http
-      .get(`/api/v1/apps/${appId}/configmaps`, {params: params})
+      .get(`/wayne/api/v1/apps/${appId}/configmaps`, {params: params})
 
       .catch(error => throwError(error));
   }
 
   create(configMap: ConfigMap): Observable<any> {
     return this.http
-      .post(`/api/v1/apps/${configMap.appId}/configmaps`, configMap, this.options)
+      .post(`/wayne/api/v1/apps/${configMap.appId}/configmaps`, configMap, this.options)
 
       .catch(error => throwError(error));
   }
 
   update(configMap: ConfigMap): Observable<any> {
     return this.http
-      .put(`/api/v1/apps/${configMap.appId}/configmaps/${configMap.id}`, configMap, this.options)
+      .put(`/wayne/api/v1/apps/${configMap.appId}/configmaps/${configMap.id}`, configMap, this.options)
 
       .catch(error => throwError(error));
   }
 
   updateOrder(appId: number, orderList: Array<OrderItem>): Observable<any> {
     return this.http
-      .put(`/api/v1/apps/${appId}/configmaps/updateorders`, orderList, this.options)
+      .put(`/wayne/api/v1/apps/${appId}/configmaps/updateorders`, orderList, this.options)
 
       .catch(error => throwError(error));
   }
@@ -100,14 +100,14 @@ export class ConfigMapService {
     }
 
     return this.http
-      .delete(`/api/v1/apps/${appId}/configmaps/${id}`, options)
+      .delete(`/wayne/api/v1/apps/${appId}/configmaps/${id}`, options)
 
       .catch(error => throwError(error));
   }
 
   getById(id: number, appId: number): Observable<any> {
     return this.http
-      .get(`/api/v1/apps/${appId}/configmaps/${id}`)
+      .get(`/wayne/api/v1/apps/${appId}/configmaps/${id}`)
 
       .catch(error => throwError(error));
   }

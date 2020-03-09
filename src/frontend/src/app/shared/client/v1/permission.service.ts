@@ -46,21 +46,21 @@ export class PermissionService {
       params = params.set('sortby', sortType);
     }
     return this.http
-      .get('/api/v1/permissions', {params: params})
+      .get('/wayne/api/v1/permissions', {params: params})
 
       .catch(error => throwError(error));
   }
 
   createPermission(permission: Permission): Observable<any> {
     return this.http
-      .post(`/api/v1/permissions`, permission, this.options)
+      .post(`/wayne/api/v1/permissions`, permission, this.options)
 
       .catch(error => throwError(error));
   }
 
   updatePermission(permission: Permission): Observable<any> {
     return this.http
-      .put(`/api/v1/permissions/${permission.id}`, permission, this.options)
+      .put(`/wayne/api/v1/permissions/${permission.id}`, permission, this.options)
 
       .catch(error => throwError(error));
   }
@@ -68,21 +68,21 @@ export class PermissionService {
   deletePermission(permissionId: number): Observable<any> {
     const options: any = {};
     return this.http
-      .delete(`/api/v1/permissions/${permissionId}`, options)
+      .delete(`/wayne/api/v1/permissions/${permissionId}`, options)
 
       .catch(error => throwError(error));
   }
 
   getPermission(permissionId: number): Observable<any> {
     return this.http
-      .get(`/api/v1/permissions/${permissionId}`)
+      .get(`/wayne/api/v1/permissions/${permissionId}`)
 
       .catch(error => throwError(error));
   }
 
   initDict(): Observable<any> {
     return this.http
-      .get(`/api/v1/permissions/init`)
+      .get(`/wayne/api/v1/permissions/init`)
 
       .catch(error => throwError(error));
   }
