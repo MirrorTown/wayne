@@ -10,6 +10,14 @@ func init() {
 	beego.GlobalControllerRouter[AuthController] = append(
 		beego.GlobalControllerRouter[AuthController],
 		beego.ControllerComments{
+			Method:           "CurrentBeare",
+			Router:           `/wayne/currentbeare`,
+			AllowHTTPMethods: []string{"get"},
+			MethodParams:     param.Make(),
+			Filters:          nil,
+			Params:           nil,
+		},
+		beego.ControllerComments{
 			Method:           "CurrentUser",
 			Router:           `/wayne/currentuser`,
 			AllowHTTPMethods: []string{"get"},

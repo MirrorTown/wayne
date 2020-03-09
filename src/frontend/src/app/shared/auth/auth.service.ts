@@ -39,6 +39,9 @@ export class AuthService {
       this.cacheService.setNamespaces(this.currentUser.namespaces);
       return response.data;
     }).catch(error => {
+      this.http.get(`/wayne/currentbeare`).toPromise().then((response: any) => {
+        console.log(response.data)
+      })
       this.messageHandlerService.handleError(error);
       return Promise.resolve();
     });

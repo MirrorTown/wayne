@@ -52,6 +52,7 @@ func (c *AuthController) URLMapping() {
 	c.Mapping("Login", c.Login)
 	c.Mapping("Logout", c.Logout)
 	c.Mapping("CurrentUser", c.CurrentUser)
+	c.Mapping("CurrentBeare", c.CurrentBeare)
 }
 
 type LoginResult struct {
@@ -240,6 +241,70 @@ func (c *AuthController) getUserInfo(s *selfsso.SsoInfo) (*selfsso.BasicUserInfo
 // @router /logout [get]
 func (c *AuthController) Logout() {
 
+}
+
+// @router /currentbeare [get]
+func (c *AuthController) CurrentBeare() {
+	var userinfo *selfsso.BasicUserInfo
+	var err error
+
+	ssoer, ok := selfsso.SsoInfos["sso"]
+	if !ok {
+		logs.Warning("sso type (%s) is not supported . ", "sso")
+		c.Ctx.Output.SetStatus(http.StatusBadRequest)
+		c.Ctx.Output.Body(hack.Slice("sso type is not supported."))
+		return
+	}
+	userinfo, err = c.getUserInfo(ssoer)
+	if err != nil || userinfo == nil {
+		logs.Error("获取用户信息失败,", err)
+		return
+	}
+
+	var user = new(models.User)
+	user, err = selfsso.Authenticate(userinfo)
+
+	if err != nil || user == nil {
+		logs.Warning("try to login in with user error %v. ", err)
+		c.Ctx.Output.SetStatus(http.StatusBadRequest)
+		c.Ctx.Output.Body(hack.Slice(fmt.Sprintf("Login failed. %v", err)))
+		return
+	}
+
+	now := time.Now()
+	user.LastIp = RemoteIp(c.Ctx.Request)
+	user.LastLogin = &now
+	user, err = models.UserModel.EnsureUser(user)
+	if err != nil {
+		c.Ctx.Output.SetStatus(http.StatusInternalServerError)
+		c.Ctx.Output.Body(hack.Slice(err.Error()))
+		return
+	}
+
+	// default token exp time is 3600s.
+	expSecond := beego.AppConfig.DefaultInt64("TokenLifeTime", 86400)
+	token := jwt.NewWithClaims(jwt.SigningMethodRS256, jwt.MapClaims{
+		// 签发者
+		"iss": "wayne",
+		// 签发时间
+		"iat": now.Unix(),
+		"exp": now.Add(time.Duration(expSecond) * time.Second).Unix(),
+		"aud": user.Name,
+	})
+
+	apiToken, err := token.SignedString(rsakey.RsaPrivateKey)
+	if err != nil {
+		logs.Error("create token form rsa private key  error.", rsakey.RsaPrivateKey, err.Error())
+		c.Ctx.Output.SetStatus(http.StatusInternalServerError)
+		c.Ctx.Output.Body(hack.Slice(err.Error()))
+		return
+	}
+
+	loginResult := LoginResult{
+		Token: apiToken,
+	}
+	c.Data["json"] = base.Result{Data: loginResult}
+	c.ServeJSON()
 }
 
 // @router /currentuser [get]
