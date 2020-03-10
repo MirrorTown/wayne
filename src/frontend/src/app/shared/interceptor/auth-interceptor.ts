@@ -12,7 +12,6 @@ export class AuthInterceptor implements HttpInterceptor {
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    console.log("intercept", request.url)
     const apiReq = request.clone({
       url: resolve(request.url.indexOf('assets/') > -1
         ? '/'

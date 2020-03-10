@@ -7,6 +7,7 @@ import { TypePermission } from '../model/v1/permission';
 import { CacheService } from './cache.service';
 import { MessageHandlerService } from '../message-handler/message-handler.service';
 import { HttpClient } from '@angular/common/http';
+import {LoginTokenKey} from "../shared.const";
 
 @Injectable()
 export class AuthService {
@@ -40,7 +41,11 @@ export class AuthService {
       return response.data;
     }).catch(error => {
       this.http.get(`/wayne/currentbeare`).toPromise().then((response: any) => {
-        console.log(response.data)
+        console.log(response.data.token)
+        if (response.data.token != "") {
+          localStorage.setItem(LoginTokenKey, response.data.token);
+          window.location.replace("/wayne/fe");
+        }
       })
       this.messageHandlerService.handleError(error);
       return Promise.resolve();

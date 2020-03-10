@@ -5,6 +5,7 @@ import { AuthoriseService } from '../../shared/client/v1/auth.service';
 import { LoginTokenKey } from '../../shared/shared.const';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { StorageService } from '../../shared/client/v1/storage.service';
+import {HttpClient} from "@angular/common/http";
 
 @Component({
   selector: 'wayne-nav',
@@ -14,7 +15,8 @@ import { StorageService } from '../../shared/client/v1/storage.service';
 export class NavComponent implements OnInit {
   currentLang: string;
 
-  constructor(public authService: AuthService,
+  constructor(private http: HttpClient,
+              public authService: AuthService,
               private authoriseService: AuthoriseService,
               public translate: TranslateService,
               private storage: StorageService,
@@ -30,7 +32,7 @@ export class NavComponent implements OnInit {
 
   goFront() {
     if (window) {
-      window.location.href = '/wayne/';
+      window.location.href = '/wayne/fe';
     }
   }
 

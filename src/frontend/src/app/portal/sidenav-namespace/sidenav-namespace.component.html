@@ -51,7 +51,7 @@
     <clr-icon clrVerticalNavIcon shape="organization"></clr-icon>
     {{'MENU.REVIEW' | translate}}
   </a>
-  <a
+  <!--<a
     clrVerticalNavLink
     [title]="'MENU.MONITOR' | translate"
     *ngIf="authService.currentNamespacePermission.review.read || authService.currentUser.admin"
@@ -77,7 +77,7 @@
     routerLinkActive="active">
     <clr-icon clrVerticalNavIcon shape="user"></clr-icon>
     {{'CMDB'}}
-  </a>
+  </a>-->
   <a href="javascript:;" style="flex: 1;"></a>
   <wayne-footer></wayne-footer>
 </clr-vertical-nav>

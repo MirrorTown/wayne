@@ -1,5 +1,5 @@
 window.CONFIG = {
-  URL: 'http://way.ee.souche-inc.com',
+  URL: 'http://dasoudevops.digitalvolvo.com',
   RAVEN: true,
   RAVEN_DSN: 'RAVEN_DSN'
 };

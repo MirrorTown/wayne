@@ -9,7 +9,7 @@ export class ServiceClient {
 
   deploy(appId: number, cluster: string, resourceId: number, tplId: number, template: any): Observable<any> {
     return this.http
-      .post(`/api/v1/kubernetes/apps/${appId}/services/${resourceId}/tpls/${tplId}/clusters/${cluster}`, template)
+      .post(`/wayne/api/v1/kubernetes/apps/${appId}/services/${resourceId}/tpls/${tplId}/clusters/${cluster}`, template)
       .catch(error => throwError(error));
   }
 

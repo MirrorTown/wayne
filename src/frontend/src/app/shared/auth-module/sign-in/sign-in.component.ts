@@ -6,6 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { LoginTokenKey } from '../../shared.const';
 import * as particlesJS from 'particlesjs/dist/particles';
 import {environment} from "../../../../environments/environment.hmr";
+import {HttpClient} from "@angular/common/http";
 
 @Component({
   selector: 'sign-in',
@@ -22,7 +23,8 @@ export class SignInComponent implements OnInit {
   @ViewChild('ngForm', { static: true })
   currentForm: NgForm;
 
-  constructor(private authoriseService: AuthoriseService,
+  constructor(private http: HttpClient,
+              private authoriseService: AuthoriseService,
               private route: ActivatedRoute,
               public authService: AuthService) {
   }
@@ -41,7 +43,7 @@ export class SignInComponent implements OnInit {
     if (sid) {
       localStorage.setItem(LoginTokenKey, sid);
       console.log(ref)
-      // window.location.replace(ref);
+      window.location.replace(ref);
     }
     if (this.authService.currentUser) {
       window.location.replace(ref);
@@ -81,7 +83,16 @@ export class SignInComponent implements OnInit {
   oauth2Login() {
     const currentUrl = document.location.origin;
     const ref = this.route.snapshot.queryParams['ref'] ? this.route.snapshot.queryParams['ref'] : '/';
-    window.location.replace(`http://localhost:8080/login/oauth2/oauth2?next=${currentUrl}/sign-in?ref=${ref}`);
+    // this.http.get(`/wayne/currentbeare?next=${currentUrl}/wayne/sign-in?ref=${ref}`).toPromise().then((response: any) => {
+    //   console.log("success os", response.data.token)
+    //   // localStorage.setItem(LoginTokenKey, response.data.token);
+    //   // window.location.replace("/wayne");
+    // }).catch(error => {
+    //   console.log("oauth2 error", error)
+      // const currentUrl = document.location.origin;
+      // const ref = this.route.snapshot.queryParams['ref'] ? this.route.snapshot.queryParams['ref'] : '/';
+      window.location.replace(environment.url + `/wayne/login/oauth2/oauth2?next=${currentUrl}/wayne/sign-in?ref=${ref}`);
+    // })
   }
 
   ssoLogin() {

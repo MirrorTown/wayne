@@ -6,7 +6,7 @@ import (
 )
 
 func init() {
-	nsWithApp := beego.NewNamespace("/api/v1",
+	nsWithApp := beego.NewNamespace("/wayne/api/v1",
 		beego.NSNamespace("/apps/:appid([0-9]+)/services",
 			beego.NSInclude(
 				&controller.ServiceController{},
