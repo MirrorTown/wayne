@@ -171,7 +171,7 @@ func (c *AuthController) Login() {
 		if authType == models.AuthTypeOAuth2 || authType == models.AuthTypeSso {
 			next = next + "&sid=" + apiToken
 		}
-		c.Ctx.SetCookie("sid", apiToken)
+		c.Ctx.SetCookie("sid", apiToken, 180)
 		c.Redirect(next, http.StatusFound)
 		return
 	}
