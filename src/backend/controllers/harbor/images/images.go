@@ -53,6 +53,8 @@ func (c *HarborImageController) ListTag() {
 	} else if strings.Contains(strings.Split(image, "/")[0], "aliyuncs.com") {
 		fmt.Println(strings.Split(image, "/")[0])
 		return
+	} else if strings.Contains(image, "nexus") {
+		return
 	}
 
 	projectName := strings.Split(image, "/")[1]

@@ -99,7 +99,7 @@ export class SignInComponent implements OnInit {
     var config = require("config")
     const currentUrl = document.location.origin;
     const ref = this.route.snapshot.queryParams['ref'] ? this.route.snapshot.queryParams['ref'] : '/';
-    window.location.replace(environment.url + `/wayne/login/sso/sso?next=${currentUrl}/wayne/sign-in?ref=${ref}`);
+    window.location.replace(environment.url + `/wayne/login/sso/sso?next=${currentUrl}/wayne/fe/sign-in?ref=${ref}`);
   }
 
   getOAuth2Title() {

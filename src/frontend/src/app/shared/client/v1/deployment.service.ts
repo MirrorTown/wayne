@@ -109,6 +109,15 @@ export class DeploymentService {
       .catch(error => throwError(error));
   }
 
+  listNexusCrTags(image: string, nsId: number): Observable<any> {
+    let params = new HttpParams();
+    if (typeof(image) !== 'undefined') {
+      params = params.set('appName', image);
+    }
+    return this.http.get(`/wayne/nenux/cr/getAllFromRepository/${nsId}`, {params: params})
+      .catch(error => throwError(error));
+  }
+
   create(deployment: Deployment): Observable<any> {
     return this.http
       .post(`/wayne/api/v1/apps/${deployment.appId}/deployments`, deployment)

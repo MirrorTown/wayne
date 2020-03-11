@@ -235,7 +235,7 @@ export class PublishDeploymentTplComponent implements OnInit {
        }*/
     });
 
-    this.deploymentService.listAliyunCrTags(h.containerImage).subscribe( value => {
+    /*this.deploymentService.listAliyunCrTags(h.containerImage).subscribe( value => {
       if (value != null) {
         for (const tag of value.data) {
           if (tag.tag != null) {
@@ -243,6 +243,12 @@ export class PublishDeploymentTplComponent implements OnInit {
           }
         }
       }
+    });*/
+
+    const namespaceId = this.cacheService.namespaceId;
+    console.log("get nexus")
+    this.deploymentService.listNexusCrTags(h.containerImage, namespaceId).subscribe(value => {
+      console.log(value)
     });
   }
 
@@ -268,11 +274,23 @@ export class PublishDeploymentTplComponent implements OnInit {
       }*/
     });
 
-    this.deploymentService.listAliyunCrTags(this.containerImage).subscribe( value => {
+    /*this.deploymentService.listAliyunCrTags(this.containerImage).subscribe( value => {
       if (value != null) {
         for (const tag of value.data) {
           if (tag.tag != null) {
             this.taglist.push({Name: tag.tag});
+          }
+        }
+      }
+    });*/
+
+    const namespaceId = this.cacheService.namespaceId;
+    this.deploymentService.listNexusCrTags(this.containerImage, namespaceId).subscribe(value => {
+      console.log(value)
+      if (value != null) {
+        for (const tag of value) {
+          if (tag != null) {
+            this.taglist.push({Name: tag});
           }
         }
       }
