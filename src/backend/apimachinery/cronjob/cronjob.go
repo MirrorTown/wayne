@@ -26,7 +26,6 @@ func (c *CronJob) StartDeployStatuJob() (err error) {
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				fmt.Println(err)
 				_ = cli.NotifyToDingding("wayne流程检查定时任务失败，请检查!", "18768129565")
 				logs.Error(err)
 			}
@@ -52,8 +51,13 @@ func (c *CronJob) StartDeployStatuJob() (err error) {
 						//当容器状态非Ready时处理方法,并剔除被终止的deployment影响
 						if sub.UpdateTime.Add(mm).Unix() < time.Now().Unix() && (podSpec.Status.ContainerStatuses == nil || len(podSpec.Status.ContainerStatuses) == 0) {
 							logs.Error("k8s资源不足，请检查!")
-							_ = cli.NotifyToDingding("k8s资源不足，请检查!", "18768129565")
+							_ = cli.NotifyToDingding("发布状态: k8s资源不足，请检查!", "17788558910")
+							sendFlag = false
 							continue
+						} else if podSpec.Status.ContainerStatuses == nil {
+							logs.Info("step2.1")
+							sendFlag = false
+							break
 						}
 						logs.Info("step 3")
 						if podSpec.ObjectMeta.DeletionTimestamp.IsZero() && podSpec.Status.ContainerStatuses[0].Ready == false &&
