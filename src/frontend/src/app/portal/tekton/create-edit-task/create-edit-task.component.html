@@ -20,8 +20,8 @@
       <label class="label-level1" id="input-params">输入参数列表</label>
       <div class="container-box">
         <span>可使用参数名: </span>
-        <div *ngFor="let param of resource.params; let l = index; trackBy:trackByFn">
-          <input style="margin-top: 10px" readonly type="text" size="60" name="args_{{l}}" [(ngModel)]="resource.params[l]"
+        <div *ngFor="let param of params; let l = index; trackBy:trackByFn">
+          <input style="margin-top: 10px" readonly type="text" size="60" name="args_{{l}}" [(ngModel)]="params[l]"
                  class="clr-input" placeholder="参数变量">
         </div>
       </div>
