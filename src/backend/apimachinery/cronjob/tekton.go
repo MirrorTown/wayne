@@ -70,7 +70,7 @@ func (t *Tekton) CleanTektonCRD() {
 		if err != nil {
 			logs.Error(err)
 		}
-		var namespaces = []string{"wireless-ci", "souche-volvo-ci"}
+		var namespaces = []string{"wireless-ci"}
 		for _, cluster := range clusterList {
 			for _, ns := range namespaces {
 				client := cli.Manager(cluster.Name)
