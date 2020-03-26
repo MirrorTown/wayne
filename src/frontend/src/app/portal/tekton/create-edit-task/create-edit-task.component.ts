@@ -89,8 +89,9 @@ export class CreateEditTaskComponent extends ContainerTpl implements OnInit, Aft
   imagelist = [];
   tag = '';
   taglist = [];
+  params = [];
   volumeType = new Map();
-  resource: any;
+  resource: any = {};
 
   constructor(private tektonTaskService: TektonTaskService,
               private aceEditorService: AceEditorService,
@@ -154,8 +155,10 @@ export class CreateEditTaskComponent extends ContainerTpl implements OnInit, Aft
     this.resource.metaData = this.resource.metaData ? this.resource.metaData : '{}';
     const metaData = JSON.parse(this.resource.metaData);
     this.resource.params = metaData['params'];
+    this.params = metaData['params'];
     for (let i = 0, len = this.resource.params.length; i < len; i++) {
       this.resource.params[i] = "inputs.params." + this.resource.params[i];
+      this.params[i] = "inputs.params." + this.resource.params[i];
     }
     console.log(this.resource)
     // this.resourceLimitComponent.setValue(metaData['resources']);
