@@ -46,9 +46,9 @@
         <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
           <h4 class="dropdown-header">{{'POD.LOG_SHOW_ROWS' | translate}}</h4>
           <a href="javascript:void(0)" clrDropdownItem (click)="logTails=10;refreshLog()"> 10 </a>
-          <a href="javascript:void(0)" clrDropdownItem (click)="logTails=20;refreshLog()"> 20 </a>
           <a href="javascript:void(0)" clrDropdownItem (click)="logTails=50;refreshLog()"> 50 </a>
-          <a href="javascript:void(0)" clrDropdownItem (click)="logTails=100;refreshLog()"> 100 </a>
+          <a href="javascript:void(0)" clrDropdownItem (click)="logTails=200;refreshLog()"> 200 </a>
+          <a href="javascript:void(0)" clrDropdownItem (click)="logTails=1000;refreshLog()"> 1000 </a>
         </clr-dropdown-menu>
       </clr-dropdown>
       <a href="javascript:void(0)" (click)="refreshLog()" class="nav-link nav-text">
