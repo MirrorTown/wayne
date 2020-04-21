@@ -149,8 +149,12 @@ export class CreateEditServiceTplComponent implements OnInit {
     }
     this.isSubmitOnGoing = true;
 
+    let clusterip = ""
+    if (this.kubeService.spec.clusterIP) {
+      clusterip = this.kubeService.spec.clusterIP
+    }
     let newService = JSON.parse(JSON.stringify(this.kubeService));
-    newService = this.generateService(newService);
+    newService = this.generateService(newService, clusterip);
     this.serviceTpl.serviceId = this.service.id;
     this.serviceTpl.template = JSON.stringify(newService);
 
@@ -188,7 +192,7 @@ export class CreateEditServiceTplComponent implements OnInit {
     return labels;
   }
 
-  generateService(kubeService: KubeService): KubeService {
+  generateService(kubeService: KubeService, clusterip: string): KubeService {
     if (this.labelSelector && this.labelSelector.length > 0) {
       kubeService.spec.selector = {};
       for (const selector of this.labelSelector) {
@@ -200,6 +204,9 @@ export class CreateEditServiceTplComponent implements OnInit {
     } else {
       kubeService.spec.clusterIP = undefined;
     }
+    if (clusterip != "") {
+      kubeService.spec.clusterIP = clusterip;
+    }
     if (kubeService.spec.ports && kubeService.spec.ports.length > 0) {
       for (let i = 0; i < kubeService.spec.ports.length; i++) {
         if (kubeService.spec.ports[i].name === undefined) {
@@ -210,14 +217,19 @@ export class CreateEditServiceTplComponent implements OnInit {
 
     kubeService.metadata.name = this.service.name;
     kubeService.metadata.labels = this.buildLabels(this.kubeService.metadata.labels);
+    console.log(kubeService)
     return kubeService;
   }
 
   openModal(): void {
     // let copy = Object.assign({}, myObject).
     // but this wont work for nested objects. SO an alternative would be
+    let clusterip = ""
+    if (this.kubeService.spec.clusterIP) {
+      clusterip = this.kubeService.spec.clusterIP
+    }
     let newService = JSON.parse(JSON.stringify(this.kubeService));
-    newService = this.generateService(newService);
+    newService = this.generateService(newService, clusterip);
     this.aceEditorService.announceMessage(AceEditorMsg.Instance(newService, true));
   }
 

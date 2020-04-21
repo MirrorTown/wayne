@@ -144,6 +144,11 @@ func init() {
 				&deployment.DeploymentTplController{},
 			),
 		),
+		beego.NSNamespace("/apps/:appid([0-9]+)/deployments/tbs",
+			beego.NSInclude(
+				&tekton.TektonBuildController{},
+			),
+		),
 		beego.NSNamespace("/apps/:appid([0-9]+)/statefulsets",
 			beego.NSInclude(
 				&statefulset.StatefulsetController{},

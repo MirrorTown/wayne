@@ -38,6 +38,10 @@
       </button>
       <button class="wayne-button normal" (click)="diffTpl()">{{'BUTTON.COMPARE_TEMPLATES' | translate}}</button>
       <button class="wayne-button normal" (click)="cancelPublic()">{{'BUTTON.CANCEL_PUBLISH' | translate}}</button>
+      <button class="wayne-button normal" (click)="createTektonBuild()"
+              *ngIf="authService.currentAppPermission.deployment.create || authService.currentUser.admin">
+        {{'TEKTON.CREATE_BUILD' | translate}}
+      </button>
       <wayne-filter-box (confirm)="confirmEvent()" (cancel)="cancelEvent()">
         <wayne-checkbox-group [(ngModel)]="showList">
           <wayne-checkbox value="create_time">{{'TITLE.CREATE_TIME' | translate}}</wayne-checkbox>

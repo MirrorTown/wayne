@@ -542,17 +542,17 @@ func (t *TektonController) Delete() {
 
 	//logical := t.GetLogicalFromQuery()
 
+	flag := t.deleteTrigger(int64(id))
+	if !flag {
+		logs.Error("delete crd trigger error. v%")
+		t.AbortInternalServerError("delete crd trigger error")
+	}
+
 	err := models.TektonParamModel.DeleteById(int64(id), false)
 	if err != nil {
 		logs.Error("delete %d error.%v", id, err)
 		t.HandleError(err)
 		return
-	}
-
-	flag := t.deleteTrigger(int64(id))
-	if !flag {
-		logs.Error("delete crd trigger error. v%", err)
-		t.AbortInternalServerError("delete crd trigger error")
 	}
 
 	t.Success(nil)

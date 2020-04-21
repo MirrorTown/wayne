@@ -202,6 +202,7 @@
     "CREATE_EDIT": {
       "CLUSTER_MESSAGE": "需要先在后台配置 Namespace 可用集群才可以创建部署"
     },
+    "CREATE_BUILD": "编辑构建模板",
     "CREATE_TMP": "创建Task",
     "DELETE": "删除Trigger",
     "EDIT": "编辑Trigger",
@@ -599,6 +600,7 @@
     "CONTAINER_NAME": "容器名称",
     "CORE_NUM": "CPU 核数",
     "CREATE_TMP": "创建模板",
+    "EDIT_BUILDTMP": "编辑构建模板",
     "CREATE_TEKTON": "创建Tekton",
     "DELETE_CONTAINER": "删除容器",
     "DELETE_ENVIRONMENT": "删除环境变量",
@@ -630,6 +632,8 @@
     "REBUILD": "删除重建",
     "RELEASE_EXPLAIN": "发布说明",
     "RELEASE_MESSAGE": "发布信息",
+    "BUILD_MESSAGE": "构建信息",
+    "BUILD_EXPLAIN": "构建说明",
     "REQUEST_HTTP_PORT": "请求 HTTP 端口",
     "REQUEST_TCP_PORT": "请求 TCP 端口",
     "REQUEST_URL": "请求 URL",
@@ -651,6 +655,7 @@
     "UPDATE_STRATEGY": "更新策略",
     "INPUT_PARAMS": "输入参数",
     "VOLUME_STRATEGY": "挂载策略",
+    "BUILD_VARIABLE": "构建参数",
     "UPDATE_WAY": "更新方式",
     "VOLUME_WAY": "挂载方式",
     "READINESS_CHECK": "就绪探针（建议开启）",

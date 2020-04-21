@@ -381,6 +381,11 @@ export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit 
     this.router.navigate([`portal/namespace/${this.cacheService.namespaceId}/app/${this.app.id}/deployment/${this.deploymentId}/tpl`]);
   }
 
+  // 点击创建构建模版
+  createTektonBuild() {
+    this.router.navigate([`portal/namespace/${this.cacheService.namespaceId}/app/${this.app.id}/deployment/${this.deploymentId}/tb`]);
+  }
+
   // 点击克隆部署模版
   cloneDeploymentTpl(tpl: DeploymentTpl) {
     if (tpl) {
