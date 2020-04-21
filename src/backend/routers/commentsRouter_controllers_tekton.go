@@ -125,4 +125,24 @@ func init() {
 			Filters:          nil,
 			Params:           nil,
 		})
+
+	const TektonBuildController = "github.com/Qihoo360/wayne/src/backend/controllers/tekton:TektonBuildController"
+	beego.GlobalControllerRouter[TektonBuildController] = append(
+		beego.GlobalControllerRouter[TektonBuildController],
+		beego.ControllerComments{
+			Method:           "Get",
+			Router:           `/:deploymentId([0-9]+)`,
+			AllowHTTPMethods: []string{"get"},
+			MethodParams:     param.Make(),
+			Filters:          nil,
+			Params:           nil,
+		},
+		beego.ControllerComments{
+			Method:           "Edit",
+			Router:           `/`,
+			AllowHTTPMethods: []string{"post"},
+			MethodParams:     param.Make(),
+			Filters:          nil,
+			Params:           nil,
+		})
 }

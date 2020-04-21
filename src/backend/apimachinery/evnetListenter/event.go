@@ -60,6 +60,7 @@ func (p *PodeEvent) ListenPod() {
 							fmt.Printf("old:%s %s, new:%s %s \n", oldObj.(*v1.Pod).Name, oldObj.(*v1.Pod).Status.Phase, newObj.(*v1.Pod).Name, newObj.(*v1.Pod).Status.Phase)
 						} else if newObj.(*v1.Pod).Status.ContainerStatuses != nil && oldObj.(*v1.Pod).Status.ContainerStatuses != nil &&
 							newObj.(*v1.Pod).Status.ContainerStatuses[0].RestartCount > oldObj.(*v1.Pod).Status.ContainerStatuses[0].RestartCount {
+							fmt.Printf("send restart alert")
 							msg := fmt.Sprintf(deploy.RESTARTWARN, newObj.(*v1.Pod).Status.Phase, newObj.(*v1.Pod).Name, newObj.(*v1.Pod).Status.ContainerStatuses[0].RestartCount, time.Now().Format("2006 01/02 15:04:05.000"))
 							err := cli.NotifyToDingding(msg, "")
 							if err != nil {

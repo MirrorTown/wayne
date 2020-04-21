@@ -5,6 +5,7 @@ import { ListDeploymentComponent } from './list-deployment/list-deployment.compo
 import { CreateEditDeploymentComponent } from './create-edit-deployment/create-edit-deployment.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CreateEditDeploymentTplComponent } from './create-edit-deploymenttpl/create-edit-deploymenttpl.component';
+import { CreateTektonBuildComponent } from './create-edit-tektonbuild/create-edit-tektonbuild.component';
 import { PublishDeploymentTplComponent } from './publish-tpl/publish-tpl.component';
 import { DeploymentClient } from '../../shared/client/v1/kubernetes/deployment';
 import { PodClient } from '../../shared/client/v1/kubernetes/pod';
@@ -17,6 +18,7 @@ import { LogClient } from '../../shared/client/v1/kubernetes/log';
 import { ReviewModule } from '../review/review.module';
 import { WorkstepService } from '../../shared/client/v1/workstep.service';
 import { ElModule } from 'element-angular';
+import { TektonBuildService } from "../../shared/client/v1/tektonBuild.service";
 
 @NgModule({
   imports: [
@@ -28,6 +30,7 @@ import { ElModule } from 'element-angular';
   providers: [
     DeploymentService,
     DeploymentTplService,
+    TektonBuildService,
     ClusterService,
     DeploymentClient,
     PublicService,
@@ -44,6 +47,7 @@ import { ElModule } from 'element-angular';
     CreateEditDeploymentComponent,
     ListDeploymentComponent,
     CreateEditDeploymentTplComponent,
+    CreateTektonBuildComponent,
     PublishDeploymentTplComponent,
   ]
 })

@@ -18,6 +18,7 @@ var (
 	ClusterModel                  *clusterModel
 	HarborModel                   *harborModel
 	TektonModel                   *tektonModel
+	TektonBuildModel              *tektonBuildModel
 	TektonParamModel              *tektonParamModel
 	TektonTaskModel               *tektonTaskModel
 	HongmaoUserModel              *hongmaoUserModel
@@ -62,6 +63,7 @@ func init() {
 	// init orm tables
 	orm.RegisterModel(
 		new(Tekton),
+		new(TektonBuild),
 		new(TektonParam),
 		new(TektonTask),
 		new(Harbor),
@@ -113,6 +115,7 @@ func init() {
 	// init models
 	HarborModel = &harborModel{}
 	TektonModel = &tektonModel{}
+	TektonBuildModel = &tektonBuildModel{}
 	TektonParamModel = &tektonParamModel{}
 	TektonTaskModel = &tektonTaskModel{}
 	UserModel = &userModel{}

@@ -108,11 +108,13 @@ func (h *HongMaoController) GetApplication(url string) []map[string]interface{} 
 	defer resp.Body.Close()
 
 	var mapResult []map[string]interface{}
-	err = json.Unmarshal(b, &mapResult)
-	if err != nil {
-		logs.Error("JsonToMapDemo err: ", err)
-		h.HandleError(err)
-		return nil
+	if resp.StatusCode == http.StatusOK {
+		err = json.Unmarshal(b, &mapResult)
+		if err != nil {
+			logs.Error("JsonToMapDemo err: ", err)
+			h.HandleError(err)
+			return nil
+		}
 	}
 
 	return mapResult

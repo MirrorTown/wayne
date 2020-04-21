@@ -7,6 +7,7 @@ import { BaseComponent } from './base/base.component';
 import { DetailAppComponent } from './app/detail-app/detail-app.component';
 import { DeploymentComponent } from './deployment/deployment.component';
 import { CreateEditDeploymentTplComponent } from './deployment/create-edit-deploymenttpl/create-edit-deploymenttpl.component';
+import { CreateTektonBuildComponent } from './deployment/create-edit-tektonbuild/create-edit-tektonbuild.component';
 import { AuthCheckGuard } from '../shared/auth/auth-check-guard.service';
 import { ConfigMapComponent } from './configmap/configmap.component';
 import { CreateEditConfigMapTplComponent } from './configmap/create-edit-configmaptpl/create-edit-configmaptpl.component';
@@ -69,6 +70,7 @@ const routes: Routes = [
           {path: 'deployment', component: DeploymentComponent},
           {path: 'deployment/:deploymentId', component: DeploymentComponent},
           {path: 'deployment/:deploymentId/tpl', component: CreateEditDeploymentTplComponent},
+          {path: 'deployment/:deploymentId/tb', component: CreateTektonBuildComponent},
           {path: 'deployment/:deploymentId/tpl/:tplId', component: CreateEditDeploymentTplComponent},
 
           {path: 'tekton', component: TektonComponent},

@@ -1,0 +1,60 @@
+<div class="clr-row tpl-container" xmlns="http://www.w3.org/1999/html">
+  <div class="clr-row flex-items-xs-between flex-items-xs-top" style="padding-left: 15px; padding-right: 15px;">
+    <h3 class="header-title" id="create-template">
+      {{'TEMPLATE.EDIT_BUILDTMP' | translate}}
+    </h3>
+  </div>
+
+  <form #ngForm="ngForm" clrForm clrLayout="horizontal">
+    <wayne-collapse>
+      <label class="label-level1" id="release-message">{{'TEMPLATE.BUILD_MESSAGE' | translate}}</label>
+      <clr-textarea-container>
+        <label class="required">{{'TEMPLATE.BUILD_EXPLAIN' | translate}}</label>
+        <textarea clrTextarea name="deployment_description" [(ngModel)]="tektonBuild.description" rows="3" style="width: 65%"
+                  required>
+        </textarea>
+        <clr-control-error>description is required</clr-control-error>
+      </clr-textarea-container>
+    </wayne-collapse>
+
+    <wayne-collapse>
+      <label class="label-level1" id="volume-strategy">{{'TEMPLATE.BUILD_VARIABLE' | translate}}</label>
+      <button (click)="onAddBuildVariable()" style="margin-left: 10px;" class="wayne-button primary">
+        <clr-icon shape="add-text"></clr-icon>
+        添加构建键值对
+      </button>
+      <div *ngFor="let param of buildResource.params; let v = index; trackBy:trackByFn">
+        <clr-input-container clrInline>
+          <label>参数-{{v + 1}}</label>
+          <label>
+            <clr-icon style="float: right;" (click)="onDelBuildVariable(v)" shape="trash" class="is-solid"></clr-icon>
+          </label>
+        </clr-input-container>
+        <clr-input-container>
+          <label class="required">
+            键:
+          </label>
+          <input type="text" clrInput required name="param_key_{{v}}" size="32"
+                   [(ngModel)]="buildResource.params[v].key" placeholder="Key">
+          <clr-control-error>键不能为空</clr-control-error>
+        </clr-input-container>
+        <clr-input-container clrInline>
+          <label class="required">
+            值:
+          </label>
+          <input type="text" clrInput required name="param_value_{{v}}" size="32"
+                   [(ngModel)]="buildResource.params[v].value" placeholder="Value">
+          <clr-control-error>值不能为空</clr-control-error>
+        </clr-input-container>
+
+      </div>
+    </wayne-collapse>
+
+  </form>
+</div>
+<div class="clr-wizard-footer-buttons tpl-bottom" [style.top.px]="top">
+  <button type="button" class="btn btn-outline" (click)="onCancel()">{{'BUTTON.CANCEL' | translate}}</button>
+  <button type="button" class="btn btn-primary" [disabled]="!isValid" (click)="onSubmit()">{{'BUTTON.SUBMIT' |
+      translate}}</button>
+</div>
+<wayne-ace-editor (outputObj)="saveDeployment($event)"></wayne-ace-editor>
