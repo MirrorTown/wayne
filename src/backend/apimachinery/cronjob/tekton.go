@@ -98,10 +98,10 @@ func (t *Tekton) HandlerTekton(client *client.ClusterManager, ns string, cluster
 			s := strings.Split(name, "-")
 			if pod.Status.Phase == "Succeeded" {
 				status = models.TektonStatusSuc
-				models.TektonBuildModel.UpdateByExecuteId(s[len(s)-1], 4)
+				_ = models.TektonBuildModel.UpdateByExecuteId(s[len(s)-1], 4)
 			} else {
 				status = models.TektonStatusFail
-				models.TektonBuildModel.UpdateByExecuteId(s[len(s)-1], -3)
+				_ = models.TektonBuildModel.UpdateByExecuteId(s[len(s)-1], -3)
 			}
 			crdData, err := crd.GetCustomCRD(client.Client, "tekton.dev", "v1alpha1", "pipelineruns", ns, name)
 			newMetaData, err := json.Marshal(&crdData)
