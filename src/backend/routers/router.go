@@ -502,6 +502,11 @@ func init() {
 				&review.ReviewController{},
 			),
 		),
+		beego.NSNamespace("/build/reviews",
+			beego.NSInclude(
+				&tekton.TektonBuildController{},
+			),
+		),
 	)
 
 	nsWithMultienv := beego.NewNamespace("/api/v1",

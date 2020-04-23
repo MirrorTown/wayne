@@ -7,6 +7,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { CreateEditDeploymentTplComponent } from './create-edit-deploymenttpl/create-edit-deploymenttpl.component';
 import { CreateTektonBuildComponent } from './create-edit-tektonbuild/create-edit-tektonbuild.component';
 import { PublishDeploymentTplComponent } from './publish-tpl/publish-tpl.component';
+import { PublishBuildComponent } from './publish-build/publish-build.component';
 import { DeploymentClient } from '../../shared/client/v1/kubernetes/deployment';
 import { PodClient } from '../../shared/client/v1/kubernetes/pod';
 import { DeploymentService } from '../../shared/client/v1/deployment.service';
@@ -49,6 +50,7 @@ import { TektonBuildService } from "../../shared/client/v1/tektonBuild.service";
     CreateEditDeploymentTplComponent,
     CreateTektonBuildComponent,
     PublishDeploymentTplComponent,
+    PublishBuildComponent,
   ]
 })
 

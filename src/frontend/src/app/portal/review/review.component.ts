@@ -6,8 +6,10 @@ import { CacheService } from '../../shared/auth/cache.service';
 import { AuthService } from '../../shared/auth/auth.service';
 import { PageState } from '../../shared/page/page-state';
 import { ListReviewComponent } from './list-review/list-review.component';
-import { Review } from '../../shared/model/v1/review';
+import { Review, BuildReview } from '../../shared/model/v1/review';
 import { ReviewService } from '../../shared/client/v1/review.service';
+import {TektonBuildService} from "../../shared/client/v1/tektonBuild.service";
+import {TektonBuild} from "../../shared/model/v1/tektonBuild";
 
 const showState = {
   'name': {hidden: false},
@@ -28,13 +30,17 @@ export class ReviewComponent implements OnInit, OnDestroy {
   @ViewChild(ListReviewComponent, { static: false })
   listReview: ListReviewComponent;
   changedReviews: Review[];
+  changedBuildReviews: BuildReview[];
   pageState: PageState = new PageState();
+  pageStateBuild: PageState = new PageState();
   showList: any[] = new Array();
   showState: object = showState;
+  showStateBuild: object = showState;
   subscription: Subscription;
 
   constructor(private reviewService: ReviewService,
               public cacheService: CacheService,
+              private tektonBuildService: TektonBuildService,
               public authService: AuthService,
               private messageHandlerService: MessageHandlerService) {}
 
@@ -91,6 +97,29 @@ export class ReviewComponent implements OnInit, OnDestroy {
       );
   }
 
+  retrieveBuild(state?: ClrDatagridStateInterface): void {
+    if (state) {
+      this.pageStateBuild = PageState.fromState(state, {
+        totalPage: this.pageStateBuild.page.totalPage,
+        totalCount: this.pageStateBuild.page.totalCount
+      });
+    }
+    this.pageStateBuild.params['resourceId'] = this.cacheService.namespaceId;
+    this.pageStateBuild.sort.by = 'id';
+    this.pageStateBuild.sort.reverse = true;
+    this.tektonBuildService.list(this.pageStateBuild).subscribe(
+      response => {
+        const data = response.data;
+        this.pageStateBuild.page.totalPage = data.totalPage;
+        this.pageStateBuild.page.totalCount = data.totalCount;
+        this.changedBuildReviews = data.list;
+        console.log(this.changedBuildReviews)
+      },
+      error => this.messageHandlerService.handleError(error)
+    );
+
+  }
+
   createReview(created: boolean) {
     if (created) {
       this.retrieve();
@@ -98,6 +127,28 @@ export class ReviewComponent implements OnInit, OnDestroy {
   }
 
   openModal(): void {
+  }
+
+  passBuildReview(buildReview: BuildReview) {
+    buildReview.status = 1;
+    this.tektonBuildService.publish(this.cacheService.namespaceId, buildReview).subscribe(
+      response => {
+        this.messageHandlerService.showSuccess('操作成功!');
+        this.retrieveBuild();
+      },
+      error => this.messageHandlerService.handleError(error)
+    );
+  }
+
+  rejectBuildReview(buildReview: BuildReview) {
+    buildReview.status = 2;
+    this.tektonBuildService.publish(this.cacheService.namespaceId, buildReview).subscribe(
+      response => {
+        this.messageHandlerService.showSuccess('操作成功!');
+        this.retrieveBuild();
+      },
+      error => this.messageHandlerService.handleError(error)
+    );
   }
 
   passReview(review: Review) {

@@ -27,10 +27,13 @@ type TektonBuild struct {
 	App          *App                `orm:"index;rel(fk)" json:"app,omitempty"`
 	Description  string              `orm:"null;size(512)" json:"description,omitempty"`
 	DeploymentId int64               `orm:"index;default(0)" json:"deploymentId"`
+	Stepflow     int                 `orm:"index;default(0)" json:"stepflow"`
+	Status       string              `orm:"index;size(200)" json:"status,omitempty"`
 
-	CreateTime *time.Time `orm:"auto_now_add;type(datetime)" json:"createTime,omitempty"`
-	UpdateTime *time.Time `orm:"auto_now;type(datetime)" json:"updateTime,omitempty"`
-	User       string     `orm:"size(128)" json:"user,omitempty"`
+	CreateTime        *time.Time `orm:"auto_now_add;type(datetime)" json:"createTime,omitempty"`
+	UpdateTime        *time.Time `orm:"auto_now;type(datetime)" json:"updateTime,omitempty"`
+	User              string     `orm:"size(128)" json:"user,omitempty"`
+	PipelineExecuteId string     `orm:"size(128)" json:"pipelineExecuteId,omitempty"`
 
 	AppId int64 `orm:"-" json:"appId,omitempty"`
 }
@@ -167,17 +170,30 @@ func (*tektonBuildModel) DeleteById(id int64, logical bool) (err error) {
 	return
 }
 
-func (d *tektonBuildModel) Update(replicas int32, deploy *TektonBuild, cluster []string) (err error) {
-	//deploy.MetaDataObj.Clusters = cluster
-	newMetaData, err := json.Marshal(&deploy.MetaDataObj)
-	if err != nil {
-		logs.Error("tektonParam metadata marshal error.%v", err)
-		return
+func (d *tektonBuildModel) Update(buildName string, stepFlow int, pipelineExecuteId ...string) (err error) {
+	v := &TektonBuild{Name: buildName}
+	if err = Ormer().Read(v, "Name"); err == nil {
+		v.UpdateTime = nil
+		v.Stepflow = stepFlow
+		if len(pipelineExecuteId) > 0 {
+			v.PipelineExecuteId = pipelineExecuteId[0]
+			_, err = Ormer().Update(v, "UpdateTime", "Stepflow", "PipelineExecuteId")
+		}
+		_, err = Ormer().Update(v, "UpdateTime", "Stepflow")
+
+		return err
 	}
-	deploy.MetaData = string(newMetaData)
-	err = d.UpdateById(deploy)
-	if err != nil {
-		logs.Error("tektonParam metadata update error.%v", err)
+	return
+}
+
+func (d *tektonBuildModel) UpdateByExecuteId(pipelineExecuteId string, stepFlow int) (err error) {
+	v := &TektonBuild{PipelineExecuteId: pipelineExecuteId}
+	if err = Ormer().Read(v, "PipelineExecuteId"); err == nil {
+		v.UpdateTime = nil
+		v.Stepflow = stepFlow
+		_, err = Ormer().Update(v, "UpdateTime", "Stepflow")
+
+		return err
 	}
 	return
 }

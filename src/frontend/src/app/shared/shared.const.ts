@@ -45,7 +45,7 @@ export const enum AlertType {
 }
 
 export const enum ResourcesActionType {
-  PUBLISH, SCALE, RESTART, OFFLINE, UPDATE, GRAYPUBLISH
+  PUBLISH, SCALE, RESTART, OFFLINE, UPDATE, GRAYPUBLISH, TEKTONBUILD
 }
 
 export const enum TemplateState {

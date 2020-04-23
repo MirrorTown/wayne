@@ -144,5 +144,29 @@ func init() {
 			MethodParams:     param.Make(),
 			Filters:          nil,
 			Params:           nil,
+		},
+		beego.ControllerComments{
+			Method:           "Create",
+			Router:           `/:id([0-9]+)`,
+			AllowHTTPMethods: []string{"put"},
+			MethodParams:     param.Make(),
+			Filters:          nil,
+			Params:           nil,
+		},
+		beego.ControllerComments{
+			Method:           "Publish",
+			Router:           `/publish`,
+			AllowHTTPMethods: []string{"put"},
+			MethodParams:     param.Make(),
+			Filters:          nil,
+			Params:           nil,
+		},
+		beego.ControllerComments{
+			Method:           "List",
+			Router:           `/`,
+			AllowHTTPMethods: []string{"get"},
+			MethodParams:     param.Make(),
+			Filters:          nil,
+			Params:           nil,
 		})
 }

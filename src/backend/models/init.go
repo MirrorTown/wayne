@@ -23,6 +23,7 @@ var (
 	TektonTaskModel               *tektonTaskModel
 	HongmaoUserModel              *hongmaoUserModel
 	HostAliasModel                *hostAliasModel
+	BuildReviewModel              *buildReviewModel
 	ReviewModel                   *reviewModel
 	DeploymentModel               *deploymentModel
 	DeploymentTplModel            *deploymentTplModel
@@ -69,6 +70,7 @@ func init() {
 		new(Harbor),
 		new(HostAlias),
 		new(Deploy),
+		new(BuildReview),
 		new(Review),
 		new(User),
 		new(App),
@@ -115,6 +117,7 @@ func init() {
 	// init models
 	HarborModel = &harborModel{}
 	TektonModel = &tektonModel{}
+	BuildReviewModel = &buildReviewModel{}
 	TektonBuildModel = &tektonBuildModel{}
 	TektonParamModel = &tektonParamModel{}
 	TektonTaskModel = &tektonTaskModel{}

@@ -13,6 +13,7 @@ import {
 import { ConfirmationDialogService } from '../../../shared/confirmation-dialog/confirmation-dialog.service';
 import { Subscription } from 'rxjs/Subscription';
 import { PublishDeploymentTplComponent } from '../publish-tpl/publish-tpl.component';
+import { PublishBuildComponent } from '../publish-build/publish-build.component';
 import { ListEventComponent } from '../../../shared/list-event/list-event.component';
 import { ListPodComponent } from '../../../shared/list-pod/list-pod.component';
 import { DeploymentStatus, DeploymentTpl, Event } from '../../../shared/model/v1/deploymenttpl';
@@ -27,6 +28,7 @@ import { AceEditorService } from '../../../shared/ace-editor/ace-editor.service'
 import { AceEditorMsg } from '../../../shared/ace-editor/ace-editor';
 import { TranslateService } from '@ngx-translate/core';
 import { DiffService } from '../../../shared/diff/diff.service';
+import { TektonBuildService } from '../../../shared/client/v1/tektonBuild.service';
 import { WorkstepService } from '../../../shared/client/v1/workstep.service';
 import {CacheService} from "../../../shared/auth/cache.service";
 
@@ -41,8 +43,11 @@ export class ListDeploymentComponent implements OnInit, OnDestroy {
   @Input() deploymentTpls: DeploymentTpl[];
   @Input() page: Page;
   @Input() active: number;
+  @Input() buildActive: number;
   @Input() originActive: number;
+  @Input() buildOriginActive: number;
   @Input() processStatus: string;
+  @Input() buildProcessStatus: string;
   @Input() appId: number;
   @Output() paginate = new EventEmitter<ClrDatagridStateInterface>();
   @Output() edit = new EventEmitter<boolean>();
@@ -55,12 +60,15 @@ export class ListDeploymentComponent implements OnInit, OnDestroy {
   listEventComponent: ListEventComponent;
   @ViewChild(PublishDeploymentTplComponent, { static: false })
   publishDeploymentTpl: PublishDeploymentTplComponent;
+  @ViewChild(PublishBuildComponent, { static: false })
+  publishBuild: PublishBuildComponent;
   state: ClrDatagridStateInterface;
   currentPage = 1;
 
   subscription: Subscription;
 
   constructor(private deploymentService: DeploymentService,
+              private tektonBuildService: TektonBuildService,
               private deletionDialogService: ConfirmationDialogService,
               private deploymentTplService: DeploymentTplService,
               private route: ActivatedRoute,
@@ -146,8 +154,19 @@ export class ListDeploymentComponent implements OnInit, OnDestroy {
   }
 
   logDeployment(tpl: DeploymentTpl) {
-    console.log(tpl);
     this.tplDeployLogservice.openModal(tpl.name, tpl.name + " 发布日志");
+  }
+
+  tektonBuild(tpl: DeploymentTpl) {
+    console.log(tpl);
+    this.tektonBuildService.getById(tpl.deploymentId, this.appId).subscribe(
+      status => {
+        const tektonBuild = status.data;
+        this.publishBuild.newPublishTpl(tektonBuild, ResourcesActionType.TEKTONBUILD);
+      },
+      error => {
+        this.messageHandlerService.handleError(error);
+      });
   }
 
   activeStepOne(success: boolean) {
@@ -155,6 +174,14 @@ export class ListDeploymentComponent implements OnInit, OnDestroy {
     if (success) {
       this.active = 1;
       this.processStatus = 'process';
+    }
+  }
+
+  activeBuildStepOne(success: boolean) {
+    console.log(success);
+    if (success) {
+      this.buildActive = 1;
+      this.buildProcessStatus = 'process';
     }
   }
 
@@ -209,6 +236,13 @@ export class ListDeploymentComponent implements OnInit, OnDestroy {
   published(success: boolean) {
     if (success) {
       this.activeStepOne(success);
+      this.refresh();
+    }
+  }
+  
+  buildPublished(success: boolean) {
+    if (success) {
+      this.activeBuildStepOne(success);
       this.refresh();
     }
   }

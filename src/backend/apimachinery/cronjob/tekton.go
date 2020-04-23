@@ -5,6 +5,7 @@ import (
 	"fmt"
 	meta_v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"regexp"
+	"strings"
 
 	"github.com/Qihoo360/wayne/src/backend/apimachinery"
 	"github.com/Qihoo360/wayne/src/backend/client"
@@ -89,15 +90,18 @@ func (t *Tekton) HandlerTekton(client *client.ClusterManager, ns string, cluster
 	for _, pod := range result {
 		if pod.Status.Phase == "Succeeded" || pod.Status.Phase == "Failed" {
 			var status int32 = models.TektonStatusCheck
-			if pod.Status.Phase == "Succeeded" {
-				status = models.TektonStatusSuc
-			} else {
-				status = models.TektonStatusFail
-			}
 			lableMap := t.GetPodLableMap(pod)
 			name := lableMap["tekton.dev/pipelineRun"]
 			if name == "" {
 				continue
+			}
+			s := strings.Split(name, "-")
+			if pod.Status.Phase == "Succeeded" {
+				status = models.TektonStatusSuc
+				models.TektonBuildModel.UpdateByExecuteId(s[len(s)-1], 4)
+			} else {
+				status = models.TektonStatusFail
+				models.TektonBuildModel.UpdateByExecuteId(s[len(s)-1], -3)
 			}
 			crdData, err := crd.GetCustomCRD(client.Client, "tekton.dev", "v1alpha1", "pipelineruns", ns, name)
 			newMetaData, err := json.Marshal(&crdData)

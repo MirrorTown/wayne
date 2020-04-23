@@ -1,3 +1,9 @@
+<el-steps space="150px" [active]="buildActive" [align-center]="true" [finish-status]="'success'" [process-status]="buildProcessStatus">
+  <el-step title="开始"></el-step>
+  <el-step title="审核"></el-step>
+  <el-step title="构建中"></el-step>
+  <el-step title="结束"></el-step>
+</el-steps>
 <el-steps space="150px" [active]="active" [align-center]="true" [finish-status]="'success'" [process-status]="processStatus">
   <el-step title="开始"></el-step>
   <el-step title="审核"></el-step>
@@ -94,6 +100,10 @@
               *ngIf="authService.currentAppPermission.deployment.read || authService.currentUser.admin">
         {{'BUTTON.DEPLOY_LOG' | translate}}</button>
       <button class="wayne-button text"
+              (click)="tektonBuild(deploymentTpl)"
+              *ngIf="authService.currentAppPermission.deployment.read || authService.currentUser.admin">
+        {{'BUTTON.BUILD' | translate}}</button>
+      <button class="wayne-button text"
               (click)="deploymentTplDetail(deploymentTpl)"
               *ngIf="authService.currentAppPermission.deployment.read || authService.currentUser.admin">
         {{'BUTTON.DETAIL' | translate}}</button>
@@ -127,3 +137,4 @@
 <wayne-ace-editor></wayne-ace-editor>
 
 <publish-tpl (published)="published($event)" [originActive]="originActive"></publish-tpl>
+<publish-build (publishBuild)="buildPublished($event)" [buildOriginActive]="buildOriginActive"></publish-build>
