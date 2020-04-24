@@ -1,0 +1,58 @@
+<clr-modal [clrModalSize]="''" [(clrModalOpen)]="modalOpened">
+  <h3 class="modal-title">{{title}}</h3>
+  <div class="modal-body">
+    <form #buildForm="ngForm" clrForm clrLayout="horizontal">
+      <div class="alert alert-warning" *ngIf="actionType==6">
+        <div class="alert-items">
+          <div class="alert-item static">
+            <div class="alert-icon-wrapper">
+              <clr-icon class="alert-icon" shape="exclamation-circle"></clr-icon>
+            </div>
+            <span class="alert-text">
+             按照规范：请确认构建分支为master分支或则hotfix分支
+          </span>
+          </div>
+        </div>
+      </div>
+      <section class="form-block">
+
+        <div class="clr-form-control clr-row" *ngIf="actionType==6">
+          <label class="clr-control-label required">
+            {{'TITLE.BUILD_GIT' | translate}}
+          </label>
+          <div class="clr-control-container">
+            <div class="clr-input-wrapper">
+
+              <ng-container *ngIf="actionType==6">
+                <input class="required" type="text" size="90" name="container" disabled
+                       [(ngModel)]="metaData.params[0].value" [placeholder]="'TEMPLATE.GIT_ADDRESS' | translate">
+              </ng-container>
+            </div>
+          </div>
+        </div>
+
+        <div class="clr-form-control clr-row" *ngIf="actionType==6">
+          <label class="clr-control-label required">
+            {{'TITLE.BUILD_BRANCH' | translate}}
+          </label>
+          <div class="clr-control-container">
+            <div class="clr-input-wrapper">
+
+              <ng-container *ngIf="actionType==6">
+                <input class="required" type="text" size="90" name="containertag"
+                       [(ngModel)]="metaData.params[1].value" [placeholder]="'TEMPLATE.GIT_REVISION' | translate">
+              </ng-container>
+            </div>
+          </div>
+        </div>
+
+      </section>
+    </form>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline" (click)="onCancel()">{{'BUTTON.CANCEL' | translate}}</button>
+      <button type="button" class="btn btn-primary" [disabled]="!isValid"
+              (click)="onSubmit()">{{'BUTTON.CONFIRM' | translate}}</button>
+    </div>
+  </div>
+
+</clr-modal>

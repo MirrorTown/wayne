@@ -498,6 +498,13 @@ export class CreateTektonBuildComponent extends ContainerTpl implements OnInit, 
   onAddBuildVariable() {
     if (this.buildResource.params == undefined) {
       this.buildResource.params = new Array<Volume>();
+      const gitParam = new Param();
+      gitParam.key = "repoURL";
+      const branchParam = new Param();
+      branchParam.key = "repoRevision";
+
+      this.buildResource.params.push(gitParam);
+      this.buildResource.params.push(branchParam);
       console.log("params undefined ,to be inited")
     }
     this.buildResource.params.push(this.defaultBuildParam());
@@ -566,7 +573,7 @@ export class CreateTektonBuildComponent extends ContainerTpl implements OnInit, 
     this.tektonBuild.name = this.deployment.name;
     this.tektonBuild.createTime = this.tektonBuild.updateTime = new Date();
     console.log(this.tektonBuild)
-    this.tektonBuildService.create(this.tektonBuild, this.app.id).subscribe(
+    this.tektonBuildService.edit(this.tektonBuild, this.app.id).subscribe(
       status => {
         this.isSubmitOnGoing = false;
         this.messageHandlerService.showSuccess('创建构建模版成功！');

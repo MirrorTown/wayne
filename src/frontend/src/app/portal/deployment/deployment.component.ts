@@ -36,6 +36,7 @@ import { TabDragService } from '../../shared/client/v1/tab-drag.service';
 import { OrderItem } from '../../shared/model/v1/order';
 import { TranslateService } from '@ngx-translate/core';
 import {WorkstepService} from "../../shared/client/v1/workstep.service";
+import {TektonBuildService} from "../../shared/client/v1/tektonBuild.service";
 
 const showState = {
   'create_time': {hidden: false},
@@ -75,8 +76,11 @@ export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit 
   orderCache: Array<OrderItem>;
   leave = false;
   active: number;
+  buildActive: number;
   originActive: number;
+  buildOriginActive: number;
   processStatus: string;
+  buildProcessStatus: string;
 
   constructor(private deploymentService: DeploymentService,
               private publishHistoryService: PublishHistoryService,
@@ -84,6 +88,7 @@ export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit 
               private deploymentClient: DeploymentClient,
               private route: ActivatedRoute,
               public translate: TranslateService,
+              private tektonBuildService: TektonBuildService,
               private router: Router,
               private publishService: PublishService,
               public cacheService: CacheService,
@@ -413,6 +418,21 @@ export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit 
     if (!this.deploymentId) {
       return;
     }
+    this.tektonBuildService.getById(this.deploymentId, this.appId).subscribe(
+      result => {
+        console.log(result.data)
+        this.buildOriginActive = result.data.stepflow;
+        if (result.data.stepflow >= 0) {
+          console.log("Bigger than zero");
+          this.buildActive = result.data.stepflow;
+          this.buildProcessStatus = 'process';
+        }else if (result.data.stepflow != -999){
+          console.log("Less than zero");
+          this.buildActive = Math.abs(result.data.stepflow);
+          this.buildProcessStatus = 'error';
+        }
+      }
+    )
     this.workstepService.getById(this.cacheService.namespaceId, this.appId, this.deploymentId).subscribe(
       result => {
         console.log(result.data);

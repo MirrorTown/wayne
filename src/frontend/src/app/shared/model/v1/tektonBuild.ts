@@ -11,6 +11,8 @@ export class TektonBuild {
   description: string;
   deleted: boolean;
   user: string;
+  stepflow: number;
+  status: string;
   createTime: Date;
   updateTime?: Date;
   appId: number;

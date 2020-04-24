@@ -407,7 +407,7 @@ func (t *TektonController) generateTriggerResourceTemplate(ns string, tektonPara
 	pipelineResource.ObjectMeta.Namespace = ns
 	pipelineResource.Spec.Params = append(pipelineResource.Spec.Params, pipelinev1.ResourceParam{
 		Name:  "revision",
-		Value: "$(params.gitRevision)",
+		Value: "$(params.gitReversion)",
 	})
 	pipelineResource.Spec.Params = append(pipelineResource.Spec.Params, pipelinev1.ResourceParam{
 		Name:  "url",
