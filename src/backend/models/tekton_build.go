@@ -35,7 +35,8 @@ type TektonBuild struct {
 	User              string     `orm:"size(128)" json:"user,omitempty"`
 	PipelineExecuteId string     `orm:"size(128)" json:"pipelineExecuteId,omitempty"`
 
-	AppId int64 `orm:"-" json:"appId,omitempty"`
+	AppId  int64  `orm:"-" json:"appId,omitempty"`
+	LogUri string `orm:"-" json:"logUri,omitempty"`
 }
 
 func (*TektonBuild) TableName() string {

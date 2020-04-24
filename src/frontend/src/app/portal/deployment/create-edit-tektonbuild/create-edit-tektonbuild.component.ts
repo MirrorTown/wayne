@@ -59,6 +59,7 @@ export class CreateTektonBuildComponent extends ContainerTpl implements OnInit, 
   currentForm: NgForm;
 
   buildResource: any = {};
+  checked: boolean;
 
   actionType: ActionType;
   tektonBuild: TektonBuild = new TektonBuild();
@@ -153,6 +154,10 @@ export class CreateTektonBuildComponent extends ContainerTpl implements OnInit, 
 
   checkCpu(cpu: string): boolean {
     return cpu === '' ? true : parseFloat(cpu) <= this.cpuLimit && parseFloat(cpu) > 0;
+  }
+
+  buildChange() {
+    this.checked = !this.checked;
   }
 
   get memoryLimit(): number {
@@ -250,6 +255,7 @@ export class CreateTektonBuildComponent extends ContainerTpl implements OnInit, 
   }
 
   ngOnInit(): void {
+    this.checked = false;
     const namespaceId = this.cacheService.namespaceId;
     const appId = parseInt(this.route.parent.snapshot.params['id'], 10);
     const deploymentId = parseInt(this.route.snapshot.params['deploymentId'], 10);
@@ -562,17 +568,20 @@ export class CreateTektonBuildComponent extends ContainerTpl implements OnInit, 
     }
     this.isSubmitOnGoing = true;
     let newState = JSON.parse(JSON.stringify(this.buildResource));
-    console.log(newState)
     // newState = this.generateDeployment(newState);
     this.tektonBuild.deploymentId = this.deployment.id;
     this.tektonBuild.metaData = JSON.stringify(newState);
     if (this.actionType == ActionType.ADD_NEW) {
       this.tektonBuild.id = undefined;
     }
+    if (this.checked) {
+      this.tektonBuild.status = "开启审核"
+    } else {
+      this.tektonBuild.status = "关闭审核"
+    }
     this.tektonBuild.appId = this.app.id;
     this.tektonBuild.name = this.deployment.name;
     this.tektonBuild.createTime = this.tektonBuild.updateTime = new Date();
-    console.log(this.tektonBuild)
     this.tektonBuildService.edit(this.tektonBuild, this.app.id).subscribe(
       status => {
         this.isSubmitOnGoing = false;

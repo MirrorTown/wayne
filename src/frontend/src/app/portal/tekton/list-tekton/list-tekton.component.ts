@@ -147,10 +147,10 @@ export class ListTektonComponent implements OnInit, OnDestroy {
     this.tplDetailService.openModal(tpl.description);
   }
 
-  logDeployment(tpl: DeploymentTpl) {
-    console.log(tpl);
-    this.tplDeployLogservice.openModal(tpl.name, tpl.name + " 发布日志");
-  }
+  // logDeployment(tpl: DeploymentTpl) {
+  //   console.log(tpl);
+  //   this.tplDeployLogservice.openModal(tpl.name, tpl.name + " 发布日志");
+  // }
 
   activeStepOne(success: boolean) {
     console.log(success);

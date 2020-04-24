@@ -44,7 +44,7 @@
     "DETAIL": "详情",
     "COMPARE_TEMPLATES": "对比模板",
     "CANCEL_PUBLISH": "强制取消发布",
-    "DEPLOY_LOG": "发布日志",
+    "DEPLOY_LOG": "构建日志",
     "BUILD": "构建",
     "DROP": "下线",
     "EDIT": "编辑",

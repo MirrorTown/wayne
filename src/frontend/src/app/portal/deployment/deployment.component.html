@@ -63,6 +63,6 @@
   <br>
   <list-deployment *ngIf="click" [deploymentTpls]="changedDeploymentTpls" [active]= "active" [originActive]="originActive" [processStatus]="processStatus" (paginate)="retrieve($event)"
                    (edit)="editDeployment()" (createTpl)="createDeploymentTpl()" [showState]="showState" [buildProcessStatus]="buildProcessStatus" [buildOriginActive]="buildOriginActive"
-                   [buildActive]= "buildActive" (cloneTpl)="cloneDeploymentTpl($event)" [appId]="appId" [page]="pageState.page">
+                   [buildActive]= "buildActive" (publish)="published()" (buildPublish)="buildPublished()" (cloneTpl)="cloneDeploymentTpl($event)" [appId]="appId" [page]="pageState.page">
   </list-deployment>
 </div>

@@ -1,15 +1,25 @@
-<clr-modal [(clrModalOpen)]="modalOpened" [clrModalSize]="''">
-  <h3 class="modal-title">{{title | translate}}</h3>
-  <!--<div class="modal-title clr-row flex-items-xs-between" style="margin-left: 5px">
-    <label for="startTime" class="time-label">{{'TITLE.START_TIME' | translate}}：</label><input type="date" id="startTime" name="startTime" [(ngModel)]="startTime" clrDate>
-    <label for="endTime" class="time-label">{{'TITLE.FINISH_TIME' | translate}}：</label><input type="date" id="endTime" name="endTime" [(ngModel)]="endTime" clrDate>
-    <button class="btn" (click)="search()">查询</button>
-  </div>-->
-  <div class="modal-body">
-    <hr>
-    <div style="padding-top: 10px">
-      <pre style="border: none;">{{text}}</pre>
-    </div>
-  </div>
-</clr-modal>
+<!--<clr-modal [(clrModalOpen)]="modalOpened" [clrModalSize]="''">-->
+<!--  <h3 class="modal-title">{{title | translate}}</h3>-->
+<!--  &lt;!&ndash;<div class="modal-title clr-row flex-items-xs-between" style="margin-left: 5px">-->
+<!--    <label for="startTime" class="time-label">{{'TITLE.START_TIME' | translate}}：</label><input type="date" id="startTime" name="startTime" [(ngModel)]="startTime" clrDate>-->
+<!--    <label for="endTime" class="time-label">{{'TITLE.FINISH_TIME' | translate}}：</label><input type="date" id="endTime" name="endTime" [(ngModel)]="endTime" clrDate>-->
+<!--    <button class="btn" (click)="search()">查询</button>-->
+<!--  </div>&ndash;&gt;-->
+<!--  <div class="modal-body">-->
+<!--    <hr>-->
+<!--    <div style="padding-top: 10px">-->
+<!--      <pre style="border: none;">-->
+<!--        <iframe id="ifrmonitor" name="ifrmonitor" [src]="iframe" frameborder="0" style="width: 100%; height: 430px;"></iframe>-->
+<!--      </pre>-->
+<!--&lt;!&ndash;      <pre style="border: none;">{{text}}</pre>&ndash;&gt;-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</clr-modal>-->
 
+<jw-modal id="custom-modal-1">
+  <h3 class="modal-title">{{title | translate}}</h3>
+  <div style="width: 100%; height: 1000px;">
+        <iframe id="ifrmonitor" name="ifrmonitor" [src]="iframe" frameborder="0" style="width: 100%; height: 100%;"></iframe>
+  </div>
+  <button (click)="closeModal('custom-modal-1');">Close</button>
+</jw-modal>
