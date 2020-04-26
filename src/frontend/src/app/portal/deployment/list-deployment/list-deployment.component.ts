@@ -53,6 +53,8 @@ export class ListDeploymentComponent implements OnInit, OnDestroy {
   @Output() edit = new EventEmitter<boolean>();
   @Output() cloneTpl = new EventEmitter<DeploymentTpl>();
   @Output() createTpl = new EventEmitter<boolean>();
+  @Output() publish = new EventEmitter<boolean>();
+  @Output() buildPublish = new EventEmitter<boolean>();
 
   @ViewChild(ListPodComponent, { static: false })
   listPodComponent: ListPodComponent;
@@ -125,7 +127,6 @@ export class ListDeploymentComponent implements OnInit, OnDestroy {
   }
 
   refresh(state?: ClrDatagridStateInterface) {
-    console.log('refresh')
     this.state = state;
     this.paginate.emit(this.state);
   }
@@ -154,11 +155,10 @@ export class ListDeploymentComponent implements OnInit, OnDestroy {
   }
 
   logDeployment(tpl: DeploymentTpl) {
-    this.tplDeployLogservice.openModal(tpl.name, tpl.name + " 发布日志");
+    this.tplDeployLogservice.openModal(tpl.name, tpl.deploymentId, this.appId, tpl.name + " 发布日志");
   }
 
   tektonBuild(tpl: DeploymentTpl) {
-    console.log(tpl);
     this.tektonBuildService.getById(tpl.deploymentId, this.appId).subscribe(
       status => {
         const tektonBuild = status.data;
@@ -170,7 +170,6 @@ export class ListDeploymentComponent implements OnInit, OnDestroy {
   }
 
   activeStepOne(success: boolean) {
-    console.log(success);
     if (success) {
       this.active = 1;
       this.processStatus = 'process';
@@ -178,7 +177,6 @@ export class ListDeploymentComponent implements OnInit, OnDestroy {
   }
 
   activeBuildStepOne(success: boolean) {
-    console.log(success);
     if (success) {
       this.buildActive = 1;
       this.buildProcessStatus = 'process';
@@ -235,14 +233,16 @@ export class ListDeploymentComponent implements OnInit, OnDestroy {
 
   published(success: boolean) {
     if (success) {
-      this.activeStepOne(success);
+      // this.activeStepOne(success);
+      this.publish.emit(true);
       this.refresh();
     }
   }
 
   buildPublished(success: boolean) {
     if (success) {
-      this.activeBuildStepOne(success);
+      // this.activeBuildStepOne(success);
+      this.buildPublish.emit(true);
       this.refresh();
     }
   }

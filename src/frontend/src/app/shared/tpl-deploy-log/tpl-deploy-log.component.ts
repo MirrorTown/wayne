@@ -5,6 +5,10 @@ import * as moment from 'moment';
 import { SlsService } from '../client/v1/sls.service';
 import { DeployLog } from '../model/v1/deploy-log';
 import { MessageHandlerService } from '../message-handler/message-handler.service';
+import {DomSanitizer, SafeResourceUrl} from "@angular/platform-browser";
+import {TektonBuildService} from "../client/v1/tektonBuild.service";
+import {ModalService} from "./_modal";
+
 
 @Component({
   selector: 'tpl-deploy-log',
@@ -20,20 +24,31 @@ export class TplDeployLogComponent implements OnInit, OnDestroy {
   title = 'release_explain';
   textSub: Subscription;
   queryLog: DeployLog;
+  iframe: SafeResourceUrl;
 
   constructor(private tplDeployLogService: TplDeployLogservice,
               private messageHandlerService: MessageHandlerService,
-              private slsService: SlsService) {
+              private tektonBuildService: TektonBuildService,
+              private modalService: ModalService,
+              private slsService: SlsService,
+              public sanitizer: DomSanitizer) {
   }
 
-  openModal(text: string) {
-    this.text = text;
-    this.modalOpened = true;
+  // openModal(text: string) {
+  //   this.text = text;
+  //   this.modalOpened = true;
+  // }
+  openModal(id: string) {
+    this.modalService.open(id);
+  }
+
+  closeModal(id: string) {
+    this.modalService.close(id);
   }
 
 
   ngOnInit(): void {
-    console.log("enter")
+    console.log("enter tekton-dashboard");
     const now = new Date();
     /*this.startTime = moment(new Date(now.getTime() - 1000 * 3600 * 24 * 7)).format('YYYY-MM-DD HH:mm:ss');
     this.endTime = moment(now).format('YYYY-MM-DD HH:mm:ss');
@@ -41,16 +56,24 @@ export class TplDeployLogComponent implements OnInit, OnDestroy {
     this.textSub = this.tplDeployLogService.text$.subscribe(
       msg => {
         console.log(msg);
-        this.queryLog = new DeployLog(msg.text, msg.text, 1, 1000)
-        this.slsService.getDeployLog(this.queryLog).subscribe(
-          response => {
-            console.log(response.data);
-            this.text = response.data.obj.message;
-          },
-          error => this.messageHandlerService.handleError(error)
-        );
+        // this.queryLog = new DeployLog(msg.text, msg.text, 1, 1000)
+        // this.slsService.getDeployLog(this.queryLog).subscribe(
+        //   response => {
+        //     console.log(response.data);
+        //     this.text = response.data.obj.message;
+        //   },
+        //   error => this.messageHandlerService.handleError(error)
+        // );
+
+        this.tektonBuildService.getById(msg.deploymentId, msg.appId).subscribe(response => {
+          console.log(response.data)
+          // let src = response.data.logUri + response.data.pipelineExecuteId;
+          let src = "https://dasoudevops.digitalvolvo.com/tekton/#/namespaces/dasouche-devops/pipelineruns/pipelinerun-volov-build-qdxrq"
+          this.iframe = this.sanitizer.bypassSecurityTrustResourceUrl(src);
+        })
         this.modalOpened = true;
         if (msg.title) { this.title = msg.title; }
+        this.openModal("custom-modal-1")
       }
     );
   }

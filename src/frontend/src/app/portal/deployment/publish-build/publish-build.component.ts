@@ -61,13 +61,11 @@ export class PublishBuildComponent implements OnInit {
   }
 
   newPublishTpl(tektonBuild: TektonBuild, actionType: ResourcesActionType) {
-    console.log(this.tektonBuild);
     this.inflow = false;
     //上次发布结束才可以继续发布本次发布
     if (this.buildOriginActive < 0 || this.buildOriginActive === 3) {
       this.inflow = true;
     }
-    console.log(this.inflow);
     this.tektonBuild = tektonBuild;
     this.metaData = JSON.parse(tektonBuild.metaData);
     this.actionType = actionType;
@@ -115,13 +113,11 @@ export class PublishBuildComponent implements OnInit {
   }
 
   tektonbuild() {
-    console.log("start to build")
     const namespaceId = this.cacheService.namespaceId;
     const observables = Array();
     // 灰度发布策略
     if (this.actionType === ResourcesActionType.TEKTONBUILD) {
       this.tektonBuild.metaData = JSON.stringify(this.metaData);
-      console.log(this.tektonBuild)
       observables.push(this.tektonBuildService.create(
         this.tektonBuild,
         this.appId
@@ -130,8 +126,13 @@ export class PublishBuildComponent implements OnInit {
 
     forkJoin(observables).subscribe(
       response => {
-        this.publishBuild.emit(true);
-        this.messageHandlerService.showSuccess('已进入构建队列，请关注构建结果！');
+        if (response[0]["data"] === "构建成功"){
+          this.publishBuild.emit(true);
+          this.messageHandlerService.showSuccess('构建中,请关注构建日志！');
+        }else {
+          this.publishBuild.emit(true);
+          this.messageHandlerService.showSuccess('已进入构建队列，请关注构建审核情况！');
+        }
       },
       error => {
         this.publishBuild.emit(true);

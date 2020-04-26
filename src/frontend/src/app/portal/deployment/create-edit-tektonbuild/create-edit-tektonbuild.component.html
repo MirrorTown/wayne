@@ -23,6 +23,14 @@
         <clr-icon shape="add-text"></clr-icon>
         添加构建键值对
       </button>
+
+      <div class="table-search-right">
+        <div class="clr-toggle-wrapper">
+          <input type="checkbox" id="search-online" [(ngModel)]="checked" name="toggle-basic" class="clr-toggle" (change)="buildChange()">
+          <label for="search-online">开启构建审核</label>
+        </div>
+      </div>
+
       <div *ngFor="let param of buildResource.params; let v = index; trackBy:trackByFn">
         <clr-input-container clrInline>
           <label>参数-{{v + 1}}</label>
@@ -32,7 +40,7 @@
         </clr-input-container>
         <clr-input-container>
           <label class="required">
-            键:
+            参数名:
           </label>
           <input type="text" clrInput required name="param_key_{{v}}" size="32"
                    [(ngModel)]="buildResource.params[v].key" placeholder="Key">
@@ -57,4 +65,3 @@
   <button type="button" class="btn btn-primary" [disabled]="!isValid" (click)="onSubmit()">{{'BUTTON.SUBMIT' |
       translate}}</button>
 </div>
-<wayne-ace-editor (outputObj)="saveDeployment($event)"></wayne-ace-editor>

@@ -126,6 +126,23 @@ func (t *TektonBuildController) Create() {
 		t.AbortBadRequestFormat("Bad MetaData")
 	}
 
+	if tektonBuild.Status == "关闭审核" {
+		pipelineExecuteId := strconv.Itoa(int(time.Now().Unix()))
+		err = models.TektonBuildModel.Update(tektonBuild.Name, 2, pipelineExecuteId)
+		if err != nil {
+			logs.Error("Update TektonBuild error.%v", err)
+			t.AbortBadRequestFormat("Update TektonBuild error")
+		}
+
+		err = t.deploy(tektonBuild.Name, pipelineExecuteId)
+		if err != nil {
+			logs.Error("构建失败", err)
+			t.AbortInternalServerError("构建时出现异常")
+		}
+		t.Success("构建成功")
+		return
+	}
+	//开启审核时所需信息
 	var buildVersion string
 	for _, metaMap := range tektonBuildMetaData.Params {
 		if metaMap["key"] == "repoRevision" || metaMap["key"] == "gitRevision" || metaMap["key"] == "gitReversion" {
@@ -229,7 +246,6 @@ func (t *TektonBuildController) deploy(buildName, pipelineExecuteId string) erro
 	}
 	//b, err := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
-	//fmt.Println(string(b), resp.StatusCode, http.StatusOK)
 
 	//models.TektonBuildModel.UpdateByExecuteId(pipelineExecuteId, -3)
 
@@ -243,6 +259,7 @@ func (t *TektonBuildController) deploy(buildName, pipelineExecuteId string) erro
 // @router /:deploymentId([0-9]+) [get]
 func (t *TektonBuildController) Get() {
 	deploymentId := t.GetIntParamFromURL(":deploymentId")
+	logBuildUri := beego.AppConfig.String("log_build_uri")
 
 	tektonBuild, err := models.TektonBuildModel.GetByDeploymentId(deploymentId)
 	if err != nil && err.Error() == ErrNoRows.Error() {
@@ -253,6 +270,7 @@ func (t *TektonBuildController) Get() {
 		t.HandleError(err)
 		return
 	}
+	tektonBuild.LogUri = logBuildUri
 
 	t.Success(tektonBuild)
 }

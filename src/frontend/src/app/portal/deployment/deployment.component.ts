@@ -381,6 +381,14 @@ export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit 
     }
   }
 
+  buildPublished() {
+    this.buildActive = 1;
+  }
+
+  published() {
+    this.active = 1;
+  }
+
   // 点击创建部署模版
   createDeploymentTpl() {
     this.router.navigate([`portal/namespace/${this.cacheService.namespaceId}/app/${this.app.id}/deployment/${this.deploymentId}/tpl`]);
@@ -420,14 +428,13 @@ export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit 
     }
     this.tektonBuildService.getById(this.deploymentId, this.appId).subscribe(
       result => {
-        console.log(result.data)
         this.buildOriginActive = result.data.stepflow;
         if (result.data.stepflow >= 0) {
-          console.log("Bigger than zero");
+          console.log(result.data.stepflow)
           this.buildActive = result.data.stepflow;
           this.buildProcessStatus = 'process';
         }else if (result.data.stepflow != -999){
-          console.log("Less than zero");
+          console.log('step 2')
           this.buildActive = Math.abs(result.data.stepflow);
           this.buildProcessStatus = 'error';
         }
@@ -435,14 +442,11 @@ export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit 
     )
     this.workstepService.getById(this.cacheService.namespaceId, this.appId, this.deploymentId).subscribe(
       result => {
-        console.log(result.data);
         this.originActive = result.data;
         if (result.data >= 0) {
-          console.log("Bigger than zero");
           this.active = result.data + 1;
           this.processStatus = 'process';
         }else if (result.data != -999){
-          console.log("Less than zero");
           this.active = Math.abs(result.data);
           this.processStatus = 'error';
         } else {
