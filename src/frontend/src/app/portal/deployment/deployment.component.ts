@@ -246,7 +246,6 @@ export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit 
   }
 
   syncDeployStatus() {
-    console.log(this.buildActive, this.active)
     if (this.buildActive < 4 && this.buildActive != -999 || this.buildActive == undefined ) {
       this.tektonBuildService.getById(this.deploymentId, this.appId).subscribe(
       result => {
