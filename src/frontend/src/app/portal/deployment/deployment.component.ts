@@ -241,6 +241,47 @@ export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit 
           }
         }
       }
+      this.syncDeployStatus();
+    }
+  }
+
+  syncDeployStatus() {
+    console.log(this.buildActive, this.active)
+    if (this.buildActive < 4 && this.buildActive != -999 || this.buildActive == undefined ) {
+      this.tektonBuildService.getById(this.deploymentId, this.appId).subscribe(
+      result => {
+          this.buildOriginActive = result.data.stepflow;
+          if (result.data == 'No Row Found') {
+            this.buildActive = -999;
+          }
+          else if (result.data.stepflow >= 0) {
+            this.buildActive = result.data.stepflow;
+            this.buildProcessStatus = 'process';
+          }else if (result.data.stepflow != -999){
+            this.buildActive = Math.abs(result.data.stepflow);
+            this.buildProcessStatus = 'error';
+          }
+        }
+      )
+    }
+    if (this.active < 3 && this.active != -999 || this.active == undefined) {
+      this.workstepService.getById(this.cacheService.namespaceId, this.appId, this.deploymentId).subscribe(
+      result => {
+          this.originActive = result.data;
+          if (result.data >= 0) {
+            this.active = result.data + 1;
+            this.processStatus = 'process';
+          }else if (result.data != -999){
+            this.active = Math.abs(result.data);
+            this.processStatus = 'error';
+          } else {
+            this.active = result.data;
+          }
+        },
+      error => {
+          this.messageHandlerService.handleError(error);
+        }
+      );
     }
   }
 
@@ -426,37 +467,7 @@ export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit 
     if (!this.deploymentId) {
       return;
     }
-    this.tektonBuildService.getById(this.deploymentId, this.appId).subscribe(
-      result => {
-        this.buildOriginActive = result.data.stepflow;
-        if (result.data.stepflow >= 0) {
-          console.log(result.data.stepflow)
-          this.buildActive = result.data.stepflow;
-          this.buildProcessStatus = 'process';
-        }else if (result.data.stepflow != -999){
-          console.log('step 2')
-          this.buildActive = Math.abs(result.data.stepflow);
-          this.buildProcessStatus = 'error';
-        }
-      }
-    )
-    this.workstepService.getById(this.cacheService.namespaceId, this.appId, this.deploymentId).subscribe(
-      result => {
-        this.originActive = result.data;
-        if (result.data >= 0) {
-          this.active = result.data + 1;
-          this.processStatus = 'process';
-        }else if (result.data != -999){
-          this.active = Math.abs(result.data);
-          this.processStatus = 'error';
-        } else {
-          this.active = result.data;
-        }
-      },
-      error => {
-        this.messageHandlerService.handleError(error);
-      }
-    );
+    this.syncDeployStatus();
     if (state) {
       this.pageState = PageState.fromState(state, {
         totalPage: this.pageState.page.totalPage,
