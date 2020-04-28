@@ -98,7 +98,7 @@
       <button class="wayne-button text"
               (click)="logDeployment(deploymentTpl)"
               *ngIf="authService.currentAppPermission.deployment.read || authService.currentUser.admin">
-        {{'BUTTON.DEPLOY_LOG' | translate}}</button>
+        {{'BUTTON.BUILD_LOG' | translate}}</button>
       <button class="wayne-button text"
               (click)="tektonBuild(deploymentTpl)"
               *ngIf="authService.currentAppPermission.deployment.read || authService.currentUser.admin">

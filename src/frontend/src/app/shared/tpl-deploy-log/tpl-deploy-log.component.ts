@@ -55,7 +55,6 @@ export class TplDeployLogComponent implements OnInit, OnDestroy {
     console.log(this.startTime, this.endTime);*/
     this.textSub = this.tplDeployLogService.text$.subscribe(
       msg => {
-        console.log(msg);
         // this.queryLog = new DeployLog(msg.text, msg.text, 1, 1000)
         // this.slsService.getDeployLog(this.queryLog).subscribe(
         //   response => {
@@ -66,9 +65,8 @@ export class TplDeployLogComponent implements OnInit, OnDestroy {
         // );
 
         this.tektonBuildService.getById(msg.deploymentId, msg.appId).subscribe(response => {
-          console.log(response.data)
-          // let src = response.data.logUri + response.data.pipelineExecuteId;
-          let src = "https://dasoudevops.digitalvolvo.com/tekton/#/namespaces/dasouche-devops/pipelineruns/pipelinerun-volov-build-qdxrq"
+          let src = response.data.logUri + response.data.pipelineExecuteId;
+          // let src = "https://dasoudevops.digitalvolvo.com/tekton/#/namespaces/dasouche-devops/pipelineruns/pipelinerun-volov-build-qdxrq"
           this.iframe = this.sanitizer.bypassSecurityTrustResourceUrl(src);
         })
         this.modalOpened = true;
