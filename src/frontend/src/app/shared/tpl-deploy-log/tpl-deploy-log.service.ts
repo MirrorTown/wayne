@@ -17,7 +17,6 @@ export class TplDeployLogservice {
   text$ = this.text.asObservable();
 
   openModal(text: string, deploymentId: number, appId: number, title?: string) {
-    console.log(text);
     const msg = new Message();
     msg.text = text;
     msg.deploymentId = deploymentId;

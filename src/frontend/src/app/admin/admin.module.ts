@@ -69,6 +69,7 @@ import { KubeClusterroleModule } from './kubernetes/clusterrole/kube-clusterrole
 import { KubeClusterrolebindingModule } from './kubernetes/clusterrolebinding/kube-clusterrolebinding.module';
 import { KubeCrdModule } from './kubernetes/crd/kube-crd.module';
 import { HarborModule } from './harbor/harbor.module';
+import { TektonPipelineModule } from './tekton-pipeline/tekton-pipeline.module'
 import { RoadMapModule } from './roadmap/roadmap.module';
 import { CustomlinkModule } from './customlink/customlink.module';
 
@@ -78,6 +79,7 @@ import { CustomlinkModule } from './customlink/customlink.module';
     AdminRoutingModule,
     ClusterModule,
     HarborModule,
+    TektonPipelineModule,
     AppModule,
     DeploymentModule,
     DeploymentTplModule,

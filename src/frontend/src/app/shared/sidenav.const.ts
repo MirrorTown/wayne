@@ -24,7 +24,12 @@ const adminSideNav: any[] = [
   },
   {
     type: SideNavType.GroupLink, icon: {title: 'MENU.HARBOR', shape: 'image-gallery' }, text: 'MENU.HARBOR', child: [
-      { a: { link: 'harbor', text: 'MENU.CONFIGHARBOR', options: { exact: true } } },
+      { a: { link: 'harbor', text: 'MENU.CONFIG', options: { exact: true } } },
+    ]
+  },
+  {
+    type: SideNavType.GroupLink, icon: {title: 'MENU.PIPELINE', shape: 'plugin' }, text: 'MENU.PIPELINE', child: [
+      { a: { link: 'pipeline', text: 'MENU.CONFIG', options: { exact: true } } },
     ]
   },
   {

@@ -113,7 +113,6 @@ export class ReviewComponent implements OnInit, OnDestroy {
         this.pageStateBuild.page.totalPage = data.totalPage;
         this.pageStateBuild.page.totalCount = data.totalCount;
         this.changedBuildReviews = data.list;
-        console.log(this.changedBuildReviews)
       },
       error => this.messageHandlerService.handleError(error)
     );

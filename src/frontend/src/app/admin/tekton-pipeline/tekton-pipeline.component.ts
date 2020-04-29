@@ -5,43 +5,44 @@ import { ConfirmationMessage } from '../../shared/confirmation-dialog/confirmati
 import { ConfirmationButtons, ConfirmationState, ConfirmationTargets } from '../../shared/shared.const';
 import { Subscription } from 'rxjs/Subscription';
 import { MessageHandlerService } from '../../shared/message-handler/message-handler.service';
-import { CreateEditHarborComponent } from './create-edit-harbor/create-edit-harbor.component';
-import { ListHarborComponent } from './list-harbor/list-harbor.component';
+import { CreateEditTektonPipelineComponent } from './create-edit-tekton-pipeline/create-edit-tekton-pipeline.component';
+import { ListTektonPipelineComponent } from './list-tekton-pipeline/list-tekton-pipeline.component';
 import { Harbor } from '../../shared/model/v1/harbor';
-import { HarborService } from '../../shared/client/v1/harbor.service';
+import { PipelineService } from '../../shared/client/v1/pipeline.service';
 import { PageState } from '../../shared/page/page-state';
+import {Pipeline} from "../../shared/model/v1/pipeline";
 
 @Component({
-  selector: 'wayne-harbor',
-  templateUrl: './harbor.component.html',
-  styleUrls: ['./harbor.component.scss']
+  selector: 'tekton-pipeline',
+  templateUrl: './tekton-pipeline.component.html',
+  styleUrls: ['./tekton-pipeline.component.scss']
 })
-export class HarborComponent implements OnInit, OnDestroy {
-  @ViewChild(ListHarborComponent, { static: false })
-  list: ListHarborComponent;
-  @ViewChild(CreateEditHarborComponent, { static: false })
-  createEdit: CreateEditHarborComponent;
+export class TektonPipelineComponent implements OnInit, OnDestroy {
+  @ViewChild(ListTektonPipelineComponent, { static: false })
+  list: ListTektonPipelineComponent;
+  @ViewChild(CreateEditTektonPipelineComponent, { static: false })
+  createEdit: CreateEditTektonPipelineComponent;
 
   pageState: PageState = new PageState();
-  harbors: Harbor[];
+  pipelines: Pipeline[];
 
   subscription: Subscription;
 
   constructor(
-    private harborService: HarborService,
+    private pipelineService: PipelineService,
     private messageHandlerService: MessageHandlerService,
     private deletionDialogService: ConfirmationDialogService) {
     this.subscription = deletionDialogService.confirmationConfirm$.subscribe(message => {
       if (message &&
         message.state === ConfirmationState.CONFIRMED &&
-        message.source === ConfirmationTargets.HARBOR) {
-        console.log('enter harbor constructor')
+        message.source === ConfirmationTargets.PIPELINE) {
+        console.log('enter PIPELINE constructor')
         const name = message.data;
-        this.harborService
+        this.pipelineService
           .deleteByName(name)
           .subscribe(
             response => {
-              this.messageHandlerService.showSuccess('镜像删除成功！');
+              this.messageHandlerService.showSuccess('流水线删除成功！');
               this.retrieve();
             },
             error => {
@@ -65,19 +66,19 @@ export class HarborComponent implements OnInit, OnDestroy {
     if (state) {
       this.pageState = PageState.fromState(state, {totalPage: this.pageState.page.totalPage, totalCount: this.pageState.page.totalCount});
     }
-    this.harborService.list(this.pageState, 'false')
+    this.pipelineService.list(this.pageState, 'false')
       .subscribe(
         response => {
           const data = response.data;
           this.pageState.page.totalPage = data.totalPage;
           this.pageState.page.totalCount = data.totalCount;
-          this.harbors = data.list;
+          this.pipelines = data.list;
         },
         error => this.messageHandlerService.handleError(error)
       );
   }
 
-  createHarbor(created: boolean) {
+  createPipeline(created: boolean) {
     if (created) {
       this.retrieve();
     }
@@ -87,18 +88,18 @@ export class HarborComponent implements OnInit, OnDestroy {
     this.createEdit.newOrEditHarbor();
   }
 
-  deleteHarbor(harbor: Harbor) {
+  deletePipeline(pipeline: Pipeline) {
     const deletionMessage = new ConfirmationMessage(
-      '删除镜像确认',
-      '你确认删除镜像 ' + harbor.name + ' ？',
-      harbor.name,
-      ConfirmationTargets.HARBOR,
+      '删除Pipeline确认',
+      '你确认删除Pipeline ' + pipeline.name + ' ？',
+      pipeline.name,
+      ConfirmationTargets.PIPELINE,
       ConfirmationButtons.DELETE_CANCEL
     );
     this.deletionDialogService.openComfirmDialog(deletionMessage);
   }
 
-  editHarbor(harbor: Harbor) {
-    this.createEdit.newOrEditHarbor(harbor.name);
+  editPipeline(pipeline: Pipeline) {
+    this.createEdit.newOrEditHarbor(pipeline.name);
   }
 }

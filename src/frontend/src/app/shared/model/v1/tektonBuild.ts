@@ -16,6 +16,8 @@ export class TektonBuild {
   createTime: Date;
   updateTime?: Date;
   appId: number;
+  pipelineId: number;
+  logUri: string;
 
   buildVersions: string[];
 }

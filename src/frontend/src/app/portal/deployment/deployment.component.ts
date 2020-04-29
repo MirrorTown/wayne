@@ -246,7 +246,7 @@ export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit 
   }
 
   syncDeployStatus() {
-    if (this.buildActive < 4 && this.buildActive != -999 || this.buildActive == undefined ) {
+    if (this.buildActive < 4 && this.buildActive != -999 && this.buildProcessStatus != "error" || this.buildActive == undefined ) {
       this.tektonBuildService.getById(this.deploymentId, this.appId).subscribe(
       result => {
           this.buildOriginActive = result.data.stepflow;
@@ -263,7 +263,7 @@ export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit 
         }
       )
     }
-    if (this.active < 3 && this.active != -999 || this.active == undefined) {
+    if (this.active < 3 && this.active != -999 && this.processStatus != "error"  || this.active == undefined) {
       this.workstepService.getById(this.cacheService.namespaceId, this.appId, this.deploymentId).subscribe(
       result => {
           this.originActive = result.data;
@@ -423,10 +423,12 @@ export class DeploymentComponent implements OnInit, OnDestroy, AfterContentInit 
 
   buildPublished() {
     this.buildActive = 1;
+    this.buildProcessStatus = 'process';
   }
 
   published() {
     this.active = 1;
+    this.processStatus = 'process';
   }
 
   // 点击创建部署模版

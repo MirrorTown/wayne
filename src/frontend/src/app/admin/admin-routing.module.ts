@@ -89,6 +89,7 @@ import { KubeClusterroleComponent } from './kubernetes/clusterrole/kube-clusterr
 import { KubeClusterrolebindingComponent } from './kubernetes/clusterrolebinding/kube-clusterrolebinding.component';
 import { KubeCrdComponent } from './kubernetes/crd/kube-crd.component';
 import { HarborComponent } from './harbor/harbor.component';
+import { TektonPipelineComponent } from './tekton-pipeline/tekton-pipeline.component'
 import { RoadmapComponent } from './roadmap/roadmap.component';
 import { CustomlinkComponent } from './customlink/customlink.component';
 import { EventClusterComponent } from './cluster/event-cluster/event-cluster.component';
@@ -114,6 +115,7 @@ const routes: Routes = [
       {path: 'notification', component: NotificationComponent},
       {path: 'cluster', component: ClusterComponent},
       {path: 'harbor', component: HarborComponent},
+      {path: 'pipeline', component: TektonPipelineComponent},
       {path: 'cluster/trash', component: TrashClusterComponent},
       {path: 'cluster/event', component: EventClusterComponent},
       {path: 'app', component: AppComponent},

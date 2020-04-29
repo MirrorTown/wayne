@@ -1,0 +1,65 @@
+<clr-datagrid (clrDgRefresh)="refresh($event)">
+  <clr-dg-column class="col-id">
+    <ng-container *clrDgHideableColumn="{hidden: false}">
+      ID
+    </ng-container>
+  </clr-dg-column>
+  <clr-dg-column class="col-harbor-name">
+    <ng-container *clrDgHideableColumn="{hidden: false}">
+      {{'TITLE.NAME' | translate}}
+    </ng-container>
+  </clr-dg-column>
+  <clr-dg-column class="col-host">
+    <ng-container *clrDgHideableColumn="{hidden: false}">
+      构建地址
+    </ng-container>
+  </clr-dg-column>
+  <clr-dg-column>
+    <ng-container *clrDgHideableColumn="{hidden: false}">
+      状态
+    </ng-container>
+  </clr-dg-column>
+  <clr-dg-column>
+    <ng-container *clrDgHideableColumn="{hidden: false}">
+      日志查看地址
+    </ng-container>
+  </clr-dg-column>
+  <clr-dg-column class="col-metadata">
+    <ng-container *clrDgHideableColumn="{hidden: false}">
+      关联的项目
+    </ng-container>
+  </clr-dg-column>
+  <clr-dg-column class="col-time">
+    <ng-container *clrDgHideableColumn="{hidden: false}">
+      {{'TITLE.CREATE_TIME' | translate}}
+    </ng-container>
+  </clr-dg-column>
+  <clr-dg-row *ngFor="let pipeline of pipelines" [clrDgItem]="pipeline">
+    <clr-dg-action-overflow>
+      <button class="action-item" (click)="editPipeline(pipeline)">{{'BUTTON.EDIT' | translate}}</button>
+      <button class="action-item" (click)="deletePipeline(pipeline)">{{'BUTTON.DELETE' | translate}}</button>
+    </clr-dg-action-overflow>
+    <clr-dg-cell class="col-id">{{pipeline.id}}</clr-dg-cell>
+    <clr-dg-cell class="col-harbor-name copy">{{pipeline.name}}</clr-dg-cell>
+    <clr-dg-cell class="col-host">{{pipeline.buildUri}}</clr-dg-cell>
+    <clr-dg-cell>{{getPipelineStatus(pipeline.status)}}</clr-dg-cell>
+    <clr-dg-cell>{{pipeline.logUri}}</clr-dg-cell>
+    <clr-dg-cell class="col-metadata">
+      <li *ngFor="let tektonBuild of pipeline.tektonBuilds">
+        {{ tektonBuild.name }}
+      </li>
+    </clr-dg-cell>
+    <clr-dg-cell class="col-time">{{pipeline.createTime | date:'yyyy-MM-dd HH:mm'}}</clr-dg-cell>
+  </clr-dg-row>
+
+
+  <clr-dg-footer>
+    <wayne-paginate
+      [(currentPage)]="currentPage"
+      [total]="page.totalCount"
+      [pageSizes]="[10, 20, 50]"
+      (sizeChange)="pageSizeChange($event)"
+    >
+    </wayne-paginate>
+  </clr-dg-footer>
+</clr-datagrid>

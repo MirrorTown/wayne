@@ -7,7 +7,6 @@ import (
 	"github.com/Qihoo360/wayne/src/backend/models"
 	"github.com/Qihoo360/wayne/src/backend/util/hack"
 	"github.com/Qihoo360/wayne/src/backend/util/logs"
-	"github.com/astaxie/beego"
 	"k8s.io/apimachinery/pkg/util/json"
 	"net/http"
 	"strconv"
@@ -105,12 +104,12 @@ func (t *TektonBuildController) Edit() {
 	t.Success(tbId)
 }
 
-// @Title Update
+// @Title Create
 // @Description update the TektonBuild
 // @Param	id		path 	int	true		"The id you want to update"
 // @Param	body		body 	models.TektonBuild	true		"The body"
 // @Success 200 models.TektonBuild success
-// @router /:id([0-9]+) [put]
+// @router / [post]
 func (t *TektonBuildController) Create() {
 	var tektonBuild models.TektonBuild
 	err := json.Unmarshal(t.Ctx.Input.RequestBody, &tektonBuild)
@@ -215,9 +214,14 @@ func (t *TektonBuildController) Publish() {
 }
 
 func (t *TektonBuildController) deploy(buildName, pipelineExecuteId string) error {
-	postUri := beego.AppConfig.String("build_uri")
-
 	tektonBuild, err := models.TektonBuildModel.GetByName(buildName)
+
+	pipeline, err := models.PipelineModel.GetById(tektonBuild.PipelineId)
+	if err != nil {
+		logs.Error("查询pipeline. %v 失败, %v", tektonBuild.PipelineId, err)
+		return err
+	}
+	postUri := pipeline.BuildUri
 
 	var tektonBuildMetaData models.TektonBuildMetaData
 	err = json.Unmarshal(hack.Slice(tektonBuild.MetaData), &tektonBuildMetaData)
@@ -259,7 +263,6 @@ func (t *TektonBuildController) deploy(buildName, pipelineExecuteId string) erro
 // @router /:deploymentId([0-9]+) [get]
 func (t *TektonBuildController) Get() {
 	deploymentId := t.GetIntParamFromURL(":deploymentId")
-	logBuildUri := beego.AppConfig.String("log_build_uri")
 
 	tektonBuild, err := models.TektonBuildModel.GetByDeploymentId(deploymentId)
 	if err != nil && err.Error() == ErrNoRows.Error() {
@@ -270,7 +273,17 @@ func (t *TektonBuildController) Get() {
 		t.HandleError(err)
 		return
 	}
-	tektonBuild.LogUri = logBuildUri
+
+	if tektonBuild.PipelineId != 0 {
+		pipeline, err := models.PipelineModel.GetById(tektonBuild.PipelineId)
+		if err != nil {
+			logs.Error("查询pipeline. %v 失败, %v", tektonBuild.PipelineId, err)
+			t.AbortInternalServerError("查询pipeline表失败")
+			return
+		}
+
+		tektonBuild.LogUri = pipeline.LogUri
+	}
 
 	t.Success(tektonBuild)
 }

@@ -253,6 +253,10 @@
     "HARBOR": "缺少镜像信息",
     "HARBOR_NAME": "镜像名称不符合规范"
   },
+  "ERROR": {
+    "TEKTON": "缺少Tekton信息",
+    "TEKTON_NAME": "Tekton名称不符合规范"
+  },
   "HISTORY": {
     "RELEASE_TIME": "发布时间",
     "RELEASE_USER": "发布者",
@@ -278,7 +282,8 @@
     "BG_HOME": "后台首页",
     "CLUSTER": "集群",
     "HARBOR": "镜像中心",
-    "CONFIGHARBOR": "配置",
+    "PIPELINE": "构建流水线",
+    "CONFIG": "配置",
     "CLUSTER_LIST": "集群列表",
     "HOSTALIAS": "HostAlias",
     "CONFIGMAP": "配置集",
@@ -664,6 +669,7 @@
     "INPUT_PARAMS": "输入参数",
     "VOLUME_STRATEGY": "挂载策略",
     "BUILD_VARIABLE": "构建参数",
+    "CHOICE_PIPELINE": "选择Pipeline",
     "UPDATE_WAY": "更新方式",
     "VOLUME_WAY": "挂载方式",
     "READINESS_CHECK": "就绪探针（建议开启）",

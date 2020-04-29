@@ -33,6 +33,7 @@ import { TektonBuild, Param } from '../../../shared/model/v1/tektonBuild';
 import { App } from '../../../shared/model/v1/app';
 import { Deployment } from '../../../shared/model/v1/deployment';
 import { TektonBuildService } from '../../../shared/client/v1/tektonBuild.service';
+import { PipelineService } from '../../../shared/client/v1/pipeline.service'
 import { DeploymentService } from '../../../shared/client/v1/deployment.service';
 import { AppService } from '../../../shared/client/v1/app.service';
 import { ActionType, appLabelKey, defaultResources, namespaceLabelKey } from '../../../shared/shared.const';
@@ -60,6 +61,7 @@ export class CreateTektonBuildComponent extends ContainerTpl implements OnInit, 
 
   buildResource: any = {};
   checked: boolean;
+  pipelineList: any[] = Array();
 
   actionType: ActionType;
   tektonBuild: TektonBuild = new TektonBuild();
@@ -67,19 +69,16 @@ export class CreateTektonBuildComponent extends ContainerTpl implements OnInit, 
   app: App;
   deployment: Deployment;
 
-  cpuUnitPrice = 30;
-  memoryUnitPrice = 0.01;
   top: number;
   box: HTMLElement;
   eventList: any[] = Array();
-  defaultSafeExecCommand = 'sleep\n30';
 
   imagelist = [];
   tag = '';
   taglist = [];
-  volumeType = new Map();
 
   constructor(private tektonBuildService: TektonBuildService,
+              private pipelineService: PipelineService,
               private aceEditorService: AceEditorService,
               private fb: FormBuilder,
               private router: Router,
@@ -94,17 +93,6 @@ export class CreateTektonBuildComponent extends ContainerTpl implements OnInit, 
               @Inject(DOCUMENT) private document: any,
               private eventManager: EventManager) {
     super(templateDom, containerDom);
-  }
-
-  formValid(field: string): boolean {
-    if (!this.currentForm) {
-      return false;
-    }
-    const control = this.currentForm.controls[field];
-    if (control && control.dirty && !control.valid) {
-      return true;
-    }
-    return false;
   }
 
   ngAfterViewInit() {
@@ -137,121 +125,10 @@ export class CreateTektonBuildComponent extends ContainerTpl implements OnInit, 
     }
   }
 
-  containerIsInvalid(index: number, field: string): boolean {
-    if (!this.currentForm) {
-      return false;
-    }
-    const control = this.currentForm.controls[field + index];
-    if (control && control.dirty && !control.valid) {
-      return true;
-    }
-    return false;
-  }
-
-  checkMemory(memory: string): boolean {
-    return memory === '' ? true : parseFloat(memory)/1024 <= this.memoryLimit && parseFloat(memory) > 0;
-  }
-
-  checkCpu(cpu: string): boolean {
-    return cpu === '' ? true : parseFloat(cpu) <= this.cpuLimit && parseFloat(cpu) > 0;
-  }
-
-  buildChange() {
-    this.checked = !this.checked;
-  }
-
-  get memoryLimit(): number {
-    let memoryLimit = defaultResources.memoryLimit;
-    if (this.deployment && this.deployment.metaData) {
-      const metaData = JSON.parse(this.deployment.metaData);
-      if (metaData.resources &&
-        metaData.resources.memoryLimit) {
-        memoryLimit = parseInt(metaData.resources.memoryLimit, 10);
-      }
-    }
-    return memoryLimit;
-  }
-
-  get cpuLimit(): number {
-    let cpuLimit = defaultResources.cpuLimit;
-    if (this.deployment && this.deployment.metaData) {
-      const metaData = JSON.parse(this.deployment.metaData);
-      if (metaData.resources &&
-        metaData.resources.cpuLimit) {
-        cpuLimit = parseInt(metaData.resources.cpuLimit, 10);
-      }
-    }
-    return cpuLimit;
-  }
-
-  strategyTypeChange() {
-    if (this.kubeResource.spec.strategy.type === 'RollingUpdate' && !this.kubeResource.spec.strategy.rollingUpdate) {
-      this.kubeResource.spec.strategy.rollingUpdate = new RollingUpdateDeployment();
-      this.kubeResource.spec.strategy.rollingUpdate.maxSurge = '20%';
-      this.kubeResource.spec.strategy.rollingUpdate.maxUnavailable = 1;
-    }
-  }
-
-  volumeTypeChange(index: number, type: string) {
-    if (type === 'hostpath' && !this.kubeResource.spec.template.spec.volumes[index].hostPath) {
-      console.log("hostpath null")
-      this.kubeResource.spec.template.spec.volumes[index].secret = null;
-      this.kubeResource.spec.template.spec.volumes[index].configMap = null;
-      this.kubeResource.spec.template.spec.volumes[index].hostPath = new HostPathVolumeSource();
-      // this.kubeResource.spec.template.spec.volumes[index].hostPath.path = '/tmp';
-      console.log(this.kubeResource.spec.template.spec.volumes[index].secret, this.kubeResource.spec.template.spec.volumes[index].hostPath)
-    } else if (type === 'secret' && !this.kubeResource.spec.template.spec.volumes[index].secret) {
-      console.log("secret null")
-      this.kubeResource.spec.template.spec.volumes[index].hostPath = null;
-      this.kubeResource.spec.template.spec.volumes[index].configMap = null;
-      this.kubeResource.spec.template.spec.volumes[index].secret = new SecretVolumeSource();
-      // this.kubeResource.spec.template.spec.volumes[index].secret.secretName = 'default-template';
-      // this.kubeResource.spec.template.spec.volumes[index].secret.defaultMode = 420;
-      console.log(this.kubeResource.spec.template.spec.volumes[index].secret, this.kubeResource.spec.template.spec.volumes[index].hostPath)
-    } else if (type === 'configmap' && !this.kubeResource.spec.template.spec.volumes[index].configMap) {
-      console.log("configmap null")
-      this.kubeResource.spec.template.spec.volumes[index].hostPath = null;
-      this.kubeResource.spec.template.spec.volumes[index].secret = null;
-      this.kubeResource.spec.template.spec.volumes[index].configMap = new ConfigMapVolumeSource();
-      console.log(this.kubeResource.spec.template.spec.volumes[index].configMap, this.kubeResource.spec.template.spec.volumes[index].hostPath)
-    }
-  }
-
-  initDefault() {
-    this.kubeResource = JSON.parse(defaultDeployment);
-    // this.kubeResource.spec.template.spec.volumes.push(this.defaultPodVoume());
-    this.kubeResource.spec.template.spec.containers.push(this.defaultContainer());
-  }
-
-  defaultContainer(): Container {
-    const container = new Container();
-    container.resources = new ResourceRequirements();
-    container.resources.limits = {'memory': '', 'cpu': ''};
-    container.env = [];
-    container.envFrom = [];
-    container.imagePullPolicy = 'IfNotPresent';
-    return container;
-  }
-
   defaultBuildParam(): Param {
     const param = new Param();
 
     return param
-  }
-
-  defaultConfigMapItem(): KeyToPath {
-    const item = new KeyToPath();
-    return item
-  }
-
-  getRepoTag(h: any, index: number): void {
-    // const value = document.getElementById('images').value;
-    this.taglist = [];
-    this.deploymentService.listTags(h.kubeResource.spec.template.spec.containers[index].image).subscribe(value => {
-      for (const tag of value.data) {
-        this.taglist.push({Name: tag.name});
-      }
-    });
   }
 
   ngOnInit(): void {
@@ -263,10 +140,10 @@ export class CreateTektonBuildComponent extends ContainerTpl implements OnInit, 
     const observables = Array(
       this.appService.getById(appId, namespaceId),
       this.deploymentService.getById(deploymentId, appId),
-      this.tektonBuildService.getById(deploymentId, appId)
+      this.tektonBuildService.getById(deploymentId, appId),
+      this.pipelineService.listAll()
     );
 
-    console.log('init')
     combineLatest(observables).subscribe(
       response => {
         this.app = response[0].data;
@@ -274,226 +151,23 @@ export class CreateTektonBuildComponent extends ContainerTpl implements OnInit, 
         const tpl = response[2].data;
         if (tpl != 'No Row Found') {
           this.actionType = ActionType.EDIT;
-          console.log(tpl)
           this.tektonBuild = tpl;
           this.buildResource = JSON.parse(this.tektonBuild.metaData);
 
           this.tektonBuild.description = null;
+          if (this.tektonBuild.status == "开启审核") {
+            this.checked = true;
+          }
         } else {
           this.actionType = ActionType.ADD_NEW;
         }
+        this.pipelineList = response[3].data;
         this.initNavList();
       },
       error => {
         this.messageHandlerService.handleError(error);
       }
     );
-  }
-
-  buildLabels(labels: {}) {
-    if (!labels) {
-      labels = {};
-    }
-    labels[this.authService.config[appLabelKey]] = this.app.name;
-    labels[this.authService.config[namespaceLabelKey]] = this.cacheService.currentNamespace.name;
-    labels['app'] = this.deployment.name;
-    return labels;
-  }
-
-  buildSelectorLabels(labels: {}) {
-    if (Object.keys(labels).length > 0) {
-      return labels;
-    }
-    const result = {};
-    result['app'] = this.deployment.name;
-    return result;
-  }
-
-  fillDeploymentLabel(kubeDeployment: KubeDeployment): KubeDeployment {
-    kubeDeployment.metadata.name = this.deployment.name;
-    kubeDeployment.metadata.labels = this.buildLabels(this.kubeResource.metadata.labels);
-    kubeDeployment.spec.selector.matchLabels = this.buildSelectorLabels(this.kubeResource.spec.selector.matchLabels);
-    kubeDeployment.spec.template.metadata.labels = this.buildLabels(this.kubeResource.spec.template.metadata.labels);
-    return kubeDeployment;
-  }
-
-  onDeleteContainer(index: number) {
-    this.kubeResource.spec.template.spec.containers.splice(index, 1);
-    this.initNavList();
-  }
-
-  onAddContainer() {
-    this.kubeResource.spec.template.spec.containers.push(this.defaultContainer());
-    this.initNavList();
-  }
-
-  onAddEnv(index: number, event: Event) {
-    event.stopPropagation();
-    if (!this.kubeResource.spec.template.spec.containers[index].env) {
-      this.kubeResource.spec.template.spec.containers[index].env = [];
-    }
-    this.kubeResource.spec.template.spec.containers[index].env.push(this.defaultEnv(0));
-  }
-
-  onAddEnvFrom(index: number, event: Event) {
-    event.stopPropagation();
-    if (!this.kubeResource.spec.template.spec.containers[index].envFrom) {
-      this.kubeResource.spec.template.spec.containers[index].envFrom = [];
-    }
-    this.kubeResource.spec.template.spec.containers[index].envFrom.push(this.defaultEnvFrom(1));
-  }
-
-  onDeleteEnv(i: number, j: number) {
-    this.kubeResource.spec.template.spec.containers[i].env.splice(j, 1);
-  }
-
-  onDeleteEnvFrom(i: number, j: number) {
-    this.kubeResource.spec.template.spec.containers[i].envFrom.splice(j, 1);
-  }
-
-  envChange(type: number, i: number, j: number) {
-    this.kubeResource.spec.template.spec.containers[i].env[j] = this.defaultEnv(type);
-  }
-
-  envFromChange(type: number, i: number, j: number) {
-    this.kubeResource.spec.template.spec.containers[i].envFrom[j] = this.defaultEnvFrom(type);
-  }
-
-  readinessProbeChange(i: number) {
-    let probe = this.kubeResource.spec.template.spec.containers[i].readinessProbe;
-    if (probe) {
-      probe = undefined;
-    } else {
-      probe = new Probe();
-      probe.httpGet = new HTTPGetAction();
-      probe.timeoutSeconds = 1;
-      probe.periodSeconds = 10;
-      probe.initialDelaySeconds = 30;
-      probe.failureThreshold = 10;
-    }
-    this.kubeResource.spec.template.spec.containers[i].readinessProbe = probe;
-  }
-
-  lifecycleChange(i: number) {
-    let lifecycle = this.kubeResource.spec.template.spec.containers[i].lifecycle;
-    if (lifecycle) {
-      lifecycle = undefined;
-    } else {
-      lifecycle = new Lifecycle();
-      lifecycle.preStop = new Handler();
-      lifecycle.preStop.exec = new ExecAction();
-      lifecycle.preStop.exec.command = Array(this.defaultSafeExecCommand);
-    }
-    this.kubeResource.spec.template.spec.containers[i].lifecycle = lifecycle;
-  }
-
-  livenessProbeChange(i: number) {
-    let probe = this.kubeResource.spec.template.spec.containers[i].livenessProbe;
-    if (probe) {
-      probe = undefined;
-    } else {
-      probe = new Probe();
-      probe.httpGet = new HTTPGetAction();
-      probe.timeoutSeconds = 1;
-      probe.periodSeconds = 10;
-      probe.failureThreshold = 10;
-      probe.initialDelaySeconds = 30;
-    }
-    this.kubeResource.spec.template.spec.containers[i].livenessProbe = probe;
-  }
-
-  probeTypeChange(probe: Probe, type: number) {
-    switch (parseInt(type.toString(), 10)) {
-      case 0:
-        probe.httpGet = new HTTPGetAction();
-        probe.tcpSocket = undefined;
-        probe.exec = undefined;
-        break;
-      case 1:
-        probe.tcpSocket = new TCPSocketAction();
-        probe.httpGet = undefined;
-        probe.exec = undefined;
-        break;
-      case 2:
-        probe.exec = new ExecAction();
-        probe.exec.command = [];
-        probe.exec.command.push('');
-        probe.httpGet = undefined;
-        probe.tcpSocket = undefined;
-        break;
-    }
-
-  }
-
-  lifecyclePostStartProbeTypeChange(type: number, i: number) {
-    this.kubeResource.spec.template.spec.containers[i].lifecycle.postStart = this.lifecycleProbeTypeChange(
-      this.kubeResource.spec.template.spec.containers[i].lifecycle.postStart, type);
-  }
-
-  lifecyclePreStopProbeTypeChange(type: number, i: number) {
-    this.kubeResource.spec.template.spec.containers[i].lifecycle.preStop = this.lifecycleProbeTypeChange(
-      this.kubeResource.spec.template.spec.containers[i].lifecycle.preStop, type);
-  }
-
-  lifecycleProbeTypeChange(handler: Handler, type: number) {
-    if (!handler) {
-      handler = new Handler();
-    }
-    switch (parseInt(type.toString(), 10)) {
-      case -1:
-        handler.httpGet = undefined;
-        handler.tcpSocket = undefined;
-        handler.exec = undefined;
-        break;
-      case 0:
-        handler.httpGet = new HTTPGetAction();
-        handler.tcpSocket = undefined;
-        handler.exec = undefined;
-        break;
-      case 1:
-        handler.tcpSocket = new TCPSocketAction();
-        handler.httpGet = undefined;
-        handler.exec = undefined;
-        break;
-      case 2:
-        handler.exec = new ExecAction();
-        handler.exec.command = [];
-        handler.exec.command.push('');
-        handler.httpGet = undefined;
-        handler.tcpSocket = undefined;
-        break;
-      // for safe exec, for more information https://github.com/kubernetes/kubernetes/issues/47597
-      case 3:
-        handler.exec = new ExecAction();
-        handler.exec.command = [];
-        handler.exec.command.push(this.defaultSafeExecCommand);
-        handler.httpGet = undefined;
-        handler.tcpSocket = undefined;
-        break;
-    }
-    return handler;
-  }
-
-  livenessProbeTypeChange(type: number, i: number) {
-    this.probeTypeChange(this.kubeResource.spec.template.spec.containers[i].livenessProbe, type);
-  }
-
-  readinessProbeTypeChange(type: number, i: number) {
-    this.probeTypeChange(this.kubeResource.spec.template.spec.containers[i].readinessProbe, type);
-  }
-
-  normalPreStopExecSelected(i: number): boolean {
-    const preStop = this.kubeResource.spec.template.spec.containers[i].lifecycle.preStop;
-    return preStop && preStop.exec &&
-      preStop.exec.command && preStop.exec.command.length > 0 &&
-      preStop.exec.command[0] !== this.defaultSafeExecCommand;
-  }
-
-  safeExitSelected(i: number): boolean {
-    const preStop = this.kubeResource.spec.template.spec.containers[i].lifecycle.preStop;
-    return preStop && preStop.exec &&
-      preStop.exec.command && preStop.exec.command.length > 0 &&
-      preStop.exec.command[0] === this.defaultSafeExecCommand;
   }
 
   trackByFn(index, item) {
@@ -511,55 +185,12 @@ export class CreateTektonBuildComponent extends ContainerTpl implements OnInit, 
 
       this.buildResource.params.push(gitParam);
       this.buildResource.params.push(branchParam);
-      console.log("params undefined ,to be inited")
     }
     this.buildResource.params.push(this.defaultBuildParam());
   }
 
-  onAddConfigMapItem(v: number) {
-    console.log("add")
-    if (this.kubeResource.spec.template.spec.volumes[v].configMap.items == undefined) {
-      this.kubeResource.spec.template.spec.volumes[v].configMap.items = new Array<KeyToPath>();
-      console.log("item undefined, is been inited")
-    }
-    this.kubeResource.spec.template.spec.volumes[v].configMap.items.push(this.defaultConfigMapItem());
-  }
-
   onDelBuildVariable(index: number) {
     this.buildResource.params.splice(index,1);
-  }
-
-  defaultEnv(type: number): EnvVar {
-    const env = new EnvVar();
-    switch (parseInt(type.toString(), 10)) {
-      case 0:
-        env.value = '';
-        break;
-      case 1:
-        env.valueFrom = new EnvVarSource();
-        env.valueFrom.configMapKeyRef = new ConfigMapKeySelector();
-        break;
-      case 2:
-        env.valueFrom = new EnvVarSource();
-        env.valueFrom.secretKeyRef = new SecretKeySelector();
-        break;
-      case 3:
-        break;
-    }
-    return env;
-  }
-
-  defaultEnvFrom(type: number): EnvFromSource {
-    const envFrom = new EnvFromSource();
-    switch (parseInt(type.toString(), 10)) {
-      case 1:
-        envFrom.configMapRef = new ConfigMapEnvSource();
-        break;
-      case 2:
-        envFrom.secretRef = new SecretEnvSource();
-        break;
-    }
-    return envFrom;
   }
 
   onSubmit() {
@@ -595,256 +226,6 @@ export class CreateTektonBuildComponent extends ContainerTpl implements OnInit, 
       }
     );
 
-  }
-
-  generateDeployment(kubeDeployment: KubeDeployment): KubeDeployment {
-    for (let key = 0; key < this.containersLength; key++) {
-      // tslint:disable-next-line:max-line-length
-      kubeDeployment.spec.template.spec.containers[key].image = kubeDeployment.spec.template.spec.containers[key].image + ':' + kubeDeployment.spec.template.spec.containers[key].tag;
-    }
-    kubeDeployment = this.convertRollingUpdateIntOrString(kubeDeployment);
-    kubeDeployment = this.convertVolumeStrategy(kubeDeployment);
-    kubeDeployment = this.convertProbeCommandToArray(kubeDeployment);
-    kubeDeployment = this.addResourceUnit(kubeDeployment);
-    kubeDeployment = this.fillDeploymentLabel(kubeDeployment);
-    return kubeDeployment;
-  }
-
-  convertRollingUpdateIntOrString(kubeDeployment: KubeDeployment) {
-    if (kubeDeployment.spec.strategy) {
-      if (kubeDeployment.spec.strategy.type === 'RollingUpdate' && kubeDeployment.spec.strategy.rollingUpdate) {
-        if (kubeDeployment.spec.strategy.rollingUpdate.maxSurge.toString().indexOf('%') < 0) {
-          kubeDeployment.spec.strategy.rollingUpdate.maxSurge = parseInt(
-            kubeDeployment.spec.strategy.rollingUpdate.maxSurge.toString(), 10);
-        }
-        if (kubeDeployment.spec.strategy.rollingUpdate.maxUnavailable.toString().indexOf('%') < 0) {
-          kubeDeployment.spec.strategy.rollingUpdate.maxUnavailable = parseInt(
-            kubeDeployment.spec.strategy.rollingUpdate.maxUnavailable.toString(), 10);
-        }
-      }
-      if (kubeDeployment.spec.strategy.type === 'Recreate') {
-        kubeDeployment.spec.strategy.rollingUpdate = undefined;
-      }
-    }
-
-    return kubeDeployment;
-  }
-
-  convertVolumeStrategy(kubeDeployment: KubeDeployment) {
-    kubeDeployment.spec.template.spec.volumes.forEach(item => {
-      if (JSON.stringify(item.secret) === "{}") {
-        item.secret = undefined;
-      }else if (JSON.stringify(item.hostPath) === "{}") {
-        item.hostPath = undefined;
-      }
-    });
-    return kubeDeployment;
-  }
-
-  convertProbeCommandToArray(kubeDeployment: KubeDeployment): KubeDeployment {
-    if (kubeDeployment.spec.template.spec.containers && kubeDeployment.spec.template.spec.containers.length > 0) {
-      for (const container of kubeDeployment.spec.template.spec.containers) {
-        if (container.livenessProbe && container.livenessProbe.exec && container.livenessProbe.exec.command
-          && container.livenessProbe.exec.command.length > 0) {
-          container.livenessProbe.exec.command = container.livenessProbe.exec.command[0].split('\n');
-        }
-        if (container.readinessProbe && container.readinessProbe.exec && container.readinessProbe.exec.command
-          && container.readinessProbe.exec.command.length > 0) {
-          container.readinessProbe.exec.command = container.readinessProbe.exec.command[0].split('\n');
-        }
-        if (container.lifecycle) {
-          // 置空handler，避免出现 Deployment.apps 'infra-nginx' is invalid: spec.template.spec.containers[0].lifecycle.postStart:
-          // Required value: must specify a handler type
-          if (container.lifecycle.postStart !== undefined && Object.keys(container.lifecycle.postStart).length === 0) {
-            container.lifecycle.postStart = undefined;
-          }
-          if (container.lifecycle.preStop !== undefined && Object.keys(container.lifecycle.preStop).length === 0) {
-            container.lifecycle.preStop = undefined;
-          }
-          if (container.lifecycle.postStart &&
-            container.lifecycle.postStart.exec &&
-            container.lifecycle.postStart.exec.command &&
-            container.lifecycle.postStart.exec.command.length > 0) {
-
-            container.lifecycle.postStart.exec.command = container.lifecycle.postStart.exec.command[0].split('\n');
-
-          }
-          if (container.lifecycle.preStop &&
-            container.lifecycle.preStop.exec &&
-            container.lifecycle.preStop.exec.command &&
-            container.lifecycle.preStop.exec.command.length > 0) {
-
-            container.lifecycle.preStop.exec.command = container.lifecycle.preStop.exec.command[0].split('\n');
-
-          }
-        }
-
-      }
-    }
-
-    return kubeDeployment;
-  }
-
-  addResourceUnit(kubeDeployment: KubeDeployment): KubeDeployment {
-    let cpuRequestLimitPercent = 0.5;
-    let memoryRequestLimitPercent = 1;
-    if (this.deployment.metaData) {
-      const metaData = JSON.parse(this.deployment.metaData);
-      if (metaData.resources && metaData.resources.cpuRequestLimitPercent) {
-        if (metaData.resources.cpuRequestLimitPercent.indexOf('%') > -1) {
-          cpuRequestLimitPercent = parseFloat(metaData.resources.cpuRequestLimitPercent.replace('%', '')) / 100;
-        } else {
-          cpuRequestLimitPercent = parseFloat(metaData.resources.cpuRequestLimitPercent);
-        }
-      }
-      if (metaData.resources && metaData.resources.memoryRequestLimitPercent) {
-        if (metaData.resources.memoryRequestLimitPercent.indexOf('%') > -1) {
-          memoryRequestLimitPercent = parseFloat(metaData.resources.memoryRequestLimitPercent.replace('%', '')) / 100;
-        } else {
-          memoryRequestLimitPercent = parseFloat(metaData.resources.memoryRequestLimitPercent);
-        }
-      }
-    }
-
-    for (const container of kubeDeployment.spec.template.spec.containers) {
-      const memoryLimit = container.resources.limits['memory'];
-      const cpuLimit = container.resources.limits['cpu'];
-      if (!container.resources.requests) {
-        container.resources.requests = {};
-      }
-      if (memoryLimit) {
-        container.resources.limits['memory'] = memoryLimit + 'Mi';
-        container.resources.requests['memory'] = parseFloat(memoryLimit) * memoryRequestLimitPercent + 'Mi';
-      }
-      if (cpuLimit) {
-        container.resources.limits['cpu'] = cpuLimit.toString();
-        container.resources.requests['cpu'] = (parseFloat(cpuLimit) * cpuRequestLimitPercent).toString();
-      }
-    }
-    return kubeDeployment;
-  }
-
-  get totalFee() {
-    let fee = 0;
-    if (this.kubeResource.spec.template.spec.containers) {
-      for (const container of this.kubeResource.spec.template.spec.containers) {
-        const limit = container.resources.limits;
-        const cpu = limit['cpu'];
-        const memory = limit['memory'];
-        if (cpu) {
-          fee += parseFloat(cpu) * this.cpuUnitPrice;
-        }
-        if (memory) {
-          fee += parseFloat(memory) * this.memoryUnitPrice;
-        }
-
-      }
-    }
-    return fee;
-  }
-
-  // clone deployment
-  saveDeployment(kubeDeployment: KubeDeployment) {
-    // this.removeResourceUnit(kubeStatefulSet);
-    for (let key = 0; key < this.containersLength; key++) {
-      const imagelist = kubeDeployment.spec.template.spec.containers[key].image.split(':')
-      kubeDeployment.spec.template.spec.containers[key].image = imagelist[0];
-      kubeDeployment.spec.template.spec.containers[key].tag = imagelist[1];
-    }
-    this.removeUnused(kubeDeployment);
-    this.fillDefault(kubeDeployment);
-    this.convertProbeCommandToText(kubeDeployment);
-    this.kubeResource = kubeDeployment;
-    this.initNavList();
-  }
-
-  // remove unused fields, deal with user advanced mode paste yaml/json manually
-  removeUnused(obj: KubeDeployment) {
-    const metaData = new ObjectMeta();
-    metaData.name = obj.metadata.name;
-    metaData.namespace = obj.metadata.namespace;
-    metaData.labels = obj.metadata.labels;
-    metaData.annotations = obj.metadata.annotations;
-    obj.metadata = metaData;
-    obj.status = undefined;
-  }
-
-  convertProbeCommandToText(kubeDeployment: KubeDeployment) {
-    if (kubeDeployment.spec.template.spec.containers && kubeDeployment.spec.template.spec.containers.length > 0) {
-      for (const container of kubeDeployment.spec.template.spec.containers) {
-        if (container.livenessProbe && container.livenessProbe.exec && container.livenessProbe.exec.command
-          && container.livenessProbe.exec.command.length > 0) {
-          const commands = container.livenessProbe.exec.command;
-          container.livenessProbe.exec.command = Array();
-          container.livenessProbe.exec.command.push(commands.join('\n'));
-        }
-        if (container.readinessProbe && container.readinessProbe.exec && container.readinessProbe.exec.command
-          && container.readinessProbe.exec.command.length > 0) {
-          const commands = container.readinessProbe.exec.command;
-          container.readinessProbe.exec.command = Array();
-          container.readinessProbe.exec.command.push(commands.join('\n'));
-        }
-        if (container.lifecycle && container.lifecycle.postStart &&
-          container.lifecycle.postStart.exec &&
-          container.lifecycle.postStart.exec.command &&
-          container.lifecycle.postStart.exec.command.length > 0) {
-
-          const commands = container.lifecycle.postStart.exec.command;
-          container.lifecycle.postStart.exec.command = Array();
-          container.lifecycle.postStart.exec.command.push(commands.join('\n'));
-
-        }
-
-        if (container.lifecycle && container.lifecycle.preStop &&
-          container.lifecycle.preStop.exec &&
-          container.lifecycle.preStop.exec.command &&
-          container.lifecycle.preStop.exec.command.length > 0) {
-
-          const commands = container.lifecycle.preStop.exec.command;
-          container.lifecycle.preStop.exec.command = Array();
-          container.lifecycle.preStop.exec.command.push(commands.join('\n'));
-
-        }
-      }
-    }
-
-    return kubeDeployment;
-  }
-
-  fillDefault(kubeDeployment: KubeDeployment) {
-    if (!kubeDeployment.spec.strategy) {
-      kubeDeployment.spec.strategy = new DeploymentStrategy();
-      kubeDeployment.spec.strategy.type = 'RollingUpdate';
-    }
-    if (!this.kubeResource.spec.template.spec.volumes) {
-      kubeDeployment.spec.template.spec.volumes = new Array<Volume>();
-    }
-    if (kubeDeployment.spec.strategy.type === 'RollingUpdate' && !kubeDeployment.spec.strategy.rollingUpdate) {
-      kubeDeployment.spec.strategy.rollingUpdate = new RollingUpdateDeployment();
-      kubeDeployment.spec.strategy.rollingUpdate.maxSurge = '20%';
-      kubeDeployment.spec.strategy.rollingUpdate.maxUnavailable = 1;
-    }
-
-    if (kubeDeployment.spec.template.spec.containers && kubeDeployment.spec.template.spec.containers.length > 0) {
-      for (const container of kubeDeployment.spec.template.spec.containers) {
-        if (!container.resources) {
-          container.resources = ResourceRequirements.emptyObject();
-        }
-        if (!container.resources.limits) {
-          container.resources.limits = {'cpu': '0', 'memory': '0Mi'};
-        }
-        container.resources.limits['cpu'] = ResourceUnitConvertor.cpuCoreValue(container.resources.limits['cpu']);
-        container.resources.limits['memory'] = ResourceUnitConvertor.memoryMiValue(container.resources.limits['memory']);
-      }
-    }
-  }
-
-  openModal(): void {
-    // let copy = Object.assign({}, myObject).
-    // but this wont work for nested objects. SO an alternative would be
-    let newState = JSON.parse(JSON.stringify(this.kubeResource));
-    newState = this.generateDeployment(newState);
-    this.aceEditorService.announceMessage(AceEditorMsg.Instance(newState, true));
   }
 
   onCancel() {

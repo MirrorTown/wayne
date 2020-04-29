@@ -17,6 +17,7 @@ var (
 	NamespaceUserModel            *namespaceUserModel
 	ClusterModel                  *clusterModel
 	HarborModel                   *harborModel
+	PipelineModel                 *pipelineModel
 	TektonModel                   *tektonModel
 	TektonBuildModel              *tektonBuildModel
 	TektonParamModel              *tektonParamModel
@@ -68,6 +69,7 @@ func init() {
 		new(TektonParam),
 		new(TektonTask),
 		new(Harbor),
+		new(Pipeline),
 		new(HostAlias),
 		new(Deploy),
 		new(BuildReview),
@@ -116,6 +118,7 @@ func init() {
 
 	// init models
 	HarborModel = &harborModel{}
+	PipelineModel = &pipelineModel{}
 	TektonModel = &tektonModel{}
 	BuildReviewModel = &buildReviewModel{}
 	TektonBuildModel = &tektonBuildModel{}

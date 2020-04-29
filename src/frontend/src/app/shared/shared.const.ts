@@ -101,6 +101,11 @@ export const harborStatus = {
   1: '维护中'
 };
 
+export const pipelineStatus = {
+  0: '在线',
+  1: '维护中'
+};
+
 export const apiKeyTypeNamespace = 1;
 export const apiKeyTypeApp = 2;
 
@@ -193,6 +198,7 @@ export const enum ConfirmationTargets {
   HPA,
   ENDPOINT,
   HARBOR,
+  PIPELINE,
   HOSTALIASE,
   TEKTON,
   TEKTON_TASK
