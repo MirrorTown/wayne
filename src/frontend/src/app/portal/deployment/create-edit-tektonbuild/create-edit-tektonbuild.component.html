@@ -21,15 +21,25 @@
       <label class="label-level1" id="volume-strategy">{{'TEMPLATE.BUILD_VARIABLE' | translate}}</label>
       <button (click)="onAddBuildVariable()" style="margin-left: 10px;" class="wayne-button primary">
         <clr-icon shape="add-text"></clr-icon>
-        添加构建键值对
+        添加构建参数
       </button>
 
       <div class="table-search-right">
         <div class="clr-toggle-wrapper">
-          <input type="checkbox" id="search-online" [(ngModel)]="checked" name="toggle-basic" class="clr-toggle" (change)="buildChange()">
+          <input type="checkbox" id="search-online" [(ngModel)]="checked" name="toggle-basic" class="clr-toggle">
           <label for="search-online">开启构建审核</label>
         </div>
       </div>
+
+      <clr-select-container>
+        <label class="required">{{'TEMPLATE.CHOICE_PIPELINE' | translate}}</label>
+        <select id="build_pipeline_id" clrSelect [(ngModel)]="tektonBuild.pipelineId"
+                name="build_pipeline">
+          <option *ngFor="let pipeline of pipelineList" [ngValue]="pipeline.id"
+                  [selected]="pipeline.id === tektonBuild.pipelineId">{{pipeline.name}}
+          </option>
+        </select>
+      </clr-select-container>
 
       <div *ngFor="let param of buildResource.params; let v = index; trackBy:trackByFn">
         <clr-input-container clrInline>

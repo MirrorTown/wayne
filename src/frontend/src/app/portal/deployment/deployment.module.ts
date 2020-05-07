@@ -20,6 +20,7 @@ import { ReviewModule } from '../review/review.module';
 import { WorkstepService } from '../../shared/client/v1/workstep.service';
 import { ElModule } from 'element-angular';
 import { TektonBuildService } from "../../shared/client/v1/tektonBuild.service";
+import {PipelineService} from "../../shared/client/v1/pipeline.service";
 
 @NgModule({
   imports: [
@@ -32,6 +33,7 @@ import { TektonBuildService } from "../../shared/client/v1/tektonBuild.service";
     DeploymentService,
     DeploymentTplService,
     TektonBuildService,
+    PipelineService,
     ClusterService,
     DeploymentClient,
     PublicService,

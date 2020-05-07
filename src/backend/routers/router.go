@@ -9,6 +9,7 @@ import (
 	"github.com/Qihoo360/wayne/src/backend/controllers/hongmao"
 	"github.com/Qihoo360/wayne/src/backend/controllers/hostAlias"
 	"github.com/Qihoo360/wayne/src/backend/controllers/multienv"
+	"github.com/Qihoo360/wayne/src/backend/controllers/pipeline"
 	"github.com/Qihoo360/wayne/src/backend/controllers/review"
 	"github.com/Qihoo360/wayne/src/backend/controllers/tekton"
 	"github.com/Qihoo360/wayne/src/backend/controllers/workstep"
@@ -488,6 +489,14 @@ func init() {
 		),
 	)
 
+	nsWithPipeline := beego.NewNamespace("/wayne/api/v1",
+		beego.NSNamespace("/pipeline",
+			beego.NSInclude(
+				&pipeline.PipelineController{},
+			),
+		),
+	)
+
 	nsWithHongmao := beego.NewNamespace("/wayne/api/v1",
 		beego.NSNamespace("/hongmao",
 			beego.NSInclude(
@@ -548,6 +557,8 @@ func init() {
 	beego.AddNamespace(nsWithKubernetesProxy)
 
 	beego.AddNamespace(nsWithHarbor)
+
+	beego.AddNamespace(nsWithPipeline)
 
 	beego.AddNamespace(nsWithReview)
 

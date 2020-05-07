@@ -48,27 +48,12 @@ export class TplDeployLogComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
-    console.log("enter tekton-dashboard");
-    const now = new Date();
-    /*this.startTime = moment(new Date(now.getTime() - 1000 * 3600 * 24 * 7)).format('YYYY-MM-DD HH:mm:ss');
-    this.endTime = moment(now).format('YYYY-MM-DD HH:mm:ss');
-    console.log(this.startTime, this.endTime);*/
     this.textSub = this.tplDeployLogService.text$.subscribe(
       msg => {
-        console.log(msg);
-        // this.queryLog = new DeployLog(msg.text, msg.text, 1, 1000)
-        // this.slsService.getDeployLog(this.queryLog).subscribe(
-        //   response => {
-        //     console.log(response.data);
-        //     this.text = response.data.obj.message;
-        //   },
-        //   error => this.messageHandlerService.handleError(error)
-        // );
-
         this.tektonBuildService.getById(msg.deploymentId, msg.appId).subscribe(response => {
-          console.log(response.data)
-          // let src = response.data.logUri + response.data.pipelineExecuteId;
-          let src = "https://dasoudevops.digitalvolvo.com/tekton/#/namespaces/dasouche-devops/pipelineruns/pipelinerun-volov-build-qdxrq"
+          let src = response.data.logUri + response.data.pipelineExecuteId;
+          console.log("构建日志地址: " + src);
+          // let src = "https://dasoudevops.digitalvolvo.com/tekton/#/namespaces/dasouche-devops/pipelineruns/pipelinerun-volov-build-qdxrq"
           this.iframe = this.sanitizer.bypassSecurityTrustResourceUrl(src);
         })
         this.modalOpened = true;

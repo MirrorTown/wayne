@@ -25,18 +25,20 @@ type TektonBuild struct {
 	MetaData     string              `orm:"type(text)" json:"metaData,omitempty"`
 	MetaDataObj  TektonBuildMetaData `orm:"-" json:"-"`
 	App          *App                `orm:"index;rel(fk)" json:"app,omitempty"`
+	Pipeline     *Pipeline           `orm:"index;rel(fk)" json:"app,omitempty"`
 	Description  string              `orm:"null;size(512)" json:"description,omitempty"`
 	DeploymentId int64               `orm:"index;default(0)" json:"deploymentId"`
 	Stepflow     int                 `orm:"index;default(0)" json:"stepflow"`
-	Status       string              `orm:"index;size(200)" json:"status,omitempty"`
+	Status       string              `orm:"size(128)" json:"status,omitempty"`
 
 	CreateTime        *time.Time `orm:"auto_now_add;type(datetime)" json:"createTime,omitempty"`
 	UpdateTime        *time.Time `orm:"auto_now;type(datetime)" json:"updateTime,omitempty"`
 	User              string     `orm:"size(128)" json:"user,omitempty"`
 	PipelineExecuteId string     `orm:"size(128)" json:"pipelineExecuteId,omitempty"`
 
-	AppId  int64  `orm:"-" json:"appId,omitempty"`
-	LogUri string `orm:"-" json:"logUri,omitempty"`
+	AppId      int64  `orm:"-" json:"appId,omitempty"`
+	LogUri     string `orm:"-" json:"logUri,omitempty"`
+	PipelineId int64  `orm:"-" json:"pipelineId,omitempty"`
 }
 
 func (*TektonBuild) TableName() string {
@@ -80,15 +82,19 @@ func (*tektonBuildModel) GetAllByName(items []string) ([]TektonBuild, error) {
 func (*tektonBuildModel) Edit(m *TektonBuild) (id int64, err error) {
 	if m.Id == 0 {
 		m.App = &App{Id: m.AppId}
+		m.Pipeline = &Pipeline{Id: m.PipelineId}
 		m.CreateTime = nil
+		m.UpdateTime = nil
 		id, err = Ormer().Insert(m)
 	} else {
 		v := TektonBuild{Id: m.Id}
 		// ascertain id exists in the database
 		if err = Ormer().Read(&v); err == nil {
 			m.App = &App{Id: m.AppId}
+			m.Pipeline = &Pipeline{Id: m.PipelineId}
 			m.UpdateTime = nil
-			_, err = Ormer().Update(m)
+			_, err = Ormer().Update(m, "Name", "MetaData", "Description", "DeploymentId",
+				"UpdateTime", "User", "Status", "Stepflow", "PipelineExecuteId", "Pipeline")
 			return m.Id, err
 		}
 	}
@@ -113,6 +119,7 @@ func (*tektonBuildModel) GetByDeploymentId(deploymentId int64) (v *TektonBuild, 
 
 	if err = Ormer().Read(v, "DeploymentId"); err == nil {
 		v.AppId = v.App.Id
+		v.PipelineId = v.Pipeline.Id
 		return v, nil
 	}
 	return nil, err
