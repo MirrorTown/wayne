@@ -67,6 +67,7 @@ func (*harborModel) GetHaborByNS(ns string) ([]Harbor, error) {
 		QueryTable(new(Harbor)).
 		Filter("Namespace", ns).
 		Exclude("User__icontains", "aliyun").
+		Exclude("User__icontains", "nexus").
 		Filter("Status", 0).
 		All(&harbors)
 

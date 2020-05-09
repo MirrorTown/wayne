@@ -14,7 +14,7 @@ func InitCronJob() {
 	tektonJob := cronjob.Tekton{}
 	tektonJob.Name = "tekton定时任务"
 
-	tektonJob.StartTektonCron()
+	//tektonJob.StartTektonCron()
 
 	//清理过期的CRD信息
 	//tektonJob.CleanTektonCRD()
