@@ -66,8 +66,7 @@ func (*harborModel) GetHaborByNS(ns string) ([]Harbor, error) {
 	_, err := Ormer().
 		QueryTable(new(Harbor)).
 		Filter("Namespace", ns).
-		Exclude("User__icontains", "aliyun").
-		Exclude("User__icontains", "nexus").
+		Exclude("User__in", "aliyun", "nexus").
 		Filter("Status", 0).
 		All(&harbors)
 
