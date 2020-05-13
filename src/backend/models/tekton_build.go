@@ -145,6 +145,7 @@ func (*tektonBuildModel) GetByName(name string) (v *TektonBuild, err error) {
 
 	if err = Ormer().Read(v, "name"); err == nil {
 		v.AppId = v.App.Id
+		v.PipelineId = v.Pipeline.Id
 		return v, nil
 	}
 	return nil, err

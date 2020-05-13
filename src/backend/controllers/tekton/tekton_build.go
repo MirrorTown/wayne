@@ -247,6 +247,8 @@ func (t *TektonBuildController) deploy(buildName, pipelineExecuteId string) erro
 	resp, err := client.Do(req)
 	if err != nil {
 		logs.Error("发送构建信息失败,", err)
+		_ = models.TektonBuildModel.UpdateByExecuteId(pipelineExecuteId, -2)
+		return err
 	}
 	//b, err := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
