@@ -168,7 +168,7 @@ export class PublishDeploymentTplComponent implements OnInit {
     const appId = parseInt(this.route.parent.snapshot.params['id'], 10);
 
     this.tektonBuildService.getById(deploymentId, appId).subscribe(response => {
-      if (response.data.stepflow < 0) {
+      if (response.data.stepflow <= 0) {
         this.buildVersion = "请选择镜像版本";
       }else {
         this.buildVersion = "最近构建的版本: " + response.data.pipelineExecuteId;
