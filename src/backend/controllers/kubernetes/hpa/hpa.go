@@ -8,7 +8,8 @@ import (
 	"github.com/Qihoo360/wayne/src/backend/resources/hpa"
 	"github.com/Qihoo360/wayne/src/backend/util/logs"
 
-	autoscaling "k8s.io/api/autoscaling/v1"
+	//autoscaling "k8s.io/api/autoscaling/v1"
+	autoscalingV2 "k8s.io/api/autoscaling/v2beta2"
 )
 
 type KubeHPAController struct {
@@ -33,11 +34,19 @@ func (c *KubeHPAController) Prepare() {
 func (c *KubeHPAController) Create() {
 	hpaId := c.GetIntParamFromURL(":hpaId")
 	tplId := c.GetIntParamFromURL(":tplId")
-	var kubeHPA autoscaling.HorizontalPodAutoscaler
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &kubeHPA)
+	//var kubeHPA autoscaling.HorizontalPodAutoscaler
+	//err := json.Unmarshal(c.Ctx.Input.RequestBody, &kubeHPA)
+	//if err != nil {
+	//	logs.Error("Invalid server tpl %s", string(c.Ctx.Input.RequestBody))
+	//	c.AbortBadRequest("HPA")
+	//	return
+	//}
+
+	var kubeHPAV2 autoscalingV2.HorizontalPodAutoscaler
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &kubeHPAV2)
 	if err != nil {
 		logs.Error("Invalid server tpl %s", string(c.Ctx.Input.RequestBody))
-		c.AbortBadRequest("HPA")
+		c.AbortBadRequest("HPAV2")
 		return
 	}
 	clusterName := c.Ctx.Input.Param(":cluster")
@@ -45,7 +54,7 @@ func (c *KubeHPAController) Create() {
 	publishHistory := &models.PublishHistory{
 		Type:         models.PublishTypeHPA,
 		ResourceId:   int64(hpaId),
-		ResourceName: kubeHPA.Name,
+		ResourceName: kubeHPAV2.Name,
 		TemplateId:   int64(tplId),
 		Cluster:      clusterName,
 		User:         c.User.Name,
@@ -56,11 +65,21 @@ func (c *KubeHPAController) Create() {
 		}
 	}()
 
-	_, err = hpa.CreateOrUpdateHPA(k8sClient, &kubeHPA)
+	//_, err = hpa.CreateOrUpdateHPA(k8sClient, &kubeHPA)
+	//if err != nil {
+	//	publishHistory.Status = models.ReleaseFailure
+	//	publishHistory.Message = err.Error()
+	//	logs.Error("deploy HPA error. %v", err)
+	//	c.HandleError(err)
+	//	return
+	//}
+
+	// autoscalling v2beta2
+	_, err = hpa.CreateOrUpdateHPAV2(k8sClient, &kubeHPAV2)
 	if err != nil {
 		publishHistory.Status = models.ReleaseFailure
 		publishHistory.Message = err.Error()
-		logs.Error("deploy HPA error. %v", err)
+		logs.Error("deploy HPAV2 error. %v", err)
 		c.HandleError(err)
 		return
 	}

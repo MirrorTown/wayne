@@ -4,7 +4,7 @@ import { CacheService } from '../../../shared/auth/cache.service';
 import { CreateEditResourceTemplate } from '../../../shared/base/resource/create-edit-resource-template';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../shared/auth/auth.service';
-import { defaultAutoscale } from '../../../shared/default-models/autoscale.const';
+import { defaultAutoscale, defaultAutoscaleV2 } from '../../../shared/default-models/autoscale.const';
 import { DOCUMENT, Location } from '@angular/common';
 import { ActionType } from '../../../shared/shared.const';
 import { combineLatest } from 'rxjs';
@@ -16,6 +16,8 @@ import { AutoscaleService } from '../../../shared/client/v1/autoscale.service';
 import { AutoscaleTpl } from '../../../shared/model/v1/autoscaletpl';
 import { DeploymentService } from '../../../shared/client/v1/deployment.service';
 import { Deployment } from '../../../shared/model/v1/deployment';
+import {MetricSpec, MetricTarget, Resource} from "../../../shared/model/v1/kubernetes/autoscale";
+import {ExecAction, HTTPGetAction, Probe, TCPSocketAction} from "../../../shared/model/v1/kubernetes/deployment";
 
 @Component({
   selector: 'wayne-create-edit-autoscaletpl',
@@ -56,7 +58,7 @@ export class CreateEditAutoscaletplComponent extends CreateEditResourceTemplate 
       messageHandlerService
     );
     super.registResourceType('autoscale');
-    super.registDefaultKubeResource(defaultAutoscale);
+    super.registDefaultKubeResource(defaultAutoscaleV2);
     this.template = new AutoscaleTpl();
   }
 
@@ -93,6 +95,46 @@ export class CreateEditAutoscaletplComponent extends CreateEditResourceTemplate 
         this.messageHandlerService.handleError(error);
       }
     );
+  }
+
+  defaultMetricSpec(): MetricSpec {
+    const metricSpec = new MetricSpec();
+    metricSpec.type = "Resource";
+    const resource = new Resource();
+    resource.name = "cpu";
+
+    const target = new MetricTarget();
+    target.type = "Utilization";
+    target.averageUtilization = 80;
+    resource.target = target;
+    metricSpec.resource = resource;
+
+    return metricSpec;
+  }
+
+  onAddMetric() {
+    this.kubeResource.spec.metrics.push(this.defaultMetricSpec())
+  }
+
+  trackByFn(index, item) {
+    return index;
+  }
+
+  metricTypeChange(metricSpec: MetricSpec, type: string) {
+    switch (type) {
+      case "cpu":
+        metricSpec = this.defaultMetricSpec();
+        break;
+      case "memory":
+        metricSpec = this.defaultMetricSpec();
+        metricSpec.resource.name = "memory";
+        break;
+    }
+
+  }
+
+  metricPolicyChange(type: string, i: number) {
+    this.metricTypeChange(this.kubeResource.spec.metrics[i], type)
   }
 
   ngAfterViewInit() {

@@ -15,3 +15,22 @@ export const defaultAutoscale = `{
     "targetCPUUtilizationPercentage": 80
   }
 }`;
+
+export const defaultAutoscaleV2 = `{
+  "apiVersion": "autoscaling/v2beta2",
+  "kind": "HorizontalPodAutoscaler",
+  "metadata": {
+    "name": ""
+  },
+  "spec": {
+    "maxReplicas": 3,
+    "minReplicas": 1,
+    "scaleTargetRef": {
+        "apiVersion": "extensions/v1beta1",
+        "kind": "Deployment",
+        "name": ""
+    },
+    "metrics": [
+    ]
+  }
+}`;

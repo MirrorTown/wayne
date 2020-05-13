@@ -91,11 +91,28 @@ export class CrossVersionObjectReference {
   }
 
 }
+
+export class MetricTarget {
+  type: string;
+  averageUtilization: number;
+}
+
+export class Resource {
+  name: string;
+  target: MetricTarget;
+}
+
+export class MetricSpec {
+  type: string;
+  resource: Resource;
+}
+
 export class HorizontalPodAutoscalerSpec {
   scaleTargetRef: CrossVersionObjectReference;
   minReplicas?: number;
   maxReplicas: number;
   targetCPUUtilizationPercentage?: number;
+  metrics: MetricSpec[];
 
   constructor(init?: HorizontalPodAutoscalerSpec) {
     if (!init) {
@@ -112,6 +129,9 @@ export class HorizontalPodAutoscalerSpec {
     }
     if (init.targetCPUUtilizationPercentage) {
       this.targetCPUUtilizationPercentage = init.targetCPUUtilizationPercentage;
+    }
+    if (init.metrics) {
+      this.metrics = init.metrics;
     }
   }
 

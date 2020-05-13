@@ -11,10 +11,17 @@ import { KubernetesClient } from '../../../shared/client/v1/kubernetes/kubernete
   styleUrls: ['./status.component.scss']
 })
 export class StatusComponent extends ResourceStatus {
+  memUtilization: string;
+
   constructor(public messageHandlerService: MessageHandlerService,
               public kubernetesClient: KubernetesClient,
               public route: ActivatedRoute,
               public cacheService: CacheService) {
     super(messageHandlerService, kubernetesClient, route, cacheService);
+  }
+
+  memAverageUtilization(event: any) {
+    console.log("event");
+    this.memUtilization = "70 %";
   }
 }
