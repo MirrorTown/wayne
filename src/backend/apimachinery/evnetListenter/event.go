@@ -7,6 +7,7 @@ import (
 	"github.com/Qihoo360/wayne/src/backend/models"
 	"github.com/Qihoo360/wayne/src/backend/util/logs"
 	"github.com/astaxie/beego"
+	"strings"
 	"time"
 
 	//kubeinformers "k8s.io/client-go/informers"
@@ -57,6 +58,15 @@ func (p *PodeEvent) ListenPod() {
 					UpdateFunc: func(oldObj, newObj interface{}) {
 						//监听短暂性任务结果
 						if (newObj.(*v1.Pod).Status.Phase == "Succeeded" && oldObj.(*v1.Pod).Status.Phase == "Succeeded") || (newObj.(*v1.Pod).Status.Phase == "Failed" && oldObj.(*v1.Pod).Status.Phase == "Failed") {
+							name := newObj.(*v1.Pod).Labels["tekton.dev/pipelineRun"]
+							if name != "" {
+								s := strings.Split(name, "-")
+								if newObj.(*v1.Pod).Status.Phase == "Succeeded" && oldObj.(*v1.Pod).Status.Phase == "Succeeded" {
+									_ = models.TektonBuildModel.UpdateByExecuteId(s[len(s)-1], 4)
+								} else if newObj.(*v1.Pod).Status.Phase == "Failed" && oldObj.(*v1.Pod).Status.Phase == "Failed" {
+									_ = models.TektonBuildModel.UpdateByExecuteId(s[len(s)-1], -3)
+								}
+							}
 							fmt.Printf("old:%s %s, new:%s %s \n", oldObj.(*v1.Pod).Name, oldObj.(*v1.Pod).Status.Phase, newObj.(*v1.Pod).Name, newObj.(*v1.Pod).Status.Phase)
 						} else if newObj.(*v1.Pod).Status.ContainerStatuses != nil && oldObj.(*v1.Pod).Status.ContainerStatuses != nil &&
 							newObj.(*v1.Pod).Status.ContainerStatuses[0].RestartCount > oldObj.(*v1.Pod).Status.ContainerStatuses[0].RestartCount {

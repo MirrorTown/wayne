@@ -3,10 +3,6 @@ package cronjob
 import (
 	"encoding/json"
 	"fmt"
-	meta_v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"regexp"
-	"strings"
-
 	"github.com/Qihoo360/wayne/src/backend/apimachinery"
 	"github.com/Qihoo360/wayne/src/backend/client"
 	"github.com/Qihoo360/wayne/src/backend/models"
@@ -14,6 +10,8 @@ import (
 	"github.com/Qihoo360/wayne/src/backend/resources/proxy"
 	"github.com/Qihoo360/wayne/src/backend/util/logs"
 	"github.com/robfig/cron"
+	meta_v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"regexp"
 	"time"
 )
 
@@ -95,13 +93,13 @@ func (t *Tekton) HandlerTekton(client *client.ClusterManager, ns string, cluster
 			if name == "" {
 				continue
 			}
-			s := strings.Split(name, "-")
+			//s := strings.Split(name, "-")
 			if pod.Status.Phase == "Succeeded" {
 				status = models.TektonStatusSuc
-				_ = models.TektonBuildModel.UpdateByExecuteId(s[len(s)-1], 4)
+				//_ = models.TektonBuildModel.UpdateByExecuteId(s[len(s)-1], 4)
 			} else {
 				status = models.TektonStatusFail
-				_ = models.TektonBuildModel.UpdateByExecuteId(s[len(s)-1], -3)
+				//_ = models.TektonBuildModel.UpdateByExecuteId(s[len(s)-1], -3)
 			}
 			crdData, err := crd.GetCustomCRD(client.Client, "tekton.dev", "v1alpha1", "pipelineruns", ns, name)
 			newMetaData, err := json.Marshal(&crdData)
