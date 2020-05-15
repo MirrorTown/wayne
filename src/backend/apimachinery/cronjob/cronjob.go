@@ -26,9 +26,9 @@ func (c *CronJob) StartDeployStatuJob() (err error) {
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				_ = cli.NotifyToDingding("wayne流程检查定时任务失败，请检查!", "18768129565")
 				logs.Error(err)
 			}
+			_ = cli.NotifyToDingding("wayne流程检查定时任务失败，请检查!", "18768129565")
 		}()
 		for range time.Tick(time.Second * 10) {
 			//获取发布列表
