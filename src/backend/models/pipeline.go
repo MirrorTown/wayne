@@ -73,8 +73,8 @@ func (*pipelineModel) Add(p *Pipeline) error {
 func (*pipelineModel) Update(p *Pipeline) (err error) {
 	v := &Pipeline{Id: p.Id}
 	if err = Ormer().Read(v); err == nil {
-		v.UpdateTime = nil
-		_, err = Ormer().Update(v)
+		p.UpdateTime = nil
+		_, err = Ormer().Update(p)
 		return nil
 	}
 	return

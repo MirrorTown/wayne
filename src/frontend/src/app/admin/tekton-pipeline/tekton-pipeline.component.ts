@@ -100,6 +100,6 @@ export class TektonPipelineComponent implements OnInit, OnDestroy {
   }
 
   editPipeline(pipeline: Pipeline) {
-    this.createEdit.newOrEditHarbor(pipeline.name);
+    this.createEdit.newOrEditHarbor(pipeline.id);
   }
 }

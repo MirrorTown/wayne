@@ -39,12 +39,12 @@ export class CreateEditTektonPipelineComponent {
               private messageHandlerService: MessageHandlerService) {
   }
 
-  newOrEditHarbor(name?: string) {
+  newOrEditHarbor(id?: number) {
     this.modalOpened = true;
-    if (name) {
+    if (id) {
       this.actionType = ActionType.EDIT;
       this.title = '编辑流水线';
-      this.pipelineService.getByName(name).subscribe(
+      this.pipelineService.getById(id).subscribe(
         status => {
           this.pipeline = status.data;
           this.initJsonEditor();
@@ -83,7 +83,7 @@ export class CreateEditTektonPipelineComponent {
             this.isSubmitOnGoing = false;
             this.create.emit(true);
             this.modalOpened = false;
-            this.messageHandlerService.showSuccess('创建镜像成功！');
+            this.messageHandlerService.showSuccess('创建流水线成功！');
           },
           error => {
             this.isSubmitOnGoing = false;
@@ -99,7 +99,7 @@ export class CreateEditTektonPipelineComponent {
             this.isSubmitOnGoing = false;
             this.create.emit(true);
             this.modalOpened = false;
-            this.messageHandlerService.showSuccess('更新镜像成功！');
+            this.messageHandlerService.showSuccess('更新流水线成功！');
           },
           error => {
             this.isSubmitOnGoing = false;

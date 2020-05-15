@@ -21,10 +21,8 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
 }
 
 export function initUser(authService: AuthService, injector: Injector) {
-  console.log("re", injector)
   return () => authService.retrieveUser().then(() => {
   }).catch(error => {
-    console.log("error")
     const router = injector.get(Router);
     if (error.status === httpStatusCode.Unauthorized) {
       router.navigate(['sign-in']);

@@ -17,6 +17,7 @@ import { ActivatedRoute } from '@angular/router';
 import { PageState } from '../../../shared/page/page-state';
 import { DeploymentService } from '../../../shared/client/v1/deployment.service';
 import { AuthService } from '../../../shared/auth/auth.service';
+import {TektonBuildService} from "../../../shared/client/v1/tektonBuild.service";
 
 @Component({
   selector: 'publish-tpl',
@@ -51,9 +52,11 @@ export class PublishDeploymentTplComponent implements OnInit {
   tag = '';
   lastStr: string;
   delaytimer: any;
+  buildVersion: string;
 
   constructor(private messageHandlerService: MessageHandlerService,
               public cacheService: CacheService,
+              private tektonBuildService: TektonBuildService,
               private deploymentService: DeploymentService,
               public authService: AuthService,
               private route: ActivatedRoute,
@@ -107,7 +110,6 @@ export class PublishDeploymentTplComponent implements OnInit {
   }
 
   newPublishTpl(deployment: Deployment, deploymentTpl: DeploymentTpl, actionType: ResourcesActionType) {
-    console.log(this.originActive);
     this.inflow = false;
     //上次发布结束才可以继续发布本次发布
     if (this.originActive < 0 || this.originActive === 3) {
@@ -116,7 +118,6 @@ export class PublishDeploymentTplComponent implements OnInit {
     console.log(this.inflow);
     const replicas = this.getReplicas(deployment);
     const tplt = JSON.parse(deploymentTpl.template);
-    console.log(tplt.spec.template.spec.containers[0].image.split(":")[0])
     this.containerImage = tplt.spec.template.spec.containers[0].image.split(":")[0];
     // this.containerImage = deployment.
     this.actionType = actionType;
@@ -162,6 +163,18 @@ export class PublishDeploymentTplComponent implements OnInit {
       }
 
     }
+
+    const deploymentId = parseInt(this.route.snapshot.params['deploymentId'], 10);
+    const appId = parseInt(this.route.parent.snapshot.params['id'], 10);
+
+    this.tektonBuildService.getById(deploymentId, appId).subscribe(response => {
+      if (response.data.stepflow <= 0) {
+        this.buildVersion = "请选择镜像版本";
+      }else {
+        this.buildVersion = "最近构建的版本: " + response.data.pipelineExecuteId;
+      }
+
+    })
   }
 
   setTitle(actionType: ResourcesActionType) {

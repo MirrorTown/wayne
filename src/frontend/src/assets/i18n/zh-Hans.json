@@ -682,7 +682,10 @@
     "NAME": "名称",
     "MIN_REPLICAS": "最小副本数",
     "MAX_REPLICAS": "最大副本数",
-    "CPU_THRESHOLD": "CPU 负载阈值"
+    "METRIC_POLICY": "指标策略",
+    "AVERAGE_UTILIZATION": "平均比例",
+    "CPU_THRESHOLD": "CPU 负载阈值",
+    "MEMORY_THRESHOLD": "MEM 负载阈值"
   },
   "UNIT": {
     "CORE": "核",

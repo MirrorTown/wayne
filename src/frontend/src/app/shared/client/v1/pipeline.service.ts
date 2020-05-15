@@ -75,7 +75,7 @@ export class PipelineService {
 
   update(pipeline: Pipeline): Observable<any> {
     return this.http
-      .put(`/api/v1/pipeline`, pipeline, this.options)
+      .put(`/api/v1/pipeline/${pipeline.id}`, pipeline, this.options)
 
       .catch(error => throwError(error));
   }
@@ -94,9 +94,9 @@ export class PipelineService {
       .catch(error => throwError(error));
   }
 
-  getByName(name: string): Observable<any> {
+  getById(id: number): Observable<any> {
     return this.http
-      .get(`/api/v1/pipeline/${name}`)
+      .get(`/api/v1/pipeline/${id}`)
 
       .catch(error => throwError(error));
   }

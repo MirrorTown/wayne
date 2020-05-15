@@ -39,7 +39,16 @@
             {{kubeResource?.spec.targetCPUUtilizationPercentage}} %
           </div>
         </div>
+
+        <div class="clr-row group">
+          <div class="clr-col-sm-3">
+            {{'TEMPLATE.MEMORY_THRESHOLD' | translate}}
+          </div>
+          <div class="clr-col-sm-9">
+            {{kubeResource?.metadata.annotations["autoscaling.alpha.kubernetes.io/metrics"]}} %
+          </div>
+        </div>
       </section>
     </form>
   </div>
-
+</clr-modal>

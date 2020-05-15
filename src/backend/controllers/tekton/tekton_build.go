@@ -9,7 +9,6 @@ import (
 	"github.com/Qihoo360/wayne/src/backend/util/logs"
 	"k8s.io/apimachinery/pkg/util/json"
 	"net/http"
-	"strconv"
 	"time"
 )
 
@@ -126,7 +125,7 @@ func (t *TektonBuildController) Create() {
 	}
 
 	if tektonBuild.Status == "关闭审核" {
-		pipelineExecuteId := strconv.Itoa(int(time.Now().Unix()))
+		pipelineExecuteId := time.Now().Format("20060102150405")
 		err = models.TektonBuildModel.Update(tektonBuild.Name, 2, pipelineExecuteId)
 		if err != nil {
 			logs.Error("Update TektonBuild error.%v", err)
@@ -194,7 +193,7 @@ func (t *TektonBuildController) Publish() {
 	}
 
 	if buildReview.Status == models.BuildReviewStatusPass {
-		pipelineExecuteId := strconv.Itoa(int(time.Now().Unix()))
+		pipelineExecuteId := time.Now().Format("20060102150405")
 		err = models.TektonBuildModel.Update(buildReview.Name, 2, pipelineExecuteId)
 		if err != nil {
 			logs.Error("Update TektonBuild error.%v", err)
@@ -247,6 +246,8 @@ func (t *TektonBuildController) deploy(buildName, pipelineExecuteId string) erro
 	resp, err := client.Do(req)
 	if err != nil {
 		logs.Error("发送构建信息失败,", err)
+		_ = models.TektonBuildModel.UpdateByExecuteId(pipelineExecuteId, -2)
+		return err
 	}
 	//b, err := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
