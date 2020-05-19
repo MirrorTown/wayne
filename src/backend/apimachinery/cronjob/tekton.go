@@ -3,6 +3,7 @@ package cronjob
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/astaxie/beego"
 	meta_v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"regexp"
 	"strings"
@@ -31,6 +32,7 @@ func (t *Tekton) StartTektonCron() (err error) {
 				logs.Error(err)
 			}
 		}()
+		tpns := beego.AppConfig.Strings("tekton_pod_namespace")
 
 		for range time.Tick(time.Second * 10) {
 			//tektonList, err := models.TektonModel.GetAllNeedCheck()
@@ -38,9 +40,8 @@ func (t *Tekton) StartTektonCron() (err error) {
 			if err != nil {
 				logs.Error(err)
 			}
-			var namespaces = []string{"wireless-ci", "souche-volvo-ci"}
 			for _, cluster := range clusterList {
-				for _, ns := range namespaces {
+				for _, ns := range tpns {
 					client := cli.Manager(cluster.Name)
 					//namespace := "wireless-ci"
 					if client == nil {
@@ -66,14 +67,14 @@ func (t *Tekton) CleanTektonCRD() {
 	var cli apimachinery.ClientSet
 
 	c := cron.New()
+	tCrdNSs := beego.AppConfig.Strings("tekton_crd_namespace")
 	c.AddFunc("@daily", func() {
 		clusterList, err := models.ClusterModel.GetAllNormal()
 		if err != nil {
 			logs.Error(err)
 		}
-		var namespaces = []string{"wireless-ci"}
 		for _, cluster := range clusterList {
-			for _, ns := range namespaces {
+			for _, ns := range tCrdNSs {
 				client := cli.Manager(cluster.Name)
 				err := crd.CleanCustomCRDDelList(client.Client, "tekton.dev", "v1alpha1", ns)
 				if err != nil {
