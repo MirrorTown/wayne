@@ -9,7 +9,7 @@ export class Pipeline {
   description: string;
   createTime: Date;
   status: number;
-  tektonBuilds: TektonBuild;
+  tektonBuilds: TektonBuild[];
   checked: boolean;
 
   constructor(name?: string, checked?: boolean) {

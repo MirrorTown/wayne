@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import { Router } from '@angular/router';
 import { ClrDatagridStateInterface } from '@clr/angular';
 import { Harbor } from '../../../shared/model/v1/harbor';
@@ -7,6 +7,8 @@ import { pipelineStatus } from 'app/shared/shared.const';
 import { AceEditorService } from '../../../shared/ace-editor/ace-editor.service';
 import { AceEditorMsg } from '../../../shared/ace-editor/ace-editor';
 import {Pipeline} from "../../../shared/model/v1/pipeline";
+import {TektonBuild} from "../../../shared/model/v1/tektonBuild";
+import { ListRelatedAppComponent } from "../../../shared/list-related-app/list-related-app.component";
 
 @Component({
   selector: 'list-tekton-pipeline',
@@ -19,10 +21,15 @@ export class ListTektonPipelineComponent implements OnInit {
   @Input() page: Page;
   currentPage = 1;
   state: ClrDatagridStateInterface;
+  buildVisible: boolean;
+  tektonBuilds: TektonBuild[];
 
   @Output() paginate = new EventEmitter<ClrDatagridStateInterface>();
   @Output() delete = new EventEmitter<Pipeline>();
   @Output() edit = new EventEmitter<Pipeline>();
+
+  @ViewChild(ListRelatedAppComponent, { static: false })
+  listRelatedAppComponent: ListRelatedAppComponent;
 
 
   constructor(private router: Router,
@@ -30,6 +37,12 @@ export class ListTektonPipelineComponent implements OnInit {
   }
 
   ngOnInit(): void {
+  }
+
+  searchApps(pipeline: Pipeline) {
+    this.buildVisible = true;
+    this.tektonBuilds = pipeline.tektonBuilds;
+    console.log(this.tektonBuilds);
   }
 
   pageSizeChange(pageSize: number) {
@@ -60,4 +73,9 @@ export class ListTektonPipelineComponent implements OnInit {
     this.aceEditorService.announceMessage(AceEditorMsg.Instance(tpl, false, '元数据查看'));
   }
 
+  listRelatedApps(pipeline: Pipeline) {
+    if (pipeline) {
+      this.listRelatedAppComponent.openModal(pipeline.tektonBuilds);
+    }
+  }
 }
