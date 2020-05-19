@@ -21,6 +21,7 @@ export class ListRelatedAppComponent implements OnDestroy {
   modalOpened: boolean;
   whetherHotReflash = true;
   tektonBuilds: TektonBuild[];
+  apps: TektonBuild[];
 
   pageState: PageState = new PageState();
   currentPage = 1;
@@ -44,6 +45,7 @@ export class ListRelatedAppComponent implements OnDestroy {
 
   openModal(tektonBuilds: TektonBuild[]) {
     this.tektonBuilds = tektonBuilds;
+    this.apps = tektonBuilds;
     this.currentPage = 1;
     this.modalOpened = true;
     this.whetherHotReflash = true;
@@ -59,9 +61,11 @@ export class ListRelatedAppComponent implements OnDestroy {
       this.state = state;
       this.pageState = PageState.fromState(state, {totalPage: this.pageState.page.totalPage, totalCount: this.pageState.page.totalCount});
     }
-    if (this.tektonBuilds) {
-      this.pageState.page.totalPage = this.tektonBuilds.length / this.state.page.size;
-      this.pageState.page.totalCount = this.tektonBuilds.length;
+    if (this.apps) {
+      const start = (this.pageState.page.pageNo - 1) * this.pageState.page.pageSize;
+      this.tektonBuilds = this.apps.slice(start , start + this.pageState.page.pageSize)
+      this.pageState.page.totalPage = this.apps.length / this.state.page.size;
+      this.pageState.page.totalCount = this.apps.length;
     }
   }
 }
