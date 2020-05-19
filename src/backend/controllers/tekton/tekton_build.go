@@ -126,7 +126,7 @@ func (t *TektonBuildController) Create() {
 
 	if tektonBuild.Status == "关闭审核" {
 		pipelineExecuteId := time.Now().Format("20060102150405")
-		err = models.TektonBuildModel.Update(tektonBuild.Name, 2, pipelineExecuteId)
+		err = models.TektonBuildModel.Update(tektonBuild, 2, pipelineExecuteId)
 		if err != nil {
 			logs.Error("Update TektonBuild error.%v", err)
 			t.AbortBadRequestFormat("Update TektonBuild error")
@@ -194,7 +194,7 @@ func (t *TektonBuildController) Publish() {
 
 	if buildReview.Status == models.BuildReviewStatusPass {
 		pipelineExecuteId := time.Now().Format("20060102150405")
-		err = models.TektonBuildModel.Update(buildReview.Name, 2, pipelineExecuteId)
+		err = models.TektonBuildModel.UpdateByName(buildReview.Name, 2, pipelineExecuteId)
 		if err != nil {
 			logs.Error("Update TektonBuild error.%v", err)
 			t.AbortBadRequestFormat("Update TektonBuild error")
@@ -202,7 +202,7 @@ func (t *TektonBuildController) Publish() {
 
 		t.deploy(buildReview.Name, pipelineExecuteId)
 	} else {
-		err = models.TektonBuildModel.Update(buildReview.Name, -1)
+		err = models.TektonBuildModel.UpdateByName(buildReview.Name, -1)
 		if err != nil {
 			logs.Error("Update TektonBuild error.%v", err)
 			t.AbortBadRequestFormat("Update TektonBuild error")

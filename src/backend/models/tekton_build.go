@@ -179,7 +179,24 @@ func (*tektonBuildModel) DeleteById(id int64, logical bool) (err error) {
 	return
 }
 
-func (d *tektonBuildModel) Update(buildName string, stepFlow int, pipelineExecuteId ...string) (err error) {
+func (d *tektonBuildModel) Update(tektonBuild TektonBuild, stepFlow int, pipelineExecuteId ...string) (err error) {
+	v := &TektonBuild{Name: tektonBuild.Name}
+	if err = Ormer().Read(v, "Name"); err == nil {
+		v.UpdateTime = nil
+		v.MetaData = tektonBuild.MetaData
+		v.Stepflow = stepFlow
+		if len(pipelineExecuteId) > 0 {
+			v.PipelineExecuteId = pipelineExecuteId[0]
+			_, err = Ormer().Update(v, "UpdateTime", "Stepflow", "MetaData", "PipelineExecuteId")
+		}
+		_, err = Ormer().Update(v, "UpdateTime", "Stepflow", "MetaData")
+
+		return err
+	}
+	return
+}
+
+func (d *tektonBuildModel) UpdateByName(buildName string, stepFlow int, pipelineExecuteId ...string) (err error) {
 	v := &TektonBuild{Name: buildName}
 	if err = Ormer().Read(v, "Name"); err == nil {
 		v.UpdateTime = nil
