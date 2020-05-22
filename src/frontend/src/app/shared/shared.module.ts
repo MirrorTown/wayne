@@ -50,6 +50,7 @@ import { DiffService } from './diff/diff.service';
 import { ResourceLimitModule } from './component/resource-limit/resource-limit.module';
 import { EchartsModule } from './echarts/echars.module';
 import { ListPodComponent } from './list-pod/list-pod.component';
+import { ListRelatedAppComponent } from './list-related-app/list-related-app.component';
 import { ListEventComponent } from './list-event/list-event.component';
 import { SideNavService } from './client/v1/sidenav.service';
 import { SearchSectionComponent } from './tabs/search-section/search-section.component';
@@ -96,6 +97,7 @@ import { CollapseModule } from './collapse/collapse.module';
     RelativeTimeFilterPipe,
     DiffComponent,
     ListPodComponent,
+    ListRelatedAppComponent,
     ListEventComponent,
     SearchSectionComponent
   ],
@@ -136,6 +138,7 @@ import { CollapseModule } from './collapse/collapse.module';
     TranslateModule,
     DiffComponent,
     ListPodComponent,
+    ListRelatedAppComponent,
     ListEventComponent,
     SearchSectionComponent,
     CollapseModule

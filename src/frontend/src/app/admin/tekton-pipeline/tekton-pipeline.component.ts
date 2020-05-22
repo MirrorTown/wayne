@@ -85,7 +85,7 @@ export class TektonPipelineComponent implements OnInit, OnDestroy {
   }
 
   openModal(): void {
-    this.createEdit.newOrEditHarbor();
+    this.createEdit.newOrEditPipeline();
   }
 
   deletePipeline(pipeline: Pipeline) {
@@ -100,6 +100,6 @@ export class TektonPipelineComponent implements OnInit, OnDestroy {
   }
 
   editPipeline(pipeline: Pipeline) {
-    this.createEdit.newOrEditHarbor(pipeline.id);
+    this.createEdit.newOrEditPipeline(pipeline.id);
   }
 }

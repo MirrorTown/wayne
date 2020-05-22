@@ -1,0 +1,46 @@
+<clr-modal [(clrModalOpen)]="modalOpened" [clrModalSize]="'xl'" #modal>
+  <h3 class="modal-title">
+    关联项目详情<wayne-modal-operate [modal]="modal" *ngIf="modalOpened"></wayne-modal-operate>
+  </h3>
+
+  <div class="modal-body">
+    <hr>
+    <clr-datagrid (clrDgRefresh)="refresh($event)">
+      <clr-dg-placeholder>{{'MESSAGE.NO_MESSAGE' | translate}}</clr-dg-placeholder>
+      <clr-dg-column>
+        <ng-container *clrDgHideableColumn="{hidden: false}">
+          {{'TITLE.NAME' | translate}}
+        </ng-container>
+      </clr-dg-column>
+      <clr-dg-column>
+        <ng-container *clrDgHideableColumn="{hidden: false}">
+          Creater
+        </ng-container>
+      </clr-dg-column>
+      <clr-dg-column>
+        <ng-container *clrDgHideableColumn="{hidden: false}">
+          Desc
+        </ng-container>
+      </clr-dg-column>
+      <clr-dg-column>
+        <ng-container *clrDgHideableColumn="{hidden: false}">
+          CreateTime
+        </ng-container>
+      </clr-dg-column>
+      <clr-dg-row  *ngFor="let tektonBuild of tektonBuilds" [clrDgItem]="tektonBuild">
+        <clr-dg-cell class="copy">{{tektonBuild.name}}</clr-dg-cell>
+        <clr-dg-cell>{{tektonBuild.user}}</clr-dg-cell>
+        <clr-dg-cell>{{tektonBuild.description}}</clr-dg-cell>
+        <clr-dg-cell>{{tektonBuild.createTime}}</clr-dg-cell>
+      </clr-dg-row>
+      <clr-dg-footer>
+        <wayne-paginate
+          [(currentPage)]="currentPage"
+          [total]="pageState.page.totalCount"
+          [pageSizes]="[5, 10, 20, 50]"
+          (sizeChange)="pageSizeChange($event)">
+        </wayne-paginate>
+      </clr-dg-footer>
+    </clr-datagrid>
+  </div>
+</clr-modal>

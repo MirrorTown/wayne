@@ -39,7 +39,7 @@ export class CreateEditTektonPipelineComponent {
               private messageHandlerService: MessageHandlerService) {
   }
 
-  newOrEditHarbor(id?: number) {
+  newOrEditPipeline(id?: number) {
     this.modalOpened = true;
     if (id) {
       this.actionType = ActionType.EDIT;
