@@ -9,6 +9,8 @@ import { Harbor } from '../../../shared/model/v1/harbor';
 import { AceEditorBoxComponent } from '../../../shared/ace-editor/ace-editor-box/ace-editor-box.component';
 import {PipelineService} from "../../../shared/client/v1/pipeline.service";
 import {Pipeline} from "../../../shared/model/v1/pipeline";
+import {Volume} from "../../../shared/model/v1/kubernetes/deployment";
+import {Param} from "../../../shared/model/v1/tektonBuild";
 
 @Component({
   selector: 'create-edit-tekton-pipeline',
@@ -31,6 +33,7 @@ export class CreateEditTektonPipelineComponent {
   isSubmitOnGoing = false;
   isNameValid = true;
   position = 'right-middle';
+  buildResource: any = {};
 
   title: string;
   actionType: ActionType;
@@ -42,11 +45,13 @@ export class CreateEditTektonPipelineComponent {
   newOrEditPipeline(id?: number) {
     this.modalOpened = true;
     if (id) {
+      this.buildResource = {}
       this.actionType = ActionType.EDIT;
       this.title = '编辑流水线';
       this.pipelineService.getById(id).subscribe(
         status => {
           this.pipeline = status.data;
+          this.buildResource = JSON.parse(this.pipeline.buildResource);
           this.initJsonEditor();
         },
         error => {
@@ -71,6 +76,7 @@ export class CreateEditTektonPipelineComponent {
   }
 
   onSubmit() {
+    this.pipeline.buildResource = JSON.stringify(this.buildResource);
     if (this.isSubmitOnGoing) {
       return;
     }
@@ -110,6 +116,34 @@ export class CreateEditTektonPipelineComponent {
         );
         break;
     }
+  }
+
+  defaultBuildParam(): Param {
+    const param = new Param();
+
+    return param
+  }
+
+  trackByFn(index, item) {
+    return index;
+  }
+
+  onAddBuildVariable() {
+    if (this.buildResource.params == undefined) {
+      this.buildResource.params = new Array();
+      const gitParam = new Param();
+      gitParam.key = "repoURL";
+      const branchParam = new Param();
+      branchParam.key = "repoRevision";
+
+      this.buildResource.params.push(gitParam);
+      this.buildResource.params.push(branchParam);
+    }
+    this.buildResource.params.push(this.defaultBuildParam());
+  }
+
+  onDelBuildVariable(index: number) {
+    this.buildResource.params.splice(index,1);
   }
 
   public get isValid(): boolean {

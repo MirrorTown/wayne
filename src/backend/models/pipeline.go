@@ -12,14 +12,15 @@ const (
 type pipelineModel struct{}
 
 type Pipeline struct {
-	Id          int64      `orm:"auto" json:"id,omitempty"`
-	Name        string     `orm:"unique;index;size(128)" json:"name,omitempty"`
-	Description string     `orm:"null;size(128)" json:"description,omitempty"`
-	BuildUri    string     `orm:"null;size(128)" json:"buildUri,omitempty"`
-	LogUri      string     `orm:"null;size(128)" json:"logUri,omitempty"`
-	Status      int64      `orm:"default(0)" json:"status"`
-	CreateTime  *time.Time `orm:"auto_now_add;type(datetime)" json:"createTime,omitempty"`
-	UpdateTime  *time.Time `orm:"auto_now;type(datetime)" json:"updateTime,omitempty"`
+	Id            int64      `orm:"auto" json:"id,omitempty"`
+	Name          string     `orm:"unique;index;size(128)" json:"name,omitempty"`
+	Description   string     `orm:"null;size(128)" json:"description,omitempty"`
+	BuildUri      string     `orm:"null;size(128)" json:"buildUri,omitempty"`
+	LogUri        string     `orm:"null;size(128)" json:"logUri,omitempty"`
+	Status        int64      `orm:"default(0)" json:"status"`
+	BuildResource string     `orm:"type(text)" json:"buildResource,omitempty"`
+	CreateTime    *time.Time `orm:"auto_now_add;type(datetime)" json:"createTime,omitempty"`
+	UpdateTime    *time.Time `orm:"auto_now;type(datetime)" json:"updateTime,omitempty"`
 
 	//用于关联查询
 	TektonBuilds []*TektonBuild `orm:"reverse(many)" json:"tektonBuilds,omitempty"`
