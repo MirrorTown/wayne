@@ -5,11 +5,9 @@ import 'rxjs/add/operator/distinctUntilChanged';
 import { NgForm } from '@angular/forms';
 import { MessageHandlerService } from '../../../shared/message-handler/message-handler.service';
 import { ActionType } from '../../../shared/shared.const';
-import { Harbor } from '../../../shared/model/v1/harbor';
 import { AceEditorBoxComponent } from '../../../shared/ace-editor/ace-editor-box/ace-editor-box.component';
 import {PipelineService} from "../../../shared/client/v1/pipeline.service";
 import {Pipeline} from "../../../shared/model/v1/pipeline";
-import {Volume} from "../../../shared/model/v1/kubernetes/deployment";
 import {Param} from "../../../shared/model/v1/tektonBuild";
 
 @Component({
@@ -45,7 +43,7 @@ export class CreateEditTektonPipelineComponent {
   newOrEditPipeline(id?: number) {
     this.modalOpened = true;
     if (id) {
-      this.buildResource = {}
+      this.buildResource = {};
       this.actionType = ActionType.EDIT;
       this.title = '编辑流水线';
       this.pipelineService.getById(id).subscribe(

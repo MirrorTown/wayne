@@ -112,6 +112,15 @@ export class CreateTektonBuildComponent extends ContainerTpl implements OnInit, 
     this.box.style.paddingBottom = '0.75rem';
   }
 
+  changePipeline() {
+    for (let i=0; i < this.pipelineList.length; i++) {
+      if (this.pipelineList[i].id == this.tektonBuild.pipelineId) {
+        this.buildResource = JSON.parse(this.pipelineList[i].buildResource);
+        this.checked = this.buildResource.checked;
+      }
+    }
+  }
+
   scrollEvent(scroll: boolean, event?) {
     let top = 0;
     if (event && scroll) {

@@ -33,7 +33,7 @@
 
       <clr-select-container>
         <label class="required">{{'TEMPLATE.CHOICE_PIPELINE' | translate}}</label>
-        <select id="build_pipeline_id" clrSelect [(ngModel)]="tektonBuild.pipelineId"
+        <select id="build_pipeline_id" clrSelect [(ngModel)]="tektonBuild.pipelineId" (ngModelChange)="changePipeline()"
                 name="build_pipeline">
           <option *ngFor="let pipeline of pipelineList" [ngValue]="pipeline.id"
                   [selected]="pipeline.id === tektonBuild.pipelineId">{{pipeline.name}}

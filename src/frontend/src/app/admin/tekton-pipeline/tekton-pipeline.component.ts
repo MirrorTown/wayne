@@ -7,7 +7,6 @@ import { Subscription } from 'rxjs/Subscription';
 import { MessageHandlerService } from '../../shared/message-handler/message-handler.service';
 import { CreateEditTektonPipelineComponent } from './create-edit-tekton-pipeline/create-edit-tekton-pipeline.component';
 import { ListTektonPipelineComponent } from './list-tekton-pipeline/list-tekton-pipeline.component';
-import { Harbor } from '../../shared/model/v1/harbor';
 import { PipelineService } from '../../shared/client/v1/pipeline.service';
 import { PageState } from '../../shared/page/page-state';
 import {Pipeline} from "../../shared/model/v1/pipeline";
