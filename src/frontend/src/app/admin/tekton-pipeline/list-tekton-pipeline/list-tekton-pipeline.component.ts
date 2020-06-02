@@ -1,7 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import { Router } from '@angular/router';
 import { ClrDatagridStateInterface } from '@clr/angular';
-import { Harbor } from '../../../shared/model/v1/harbor';
 import { Page } from '../../../shared/page/page-state';
 import { pipelineStatus } from 'app/shared/shared.const';
 import { AceEditorService } from '../../../shared/ace-editor/ace-editor.service';

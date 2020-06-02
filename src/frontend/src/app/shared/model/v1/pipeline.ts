@@ -11,6 +11,7 @@ export class Pipeline {
   status: number;
   tektonBuilds: TektonBuild[];
   checked: boolean;
+  buildResource: string;
 
   constructor(name?: string, checked?: boolean) {
     if (name) {

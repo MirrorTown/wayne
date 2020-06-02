@@ -40,6 +40,10 @@ const (
 	ResourceNameClusterRole             ResourceName = "clusterroles"
 	ResourceNameClusterRoleBinding      ResourceName = "clusterrolebindings"
 	ResourceNameServiceAccount          ResourceName = "serviceaccounts"
+	ResourceNameTriggerBinding          ResourceName = "triggerbindings"
+	ResourceNameTriggerTemplate         ResourceName = "triggertemplates"
+	ResourceNameEventListener           ResourceName = "eventlisteners"
+	ResourceNamePipeline                ResourceName = "pipelines"
 )
 
 const (
@@ -80,30 +84,30 @@ type GroupVersionResourceKind struct {
 }
 
 var KindToResourceType = map[string]string{
-	KindNameConfigMap:ResourceNameConfigMap,
-	KindNameDaemonSet:ResourceNameDaemonSet,
-	KindNameDeployment:ResourceNameDeployment,
-	KindNameEvent:ResourceNameEvent,
-	KindNameHorizontalPodAutoscaler:ResourceNameHorizontalPodAutoscaler,
-	KindNameIngress:ResourceNameIngress,
-	KindNameJob:ResourceNameJob,
-	KindNameCronJob:ResourceNameCronJob,
-	KindNameNamespace:ResourceNameNamespace,
-	KindNameNode:ResourceNameNode,
-	KindNamePersistentVolumeClaim:ResourceNamePersistentVolumeClaim,
-	KindNamePersistentVolume:ResourceNamePersistentVolume,
-	KindNamePod:ResourceNamePod,
-	KindNameReplicaSet:ResourceNameReplicaSet,
-	KindNameSecret:ResourceNameSecret,
-	KindNameService:ResourceNameService,
-	KindNameStatefulSet:ResourceNameStatefulSet,
-	KindNameEndpoint:ResourceNameEndpoint,
-	KindNameStorageClass:ResourceNameStorageClass,
-	KindNameRole:ResourceNameRole,
-	KindNameRoleBinding:ResourceNameRoleBinding,
-	KindNameClusterRole:ResourceNameClusterRole,
-	KindNameClusterRoleBinding:ResourceNameClusterRoleBinding,
-	KindNameServiceAccount:ResourceNameServiceAccount,
+	KindNameConfigMap:               ResourceNameConfigMap,
+	KindNameDaemonSet:               ResourceNameDaemonSet,
+	KindNameDeployment:              ResourceNameDeployment,
+	KindNameEvent:                   ResourceNameEvent,
+	KindNameHorizontalPodAutoscaler: ResourceNameHorizontalPodAutoscaler,
+	KindNameIngress:                 ResourceNameIngress,
+	KindNameJob:                     ResourceNameJob,
+	KindNameCronJob:                 ResourceNameCronJob,
+	KindNameNamespace:               ResourceNameNamespace,
+	KindNameNode:                    ResourceNameNode,
+	KindNamePersistentVolumeClaim:   ResourceNamePersistentVolumeClaim,
+	KindNamePersistentVolume:        ResourceNamePersistentVolume,
+	KindNamePod:                     ResourceNamePod,
+	KindNameReplicaSet:              ResourceNameReplicaSet,
+	KindNameSecret:                  ResourceNameSecret,
+	KindNameService:                 ResourceNameService,
+	KindNameStatefulSet:             ResourceNameStatefulSet,
+	KindNameEndpoint:                ResourceNameEndpoint,
+	KindNameStorageClass:            ResourceNameStorageClass,
+	KindNameRole:                    ResourceNameRole,
+	KindNameRoleBinding:             ResourceNameRoleBinding,
+	KindNameClusterRole:             ResourceNameClusterRole,
+	KindNameClusterRoleBinding:      ResourceNameClusterRoleBinding,
+	KindNameServiceAccount:          ResourceNameServiceAccount,
 }
 
 var KindToResourceMap = map[string]ResourceMap{
