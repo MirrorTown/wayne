@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 )
 
 type HongMaoController struct {
@@ -96,7 +97,7 @@ func getDes(desc interface{}) string {
 
 func (h *HongMaoController) GetApplication(url string) []map[string]interface{} {
 	accessToken := h.getAccessToken()
-	client := &http.Client{}
+	client := &http.Client{Timeout: 5 * time.Second}
 	var req *http.Request
 	req, _ = http.NewRequest(http.MethodGet, url+accessToken, nil)
 
