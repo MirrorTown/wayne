@@ -1,11 +1,14 @@
 package cronjob
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"github.com/astaxie/beego"
 	meta_v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"net/http"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"github.com/Qihoo360/wayne/src/backend/apimachinery"
@@ -103,6 +106,19 @@ func (t *Tekton) HandlerTekton(client *client.ClusterManager, ns string, cluster
 			} else {
 				status = models.TektonStatusFail
 				_ = models.TektonBuildModel.UpdateByExecuteId(s[len(s)-1], -3)
+				//新流程muji 回调构建失败结果需要 name="muji-build-128-prod-2020070809-1" or name="muji-build-128-2020070809-1"
+				if strings.Contains(name, "muji") {
+					logs.Info("muji name: ", s, s[len(s)-2])
+					recordId, _ := strconv.Atoi(s[len(s)-2])
+					callbackUrl := beego.AppConfig.String("muji_callback_url_test")
+					if strings.Contains(name, "prod") {
+						callbackUrl = beego.AppConfig.String("muji_callback_url_prod")
+						t.callbackFailed2Muji(recordId, callbackUrl)
+					} else {
+						t.callbackFailed2Muji(recordId, callbackUrl)
+					}
+
+				}
 			}
 			crdData, err := crd.GetCustomCRD(client.Client, "tekton.dev", "v1alpha1", "pipelineruns", ns, name)
 			newMetaData, err := json.Marshal(&crdData)
@@ -147,4 +163,32 @@ func (t *Tekton) GetPodLableMap(pod proxy.PodCell) map[string]string {
 	lableMap := make(map[string]string)
 	lableMap = pod.Labels
 	return lableMap
+}
+
+func (t *Tekton) callbackFailed2Muji(recordId int, callbackUrl string) (err error) {
+	//请求地址模板
+	content := `{"status": "failed","notifyParams": {"recordId": %d}}`
+	//创建一个请求
+	body := fmt.Sprintf(content, recordId)
+	jsonValue := []byte(body)
+	req, err := http.NewRequest("POST", callbackUrl, bytes.NewBuffer(jsonValue))
+	if err != nil {
+		// handle error
+		logs.Error(err)
+	}
+
+	client := &http.Client{}
+	//设置请求头
+	req.Header.Set("Content-Type", "application/json; charset=utf-8")
+	//发送请求
+	resp, err := client.Do(req)
+	//关闭请求
+	defer resp.Body.Close()
+
+	if err != nil {
+		// handle error
+		logs.Error(err)
+	}
+
+	return nil
 }
