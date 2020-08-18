@@ -16,6 +16,7 @@ var (
 	AppStarredModel               *appStarredModel
 	NamespaceUserModel            *namespaceUserModel
 	ClusterModel                  *clusterModel
+	ConfigmapHulkModel            *configmapHulkModel
 	HarborModel                   *harborModel
 	PipelineModel                 *pipelineModel
 	TektonModel                   *tektonModel
@@ -80,6 +81,7 @@ func init() {
 		new(AppUser),
 		new(NamespaceUser),
 		new(Cluster),
+		new(ConfigMapHulk),
 		new(Namespace),
 		new(Deployment),
 		new(DeploymentTemplate),
@@ -130,6 +132,7 @@ func init() {
 	AppStarredModel = &appStarredModel{}
 	NamespaceUserModel = &namespaceUserModel{}
 	ClusterModel = &clusterModel{}
+	ConfigmapHulkModel = &configmapHulkModel{}
 	NamespaceModel = &namespaceModel{}
 	DeploymentModel = &deploymentModel{}
 	HostAliasModel = &hostAliasModel{}

@@ -5,6 +5,7 @@ package routers
 
 import (
 	"github.com/Qihoo360/wayne/src/backend/controllers/auth"
+	configHulk "github.com/Qihoo360/wayne/src/backend/controllers/configMapHulk"
 	"github.com/Qihoo360/wayne/src/backend/controllers/harbor"
 	"github.com/Qihoo360/wayne/src/backend/controllers/hongmao"
 	"github.com/Qihoo360/wayne/src/backend/controllers/hostAlias"
@@ -497,6 +498,14 @@ func init() {
 		),
 	)
 
+	nsWithConfigMapHulk := beego.NewNamespace("/api/v1",
+		beego.NSNamespace("/configmap/hulk",
+			beego.NSInclude(
+				&configHulk.ConfigMapHulkController{},
+			),
+		),
+	)
+
 	nsWithHongmao := beego.NewNamespace("/api/v1",
 		beego.NSNamespace("/hongmao",
 			beego.NSInclude(
@@ -559,6 +568,8 @@ func init() {
 	beego.AddNamespace(nsWithHarbor)
 
 	beego.AddNamespace(nsWithPipeline)
+
+	beego.AddNamespace(nsWithConfigMapHulk)
 
 	beego.AddNamespace(nsWithReview)
 

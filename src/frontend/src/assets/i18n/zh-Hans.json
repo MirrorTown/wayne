@@ -257,6 +257,9 @@
     "TEKTON": "缺少Tekton信息",
     "TEKTON_NAME": "Tekton名称不符合规范"
   },
+  "ERROR": {
+    "NAME": "名称不规范"
+  },
   "HISTORY": {
     "RELEASE_TIME": "发布时间",
     "RELEASE_USER": "发布者",
@@ -283,6 +286,7 @@
     "CLUSTER": "集群",
     "HARBOR": "镜像中心",
     "PIPELINE": "构建流水线",
+    "HULK": "hulk环境配置",
     "CONFIG": "配置",
     "CLUSTER_LIST": "集群列表",
     "HOSTALIAS": "HostAlias",

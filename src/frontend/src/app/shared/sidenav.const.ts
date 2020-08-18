@@ -33,6 +33,11 @@ const adminSideNav: any[] = [
     ]
   },
   {
+    type: SideNavType.GroupLink, icon: {title: 'MENU.HULK', shape: 'plugin' }, text: 'MENU.HULK', child: [
+      { a: { link: 'hulk', text: 'MENU.CONFIG', options: { exact: true } } },
+    ]
+  },
+  {
     type: SideNavType.GroupLink, icon: { shape: 'world', title: 'Kubernetes', solid: true }, text: 'Kubernetes', child: [
       { a: { link: 'kubernetes/node', text: 'Node', options: {exact: false}, icon: { shape: 'devices', solid: false } } },
       { a: { link: 'kubernetes/namespace', text: 'Namespace', options: {exact: false}, icon: { shape: 'vmw-app', solid: true } } },

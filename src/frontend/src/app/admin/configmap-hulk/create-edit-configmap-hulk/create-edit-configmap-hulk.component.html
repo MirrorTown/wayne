@@ -1,0 +1,96 @@
+<clr-modal [(clrModalOpen)]="modalOpened" [clrModalSize]="'lg'" #modal>
+  <h3 class="modal-title">{{title}}
+    <wayne-modal-operate [modal]="modal" *ngIf="modalOpened"></wayne-modal-operate>
+  </h3>
+  <div class="modal-body">
+    <form #ngForm="ngForm" clrForm clrLayout="horizontal">
+      <section class="form-block">
+        <clr-input-container>
+          <label class="required">名称: </label>
+          <input type="text" clrInput id="name" [(ngModel)]="configmapHulk.name" name="name" size="24" required [readonly]="actionType==1"
+                 maxlength="24" (keyup)='handleValidation()'>
+          <clr-control-helper>
+              <span style="color: red;" *ngIf="!isNameValid">
+                {{'ERROR.NAME' | translate}}
+              </span>
+          </clr-control-helper>
+          <clr-control-error>{{'ERROR.NAME' | translate}}</clr-control-error>
+        </clr-input-container>
+        <clr-input-container *ngIf="configmapHulk.scope == 1">
+          <label class="required">应用名: </label>
+          <input type="text" clrInput id="appName" [(ngModel)]="configmapHulk.appName" name="appName" size="24" required
+                 maxlength="24" (keyup)='handleValidation()'>
+          <clr-control-helper>
+              <span style="color: red;" *ngIf="!isNameValid">
+                {{'ERROR.NAME' | translate}}
+              </span>
+          </clr-control-helper>
+          <clr-control-error>{{'ERROR.NAME' | translate}}</clr-control-error>
+        </clr-input-container>
+        <clr-input-container *ngIf="configmapHulk.scope == 1">
+          <label class="required">SZone: </label>
+          <input type="text" clrInput id="szone" [(ngModel)]="configmapHulk.sZone" name="sZone" required
+                 maxlength="128">
+        </clr-input-container>
+        <clr-input-container>
+          <label class="required">配置类型: </label>
+          <input type="text" clrInput id="type" ngModel="环境变量" name="type" readonly
+                 maxlength="128">
+        </clr-input-container>
+        <clr-select-container>
+          <label>适用范围</label>
+          <select clrSelect id="scopePolicy" name="scope" [(ngModel)]="configmapHulk.scope">
+            <option [ngValue]="0" selected>全局</option>
+            <option [ngValue]="1">应用</option>
+          </select>
+        </clr-select-container>
+        <clr-select-container>
+          <label>环境</label>
+          <select clrSelect id="envPolicy" name="env" [(ngModel)]="configmapHulk.env">
+            <option [ngValue]="0" selected>测试环境</option>
+            <option [ngValue]="1">预发环境</option>
+            <option [ngValue]="2">线上环境</option>
+          </select>
+        </clr-select-container>
+
+        <wayne-collapse>
+          <label class="label-level1" id="volume-strategy">配置</label>
+          <button (click)="onAddBuildVariable()" style="margin-left: 10px;" class="wayne-button primary">
+            <clr-icon shape="add-text"></clr-icon>
+            添加配置
+          </button>
+
+          <div *ngFor="let param of configResource.params; let v = index; trackBy:trackByFn">
+            <clr-input-container clrInline>
+              <label>参数-{{v + 1}}</label>
+              <label>
+                <clr-icon style="float: right;" (click)="onDelBuildVariable(v)" shape="trash" class="is-solid"></clr-icon>
+              </label>
+            </clr-input-container>
+            <clr-input-container>
+              <label class="required">
+                键:
+              </label>
+              <input type="text" clrInput required name="param_key_{{v}}" size="32"
+                     [(ngModel)]="configResource.params[v].key" placeholder="Key">
+              <clr-control-error>键不能为空</clr-control-error>
+            </clr-input-container>
+            <clr-textarea-container>
+              <label>值:</label>
+              <textarea id="param_value_{{v}}" clrTextarea [(ngModel)]="configResource.params[v].value" name="param_value_{{v}}" rows="3">
+                    </textarea>
+              <clr-control-error>值不能为空</clr-control-error>
+            </clr-textarea-container>
+          </div>
+        </wayne-collapse>
+
+      </section>
+    </form>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline" (click)="onCancel()">{{'BUTTON.CANCEL' | translate}}</button>
+      <button type="button" class="btn btn-primary" [disabled]="!isValid"
+              (click)="onSubmit()">{{'BUTTON.SUBMIT' | translate}}</button>
+    </div>
+  </div>
+
+</clr-modal>

@@ -94,6 +94,7 @@ import { RoadmapComponent } from './roadmap/roadmap.component';
 import { CustomlinkComponent } from './customlink/customlink.component';
 import { EventClusterComponent } from './cluster/event-cluster/event-cluster.component';
 import { ChartDeployComponent } from './reportform/chart/chart-deploy.component';
+import { ConfigmapHulkComponent } from './configmap-hulk/configmap-hulk.component';
 
 const routes: Routes = [
   {
@@ -116,6 +117,7 @@ const routes: Routes = [
       {path: 'cluster', component: ClusterComponent},
       {path: 'harbor', component: HarborComponent},
       {path: 'pipeline', component: TektonPipelineComponent},
+      {path: 'hulk', component: ConfigmapHulkComponent},
       {path: 'cluster/trash', component: TrashClusterComponent},
       {path: 'cluster/event', component: EventClusterComponent},
       {path: 'app', component: AppComponent},

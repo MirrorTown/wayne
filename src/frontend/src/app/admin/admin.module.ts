@@ -72,6 +72,7 @@ import { HarborModule } from './harbor/harbor.module';
 import { TektonPipelineModule } from './tekton-pipeline/tekton-pipeline.module'
 import { RoadMapModule } from './roadmap/roadmap.module';
 import { CustomlinkModule } from './customlink/customlink.module';
+import {ConfigmapHulkModule} from "./configmap-hulk/configmap-hulk.module";
 
 @NgModule({
   imports: [
@@ -80,6 +81,7 @@ import { CustomlinkModule } from './customlink/customlink.module';
     ClusterModule,
     HarborModule,
     TektonPipelineModule,
+    ConfigmapHulkModule,
     AppModule,
     DeploymentModule,
     DeploymentTplModule,

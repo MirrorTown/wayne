@@ -199,6 +199,7 @@ export const enum ConfirmationTargets {
   ENDPOINT,
   HARBOR,
   PIPELINE,
+  ConfigmapHulk,
   HOSTALIASE,
   TEKTON,
   TEKTON_TASK
