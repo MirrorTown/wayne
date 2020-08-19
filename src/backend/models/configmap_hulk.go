@@ -16,7 +16,7 @@ type ConfigMapHulk struct {
 	Name           string     `orm:"unique;size(64)" json:"name,omitempty"`
 	AppName        string     `orm:"unique;index;size(64)" json:"appName,omitempty"`
 	Szone          string     `orm:"null;size(64)" json:"sZone,omitempty"`
-	Env            string     `orm:"null;size(64)" json:"env,omitempty"`
+	Env            int64      `orm:"default(1)" json:"env,omitempty"`
 	Scope          int64      `orm:"default(0)" json:"scope,omitempty"`
 	Type           string     `orm:"null;size(64)" json:"type"`
 	ConfigResource string     `orm:"type(text)" json:"configResource,omitempty"`

@@ -16,7 +16,7 @@
           </clr-control-helper>
           <clr-control-error>{{'ERROR.NAME' | translate}}</clr-control-error>
         </clr-input-container>
-        <clr-input-container *ngIf="configmapHulk.scope == 1">
+        <clr-input-container *ngIf="configmapHulk.scope == 2">
           <label class="required">应用名: </label>
           <input type="text" clrInput id="appName" [(ngModel)]="configmapHulk.appName" name="appName" size="24" required
                  maxlength="24" (keyup)='handleValidation()'>
@@ -27,29 +27,30 @@
           </clr-control-helper>
           <clr-control-error>{{'ERROR.NAME' | translate}}</clr-control-error>
         </clr-input-container>
-        <clr-input-container *ngIf="configmapHulk.scope == 1">
+        <clr-input-container *ngIf="configmapHulk.scope == 2">
           <label class="required">SZone: </label>
-          <input type="text" clrInput id="szone" [(ngModel)]="configmapHulk.sZone" name="sZone" required
+          <input type="text" clrInput id="sZone" [(ngModel)]="configmapHulk.sZone" name="sZone" required
                  maxlength="128">
         </clr-input-container>
         <clr-input-container>
           <label class="required">配置类型: </label>
-          <input type="text" clrInput id="type" ngModel="环境变量" name="type" readonly
+          <input type="text" clrInput id="type" [(ngModel)]="configmapHulk.type" name="type" readonly
                  maxlength="128">
         </clr-input-container>
         <clr-select-container>
-          <label>适用范围</label>
+          <label>适用范围:</label>
           <select clrSelect id="scopePolicy" name="scope" [(ngModel)]="configmapHulk.scope">
-            <option [ngValue]="0" selected>全局</option>
-            <option [ngValue]="1">应用</option>
+            <option [ngValue]="1" selected>全局</option>
+            <option [ngValue]="2">应用</option>
           </select>
         </clr-select-container>
         <clr-select-container>
-          <label>环境</label>
+          <label>环境:</label>
           <select clrSelect id="envPolicy" name="env" [(ngModel)]="configmapHulk.env">
-            <option [ngValue]="0" selected>测试环境</option>
-            <option [ngValue]="1">预发环境</option>
-            <option [ngValue]="2">线上环境</option>
+            <option [ngValue]="1">开发环境</option>
+            <option [ngValue]="2" selected>测试环境</option>
+            <option [ngValue]="3">预发环境</option>
+            <option [ngValue]="4">线上环境</option>
           </select>
         </clr-select-container>
 
@@ -62,7 +63,7 @@
 
           <div *ngFor="let param of configResource.params; let v = index; trackBy:trackByFn">
             <clr-input-container clrInline>
-              <label>参数-{{v + 1}}</label>
+              <label>配置-{{v + 1}}</label>
               <label>
                 <clr-icon style="float: right;" (click)="onDelBuildVariable(v)" shape="trash" class="is-solid"></clr-icon>
               </label>

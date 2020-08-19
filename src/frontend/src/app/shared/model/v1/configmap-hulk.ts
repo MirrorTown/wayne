@@ -3,7 +3,7 @@ export class ConfigmapHulk {
   name: string;
   appName: string;
   sZone:  string;
-  env: string;
+  env: number;
   scope: number;
   type: string;
   createTime: Date;
@@ -14,8 +14,8 @@ export class ConfigmapHulk {
       this.appName = appName;
     }
     this.sZone = '';
-    this.env = '';
-    this.type = '';
-    this.scope = 0;
+    this.env = 2;
+    this.type = '环境变量';
+    this.scope = 1;
   }
 }

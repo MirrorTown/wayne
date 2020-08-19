@@ -45,11 +45,12 @@ export class CreateEditConfigmapHulkComponent {
     if (id) {
       this.configResource = {};
       this.actionType = ActionType.EDIT;
-      this.title = '编辑流水线';
+      this.title = '编辑ConfigMap';
       this.configmapHulkService.getById(id).subscribe(
         status => {
+          console.log(status)
           this.configmapHulk = status.data;
-          this.configmapHulk = JSON.parse(this.configmapHulk.configResource);
+          this.configResource = JSON.parse(this.configmapHulk.configResource);
           this.initJsonEditor();
         },
         error => {
@@ -58,7 +59,7 @@ export class CreateEditConfigmapHulkComponent {
         });
     } else {
       this.actionType = ActionType.ADD_NEW;
-      this.title = '关联流水线';
+      this.title = '添加ConfigMap';
       this.configmapHulk = new ConfigmapHulk();
       this.initJsonEditor();
 
@@ -87,7 +88,7 @@ export class CreateEditConfigmapHulkComponent {
             this.isSubmitOnGoing = false;
             this.create.emit(true);
             this.modalOpened = false;
-            this.messageHandlerService.showSuccess('创建流水线成功！');
+            this.messageHandlerService.showSuccess('创建ConfigMap成功！');
           },
           error => {
             this.isSubmitOnGoing = false;
@@ -103,7 +104,7 @@ export class CreateEditConfigmapHulkComponent {
             this.isSubmitOnGoing = false;
             this.create.emit(true);
             this.modalOpened = false;
-            this.messageHandlerService.showSuccess('更新流水线成功！');
+            this.messageHandlerService.showSuccess('更新ConfigMap成功！');
           },
           error => {
             this.isSubmitOnGoing = false;
