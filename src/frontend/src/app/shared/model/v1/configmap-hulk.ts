@@ -5,7 +5,7 @@ export class ConfigmapHulk {
   sZone:  string;
   env: number;
   scope: number;
-  type: string;
+  type: number;
   createTime: Date;
   configResource: string;
 
@@ -15,7 +15,7 @@ export class ConfigmapHulk {
     }
     this.sZone = '';
     this.env = 2;
-    this.type = '环境变量';
+    this.type = 1;
     this.scope = 1;
   }
 }

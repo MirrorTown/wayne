@@ -16,6 +16,11 @@
   </clr-dg-column>
   <clr-dg-column>
     <ng-container *clrDgHideableColumn="{hidden: false}">
+      配置类型
+    </ng-container>
+  </clr-dg-column>
+  <clr-dg-column>
+    <ng-container *clrDgHideableColumn="{hidden: false}">
       SZone
     </ng-container>
   </clr-dg-column>
@@ -42,6 +47,7 @@
     <clr-dg-cell class="col-id">{{configmapHulk.id}}</clr-dg-cell>
     <clr-dg-cell class="col-harbor-name copy">{{configmapHulk.name}}</clr-dg-cell>
     <clr-dg-cell class="col-host">{{configmapHulk.appName}}</clr-dg-cell>
+    <clr-dg-cell>{{configmapHulk.type == 1? "环境变量": configmapHulk.env == 2? "文件类型":""}}</clr-dg-cell>
     <clr-dg-cell>{{configmapHulk.sZone}}</clr-dg-cell>
     <clr-dg-cell>{{configmapHulk.env == 1? "开发环境": configmapHulk.env == 2? "测试环境": configmapHulk.env == 3? "预发环境": configmapHulk.env ==4? "线上环境": ""}}</clr-dg-cell>
     <clr-dg-cell>{{configmapHulk.scope == 1? "全局":"应用"}}</clr-dg-cell>

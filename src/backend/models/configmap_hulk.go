@@ -3,8 +3,10 @@ package models
 import "time"
 
 const (
-	ConfigGlobal = 0
-	ConfigOne    = 1
+	ConfigGlobal = 1
+	ConfigOne    = 2
+	EnvType      = 1
+	FileType     = 2
 
 	TableNameConfigMapHulk = "configmap_hulk"
 )
@@ -18,7 +20,7 @@ type ConfigMapHulk struct {
 	Szone          string     `orm:"null;size(64)" json:"sZone,omitempty"`
 	Env            int64      `orm:"default(1)" json:"env,omitempty"`
 	Scope          int64      `orm:"default(0)" json:"scope,omitempty"`
-	Type           string     `orm:"null;size(64)" json:"type"`
+	Type           int64      `orm:"default(1)" json:"type"`
 	ConfigResource string     `orm:"type(text)" json:"configResource,omitempty"`
 	CreateTime     *time.Time `orm:"auto_now_add;type(datetime)" json:"createTime,omitempty"`
 	UpdateTime     *time.Time `orm:"auto_now;type(datetime)" json:"updateTime,omitempty"`

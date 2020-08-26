@@ -32,11 +32,13 @@
           <input type="text" clrInput id="sZone" [(ngModel)]="configmapHulk.sZone" name="sZone" required
                  maxlength="128">
         </clr-input-container>
-        <clr-input-container>
-          <label class="required">配置类型: </label>
-          <input type="text" clrInput id="type" [(ngModel)]="configmapHulk.type" name="type" readonly
-                 maxlength="128">
-        </clr-input-container>
+        <clr-select-container>
+          <label>配置类型:</label>
+          <select clrSelect id="configType" name="configType" [(ngModel)]="configmapHulk.type">
+            <option [ngValue]="1" selected>环境变量</option>
+            <option [ngValue]="2">文件类型</option>
+          </select>
+        </clr-select-container>
         <clr-select-container>
           <label>适用范围:</label>
           <select clrSelect id="scopePolicy" name="scope" [(ngModel)]="configmapHulk.scope">
