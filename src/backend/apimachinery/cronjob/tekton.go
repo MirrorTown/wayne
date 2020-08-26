@@ -113,14 +113,18 @@ func (t *Tekton) HandlerTekton(client *client.ClusterManager, ns string, cluster
 					callbackUrl := beego.AppConfig.String("muji_callback_url_test")
 					if strings.Contains(name, "prod") {
 						callbackUrl = beego.AppConfig.String("muji_callback_url_prod")
-						t.callbackFailed2Muji(recordId, callbackUrl)
+						go t.callbackFailed2Muji(recordId, callbackUrl)
 					} else {
-						t.callbackFailed2Muji(recordId, callbackUrl)
+						go t.callbackFailed2Muji(recordId, callbackUrl)
 					}
 
 				}
 			}
 			crdData, err := crd.GetCustomCRD(client.Client, "tekton.dev", "v1alpha1", "pipelineruns", ns, name)
+			if err != nil {
+				logs.Error("获取pipelineruns crd信息失败, ", err)
+				return
+			}
 			newMetaData, err := json.Marshal(&crdData)
 			if err != nil {
 				logs.Error("deployment metadata marshal error.%v", err)
@@ -166,6 +170,11 @@ func (t *Tekton) GetPodLableMap(pod proxy.PodCell) map[string]string {
 }
 
 func (t *Tekton) callbackFailed2Muji(recordId int, callbackUrl string) (err error) {
+	defer func() {
+		if err := recover(); err != nil {
+			logs.Error("回调请求失败, ", err)
+		}
+	}()
 	//请求地址模板
 	content := `{"status": "failed","notifyParams": {"recordId": %d}}`
 	//创建一个请求
