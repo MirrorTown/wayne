@@ -113,6 +113,9 @@ func (p *ConfigMapHulkController) Create() {
 		p.AbortBadRequestFormat("Pipeline")
 	}
 
+	if config.AppName == "" {
+		config.AppName = config.Name
+	}
 	err = models.ConfigmapHulkModel.Add(&config)
 
 	if err != nil {

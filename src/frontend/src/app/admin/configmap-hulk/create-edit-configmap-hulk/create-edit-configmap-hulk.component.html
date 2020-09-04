@@ -39,6 +39,16 @@
             <option [ngValue]="2">文件类型</option>
           </select>
         </clr-select-container>
+        <clr-input-container *ngIf="configmapHulk.type == 2">
+          <label class="required">MountPath: </label>
+          <input type="text" clrInput id="mountPath" [(ngModel)]="configmapHulk.mountPath" name="mountPath"
+                 maxlength="128">
+        </clr-input-container>
+        <clr-input-container *ngIf="configmapHulk.type == 2">
+          <label class="required">SubPath: </label>
+          <input type="text" clrInput id="subPath" [(ngModel)]="configmapHulk.subPath" name="subPath"
+                 maxlength="128">
+        </clr-input-container>
         <clr-select-container>
           <label>适用范围:</label>
           <select clrSelect id="scopePolicy" name="scope" [(ngModel)]="configmapHulk.scope">

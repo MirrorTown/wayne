@@ -61,6 +61,7 @@ export class CreateEditConfigmapHulkComponent {
       this.actionType = ActionType.ADD_NEW;
       this.title = '添加ConfigMap';
       this.configmapHulk = new ConfigmapHulk();
+      this.configResource = {};
       this.initJsonEditor();
 
     }

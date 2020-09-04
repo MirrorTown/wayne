@@ -21,6 +21,8 @@ type ConfigMapHulk struct {
 	Env            int64      `orm:"default(1)" json:"env,omitempty"`
 	Scope          int64      `orm:"default(0)" json:"scope,omitempty"`
 	Type           int64      `orm:"default(1)" json:"type"`
+	MountPath      string     `orm:"size(100)" json:"mountPath,omitempty"`
+	SubPath        string     `orm:"size(64)" json:"subPath,omitempty"`
 	ConfigResource string     `orm:"type(text)" json:"configResource,omitempty"`
 	CreateTime     *time.Time `orm:"auto_now_add;type(datetime)" json:"createTime,omitempty"`
 	UpdateTime     *time.Time `orm:"auto_now;type(datetime)" json:"updateTime,omitempty"`

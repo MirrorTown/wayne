@@ -131,7 +131,7 @@ func (t *Tekton) HandlerTekton(client *client.ClusterManager, ns string, cluster
 				return
 			}
 
-			gitRegexp := regexp.MustCompile(`git@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w]).*\.git?`)
+			gitRegexp := regexp.MustCompile(`git@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w]).*?\.git?`)
 			gitParam := gitRegexp.FindString(string(newMetaData))
 			fmt.Println("git: " + gitParam)
 

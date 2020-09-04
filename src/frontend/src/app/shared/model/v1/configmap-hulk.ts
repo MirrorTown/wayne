@@ -4,6 +4,8 @@ export class ConfigmapHulk {
   appName: string;
   sZone:  string;
   env: number;
+  mountPath: string;
+  subPath: string;
   scope: number;
   type: number;
   createTime: Date;
