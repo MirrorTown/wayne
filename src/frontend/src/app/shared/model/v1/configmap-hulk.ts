@@ -3,6 +3,7 @@ export class ConfigmapHulk {
   name: string;
   appName: string;
   sZone:  string;
+  limitMem: number;
   env: number;
   mountPath: string;
   subPath: string;

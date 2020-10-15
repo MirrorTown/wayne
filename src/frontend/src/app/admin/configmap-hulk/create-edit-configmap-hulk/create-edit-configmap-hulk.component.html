@@ -8,7 +8,7 @@
         <clr-input-container>
           <label class="required">名称: </label>
           <input type="text" clrInput id="name" [(ngModel)]="configmapHulk.name" name="name" size="24" required [readonly]="actionType==1"
-                 maxlength="24" (keyup)='handleValidation()'>
+                 maxlength="60" (keyup)='handleValidation()'>
           <clr-control-helper>
               <span style="color: red;" *ngIf="!isNameValid">
                 {{'ERROR.NAME' | translate}}
@@ -19,7 +19,7 @@
         <clr-input-container *ngIf="configmapHulk.scope == 2">
           <label class="required">应用名: </label>
           <input type="text" clrInput id="appName" [(ngModel)]="configmapHulk.appName" name="appName" size="24" required
-                 maxlength="24" (keyup)='handleValidation()'>
+                 maxlength="60" (keyup)='handleValidation()'>
           <clr-control-helper>
               <span style="color: red;" *ngIf="!isNameValid">
                 {{'ERROR.NAME' | translate}}
@@ -30,6 +30,11 @@
         <clr-input-container *ngIf="configmapHulk.scope == 2">
           <label class="required">SZone: </label>
           <input type="text" clrInput id="sZone" [(ngModel)]="configmapHulk.sZone" name="sZone" required
+                 maxlength="128">
+        </clr-input-container>
+        <clr-input-container *ngIf="configmapHulk.scope == 2">
+          <label class="required">limitMem(Mi): </label>
+          <input type="number" clrInput id="limitMem" [(ngModel)]="configmapHulk.limitMem" name="limitMem" required
                  maxlength="128">
         </clr-input-container>
         <clr-select-container>
